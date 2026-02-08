@@ -1,0 +1,31 @@
+{
+  "name": "restaurant-menu-saas",
+  "version": "1.0.0",
+  "description": "SaaS multi-restaurant menu avec admin, 3D et AR",
+  "type": "module",
+  "main": "server/app.js",
+  "scripts": {
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.6.2",
+    "compression": "^1.8.1",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.2.4",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "express-session": "^1.19.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

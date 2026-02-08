@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= restaurant.name %></title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/node_modules/three/build/three.module.js",
+        "three/examples/": "/node_modules/three/examples/"
+      }
+    }
+    </script>
+    
+
+  <style>
+    body {
+      font-family: system-ui;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform .15s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .price {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .sheet {
+  position: fixed;
+  left:0;
+  right:0;
+  bottom:-100%;
+  height:60%;
+  background:white;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -10px 40px rgba(0,0,0,0.25);
+  transition: bottom .35s ease;
+  padding:20px;
+}
+
+.sheet.open {
+  bottom:0;
+}
+
+#sheet-close {
+  float:right;
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+}
+
+#viewer {
+  position: relative;
+  height: 260px;
+  margin-top: 20px;
+  background: #eee;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#three-canvas {
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+#loader {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  background:#f3f3f3;
+}
+
+.thumb {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.card-content {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.desc-short {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}
+
+#sheet-desc {
+  margin: 10px 0 20px;
+  color: #444;
+  line-height: 1.4;
+}
+
+.ar-btn {
+  display:block;
+  margin-top:15px;
+  padding:12px;
+  text-align:center;
+  background:black;
+  color:white;
+  border-radius:10px;
+  text-decoration:none;
+}
+
+.filters {
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding-bottom:15px;
+  margin-bottom:20px;
+}
+
+.filter {
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid #ddd;
+  background:white;
+  cursor:pointer;
+  white-space:nowrap;
+  font-size:14px;
+  transition:.2s;
+}
+
+.filter.active {
+  background:black;
+  color:white;
+  border-color:black;
+}
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.topbar select {
+  border:none;
+  font-weight:600;
+  background:transparent;
+  font-size:16px;
+  cursor:pointer;
+}
+
+
+  </style>
+
+    
+</head>
+
+<body>
+
+<h1><%= restaurant.name %> 🍽️</h1>
+<header class="topbar">
+
+    <div class="menu-select">
+      <select id="menuToggle">
+        <option value="lunch">Carte du midi</option>
+        <option value="dinner">Carte du soir</option>
+      </select>
+    </div>
+  
+    <div class="lang-select">
+      <select id="langToggle">
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇬🇧 EN</option>
+      </select>
+    </div>
+  
+  </header>
+  
+
+<div class="filters">
+
+    <button class="filter" data-filter="formule">🍽️ Formules</button>
+    <button class="filter active" data-filter="boisson">🍸 Boisson</button>
+    <button class="filter" data-filter="entrée">🥗 Entrée</button>
+    <button class="filter" data-filter="plat">🍛 Plats</button>
+    <button class="filter" data-filter="dessert">🍰 Desserts</button>
+  
+  </div>
+  
+
+<div class="grid">
+    <% dishes.forEach(d => { %>
+  
+        <div 
+        class="card"
+        data-category="<%= d.category %>"
+        data-title="<%= d.title_fr %>"
+        data-price="<%= (d.price_cents/100).toFixed(2) %> €"
+        data-desc="<%= d.desc_long_fr %>"
+        data-glb="<%= d.glb_path %>"
+        data-usdz="<%= d.usdz_path %>"
+        data-scale="<%= d.scale %>"
+        data-title-fr="<%= d.title_fr %>"
+        data-title-en="<%= d.title_en %>"
+        data-short-fr="<%= d.desc_short_fr %>"
+        data-short-en="<%= d.desc_short_en %>"
+        data-long-fr="<%= d.desc_long_fr %>"
+        data-long-en="<%= d.desc_long_en %>"
+        data-availability="<%= d.availability %>"
+      >
+      
+  
+        <% if (d.image_path) { %>
+          <img src="<%= d.image_path %>" class="thumb" />
+        <% } %>
+        <div class="card-content">
+            <div class="text">
+              <strong><%= d.title_fr %></strong>
+          
+              <% if (d.desc_short_fr) { %>
+                <div class="desc-short"><%= d.desc_short_fr %></div>
+              <% } %>
+            </div>
+          
+            <div class="price">
+              <%= (d.price_cents/100).toFixed(2) %> €
+            </div>
+          </div>
+          
+  
+      </div>
+  
+    <% }) %>
+</div>
+  
+  
+  <!-- ===== Overlay (inchangé) ===== -->
+  
+  <div id="sheet" class="sheet">
+    <div class="sheet-content">
+  
+      <button id="sheet-close">✕</button>
+  
+      <h2 id="sheet-title"></h2>
+      <p id="sheet-desc"></p>
+      <p id="sheet-price"></p>
+
+
+  
+      <div id="viewer">
+        <div id="loader">Chargement…</div>
+        <canvas id="three-canvas"></canvas>
+      </div>
+      <a id="ar-btn" class="ar-btn" rel="ar">Voir en réalité augmentée</a>
+
+
+  
+    </div>
+  </div>
+  
+
+
+
+<script type="module" src="/js/app.js"></script>
+
+  
+  
+  
+
+</body>
+</html>

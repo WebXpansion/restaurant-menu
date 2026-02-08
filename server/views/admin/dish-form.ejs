@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:system-ui;padding:40px">
+
+<h1>Nouveau plat</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+  <input name="title_fr" placeholder="Titre FR" required /><br>
+  <input name="title_en" placeholder="Titre EN" /><br>
+
+  <textarea name="desc_short_fr" placeholder="Description courte"></textarea><br>
+  <textarea name="desc_short_en" placeholder="Description courte"></textarea><br>
+  <textarea name="desc_long_fr" placeholder="Description longue"></textarea><br>
+  <textarea name="desc_long_en" placeholder="Description longue"></textarea><br>
+
+  <input type="number" step="0.01" name="price" placeholder="Prix €" required /><br>
+
+  <select name="category">
+    <option value="formule">Formule</option>
+    <option value="entrée">Entrée</option>
+    <option value="plat">Plat</option>
+    <option value="dessert">Dessert</option>
+    <option value="boisson">Boisson</option>
+  </select>
+  <br>
+
+  <input name="subcategory" placeholder="Sous catégorie (pizza, grillades...)" /><br>
+
+  <select name="availability">
+    <option value="both">Midi + Soir</option>
+    <option value="lunch">Midi</option>
+    <option value="dinner">Soir</option>
+  </select><br>
+
+  <input type="file" name="image" accept="image/*" /><br><br>
+  <h3>Modèle 3D</h3>
+
+<input type="file" name="glb" accept=".glb"><br>
+<input type="file" name="usdz" accept=".usdz"><br>
+
+<input type="number" step="0.1" name="scale" placeholder="Scale (1 par défaut)" value="1"><br>
+
+
+  <button>Créer</button>
+
+</form>
+
+</body>
+</html>

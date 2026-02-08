@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dishes</title>
+</head>
+<body style="font-family:system-ui;padding:40px">
+
+<h1>Plats - <%= slug %></h1>
+
+<a href="/admin/<%= slug %>/dishes/new">➕ Ajouter un plat</a>
+
+<hr/>
+
+<% dishes.forEach(d => { %>
+  <div style="margin-bottom:10px;">
+    <strong><%= d.title_fr %></strong>
+    — <%= (d.price_cents/100).toFixed(2) %> €
+
+    <form method="POST" action="/admin/<%= slug %>/dishes/<%= d.id %>/delete" style="display:inline;">
+      <button>❌</button>
+    </form>
+  </div>
+<% }) %>
+
+</body>
+</html>
