@@ -79,7 +79,8 @@ app.get("/r/:slug", (req, res) => {
    START SERVER
 ======================== */
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
 initDB();
 createSeed();
 
