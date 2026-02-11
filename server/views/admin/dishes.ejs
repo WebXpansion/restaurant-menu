@@ -1,26 +1,445 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>Dishes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <title>Plats – <%= restaurant.slug %></title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+
+
+    .add-btn {
+      background: #000;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 30px rgba(0,0,0,.08),
+        0 1px 3px rgba(0,0,0,.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .image-wrap {
+      position: relative;
+      height: 160px;
+      background: #eee;
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .badge.published { background: #2ecc71; }
+    .badge.draft { background: #999; }
+
+    .card-body {
+      padding: 16px;
+      flex: 1;
+    }
+
+    .title-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-price strong {
+      font-size: 16px;
+    }
+
+    .price {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      padding: 16px;
+      border-top: 1px solid #eee;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .btn.edit {
+      background: #000;
+      color: #fff;
+      width: 80%;
+      text-decoration: none;
+    }
+
+    .btn.delete {
+      background: #fff;
+      border: 1px solid #ff1212;
+      width: 20%;
+    }
+
+    .btn.delete:hover {
+      background: #ff1212;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 18px;
+      width: 90%;
+      max-width: 380px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .modal-cancel {
+      background: #eee;
+    }
+
+    .modal-confirm {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filters select {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #0000001c;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.badge-ar-text {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  background: #fff;
+  color: #000;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+
+
+  </style>
 </head>
-<body style="font-family:system-ui;padding:40px">
 
-<h1>Plats - <%= slug %></h1>
+<body>
+  <%- include("partials/header", { restaurant, active: "dishes" }) %>
 
-<a href="/admin/<%= slug %>/dishes/new">➕ Ajouter un plat</a>
+<div class="container">
 
-<hr/>
-
-<% dishes.forEach(d => { %>
-  <div style="margin-bottom:10px;">
-    <strong><%= d.title_fr %></strong>
-    — <%= (d.price_cents/100).toFixed(2) %> €
-
-    <form method="POST" action="/admin/<%= slug %>/dishes/<%= d.id %>/delete" style="display:inline;">
-      <button>❌</button>
-    </form>
+  <div class="header">
+    <h1 style="display:flex;align-items:center;gap:12px">
+      Plats
+    
+      <% if (arUsage.max > 0) { %>
+        <span class="ar-usage-pill">
+          <%= arUsage.used %>/<%= arUsage.max %> AR
+        </span>
+      <% } %>
+    </h1>
+    
+    <a href="/admin/<%= restaurant.slug %>/dishes/new" class="add-btn">
+      ➕ Ajouter un plat
+    </a>
   </div>
-<% }) %>
+
+  <div class="filters">
+    <select id="categoryFilter">
+      <option value="all">Toutes catégories</option>
+      <option value="boisson">Boisson</option>
+      <option value="entrée">Entrée</option>
+      <option value="plat">Plat</option>
+      <option value="dessert">Dessert</option>
+      <option value="formule">Formule</option>
+    </select>
+
+    <select id="availabilityFilter">
+      <option value="all">Tous les menus</option>
+      <option value="lunch">Midi</option>
+      <option value="dinner">Soir</option>
+    </select>
+  
+    <select id="sortSelect">
+      <option value="recent">Plus récents</option>
+      <option value="old">Moins récents</option>
+    </select>
+  </div>
+  
+
+  <div class="grid">
+    <% dishes.forEach(d => { %>
+      <div
+      class="card"
+      data-category="<%= d.category %>"
+      data-created="<%= d.id %>"
+      data-availability="<%= d.availability %>"
+    >
+    
+        <div class="image-wrap">
+          <% if (d.image_path) { %>
+            <img src="<%= d.image_path %>" alt="">
+          <% } %>
+        
+          <!-- BADGE STATUT -->
+          <span class="badge <%= d.status === 'published' ? 'published' : 'draft' %>">
+            <%= d.status === 'published' ? 'En ligne' : 'Brouillon' %>
+          </span>
+        
+          <!-- BADGE AR -->
+          <% if (d.has_ar) { %>
+            <span class="badge-ar-text">3D</span>
+          <% } %>
+          
+        </div>
+    
+
+        <div class="card-body">
+          <div class="title-price">
+            <strong><%= d.title_fr || "Sans titre" %></strong>
+            <span class="price"><%= (d.price_cents/100).toFixed(2) %> €</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a href="/admin/<%= restaurant.slug %>/dishes/<%= d.id %>/edit" class="btn edit">
+            ✏️ Modifier
+          </a>
+
+          <button
+            class="btn delete"
+            data-id="<%= d.id %>"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <p
+  id="emptyMessage"
+  style="
+    display:none;
+    margin-top:40px;
+    text-align:center;
+    color:#888;
+    font-size:15px;
+  "
+>
+  Aucun produit
+</p>
+
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="deleteModal">
+  <div class="modal">
+    <h3>Supprimer le plat</h3>
+    <p>Êtes-vous sûr de vouloir supprimer ce plat ?  
+    Cette action est irréversible.</p>
+
+    <div class="modal-actions">
+      <button class="modal-cancel" id="cancelDelete">Annuler</button>
+      <form method="POST" id="confirmDeleteForm">
+        <button class="modal-confirm">Supprimer</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("deleteModal");
+  const cancelBtn = document.getElementById("cancelDelete");
+  const form = document.getElementById("confirmDeleteForm");
+  
+
+  document.querySelectorAll(".btn.delete").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const dishId = btn.dataset.id;
+      form.action = `/admin/<%= restaurant.slug %>/dishes/${dishId}/delete`;
+      modal.style.display = "flex";
+    });
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  modal.addEventListener("click", e => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+
+  const categoryFilter = document.getElementById("categoryFilter");
+  const sortSelect = document.getElementById("sortSelect");
+  const availabilityFilter = document.getElementById("availabilityFilter");
+
+  const grid = document.querySelector(".grid");
+
+  function updateList() {
+  const category = categoryFilter.value;
+  const sort = sortSelect.value;
+  const availability = availabilityFilter.value;
+
+  const cards = Array.from(document.querySelectorAll(".card"));
+  const emptyMessage = document.getElementById("emptyMessage");
+
+  // filtre catégorie
+  cards.forEach(card => {
+  const matchCategory =
+    category === "all" ||
+    card.dataset.category === category;
+
+  const matchAvailability =
+    availability === "all" ||
+    card.dataset.availability === availability ||
+    card.dataset.availability === "both";
+
+  const show = matchCategory && matchAvailability;
+
+  card.style.display = show ? "flex" : "none";
+});
+
+
+  // cartes visibles
+  const visibleCards = cards.filter(
+    c => c.style.display !== "none"
+  );
+
+  // afficher / cacher message vide
+  emptyMessage.style.display =
+    visibleCards.length === 0 ? "block" : "none";
+
+  // tri
+  visibleCards.sort((a, b) => {
+    const aId = parseInt(a.dataset.created, 10);
+    const bId = parseInt(b.dataset.created, 10);
+
+    return sort === "recent" ? bId - aId : aId - bId;
+  });
+
+  visibleCards.forEach(card => grid.appendChild(card));
+}
+
+
+
+  categoryFilter.addEventListener("change", updateList);
+  sortSelect.addEventListener("change", updateList);
+  availabilityFilter.addEventListener("change", updateList);
+
+
+
+</script>
 
 </body>
 </html>

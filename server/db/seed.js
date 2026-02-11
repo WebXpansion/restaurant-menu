@@ -18,6 +18,22 @@ const createSeed = async () => {
 
   const hash = await bcrypt.hash("admin123", 10);
 
+  db.prepare(`
+    UPDATE restaurants
+    SET
+      features = ?,
+      languages = ?,
+      menus = ?
+    WHERE slug = ?
+  `).run(
+    JSON.stringify({ googleReview: true }),
+    JSON.stringify(["fr", "en"]),
+    JSON.stringify(["lunch", "dinner"]),
+    "demo"
+  );
+  
+  
+
   db.prepare(
     "INSERT INTO users (restaurant_id, email, password_hash) VALUES (?, ?, ?)"
   ).run(restaurant.lastInsertRowid, "admin@demo.com", hash);

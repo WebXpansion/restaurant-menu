@@ -1,0 +1,44 @@
+<header class="admin-header">
+  <div class="inner-admin-header">
+
+
+    <a
+    href="/admin/<%= restaurant.slug %>"
+    class="<%= active === 'dashboard' ? 'active' : '' %>"
+  >
+    <div class="logo">🍽️ Menu SaaS</div>
+  </a>
+  
+     
+
+
+    <nav class="nav">
+      <a
+        href="/admin/<%= restaurant.slug %>/stats"
+        class="<%= active === 'stats' ? 'active' : '' %>"
+      >
+        Statistiques
+      </a>
+
+      <a
+        href="/admin/<%= restaurant.slug %>/dishes"
+        class="<%= active === 'dishes' ? 'active' : '' %>"
+      >
+        Plats
+      </a>
+
+      <a
+        href="/admin/<%= restaurant.slug %>/settings"
+        class="<%= active === 'settings' ? 'active' : '' %>"
+      >
+        Paramètres
+      </a>
+    </nav>
+  
+    <div class="header-right">
+      <span class="plan">Offre 1</span>
+    </div>
+
+  </div>
+  </header>
+  

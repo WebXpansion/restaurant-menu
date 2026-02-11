@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title || "Admin" %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: #f5f5f5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #111;
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      background: #222;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <h2><%= restaurant.name %></h2>
+
+    <nav class="nav">
+      <% if (restaurant.features.stats) { %>
+        <a href="/admin/<%= restaurant.slug %>/stats" class="active">
+          📊 Stats
+        </a>
+      <% } %>
+
+      <!-- futures rubriques -->
+      <!--
+      <a href="#">👥 Clients</a>
+      <a href="#">📦 Commandes</a>
+      -->
+    </nav>
+  </aside>
+
+  <main class="content">
+    <%- body %>
+  </main>
+
+</body>
+</html>

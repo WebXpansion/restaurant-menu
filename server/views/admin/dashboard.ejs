@@ -1,13 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <title>Dashboard – <%= restaurant.slug %></title>
+
+
+  <style>
+    body {
+      margin: 0;
+      background: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,.08),
+        0 2px 6px rgba(0,0,0,.06);
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 30px 60px rgba(0,0,0,.12),
+        0 4px 10px rgba(0,0,0,.08);
+    }
+
+    .icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .footer {
+      margin-top: 50px;
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
 </head>
-<body style="font-family:system-ui;padding:40px">
 
-<h1>Dashboard Admin - <%= slug %> 🎉</h1>
+<body>
 
-<p>Login réussi !</p>
+  <%- include("partials/header", { restaurant, active: "dashboard" }) %>
+
+
+<div class="container">
+
+  <h1>Dashboard</h1>
+  <p class="subtitle">
+    Gestion du restaurant <strong><%= restaurant.slug %></strong>
+
+  </p>
+
+  <div class="grid">
+
+    <!-- STATS -->
+    <a href="/admin/<%= restaurant.slug %>/stats" class="card">
+      <div class="icon">📊</div>
+      <h3>Statistiques</h3>
+      <p>
+        Suivez les consultations du menu, des plats
+        et la réalité augmentée.
+      </p>
+    </a>
+
+    <!-- DISHES -->
+    <a href="/admin/<%= restaurant.slug %>/dishes" class="card">
+      <div class="icon">🍽️</div>
+      <h3>Plats</h3>
+      <p>
+        Créez, modifiez et gérez les plats
+        visibles sur votre menu.
+      </p>
+    </a>
+
+    <!-- SETTINGS -->
+    <a href="/admin/<%= restaurant.slug %>/settings" class="card">
+      <div class="icon">⚙️</div>
+      <h3>Paramètres</h3>
+      <p>
+        Configurez les options du restaurant,
+        avis Google et fonctionnalités.
+      </p>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    Menu digital — Interface administrateur
+  </div>
+
+</div>
 
 </body>
 </html>

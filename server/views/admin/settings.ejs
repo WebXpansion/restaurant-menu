@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <title>Paramètres – <%= restaurant.name %></title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,.08),
+        0 2px 6px rgba(0,0,0,.06);
+    }
+
+    .card h3 {
+      font-size: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 520px;
+    }
+
+    label {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .field label{
+      padding-top: 6px;
+    }
+
+    input[type="url"] {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      outline: none;
+      background: #fafafa;
+    }
+
+    .actions {
+      display: flex;
+      justify-content:end;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .btn.primary {
+      background: #000;
+      color: white;
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <%- include("partials/header", { restaurant, active: "settings" }) %>
+
+
+<div class="container">
+
+  <!-- HEADER -->
+  <h1>Paramètres</h1>
+  <p class="subtitle">
+    Configuration du restaurant <strong><%= restaurant.name %></strong>
+  </p>
+
+  <form method="POST">
+
+    <!-- GOOGLE REVIEW -->
+    <% if (restaurant.features.googleReview) { %>
+      <div class="card">
+        <h3>⭐ Avis Google</h3>
+
+        <div class="field">
+          <label>Lien vers la page Google Avis</label>
+          <input
+            type="url"
+            name="google_review_url"
+            placeholder="https://g.page/..."
+            value="<%= restaurant.google_review_url || '' %>"
+          />
+        </div>
+      </div>
+    <% } %>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+
+
+      <button class="btn primary">
+        Enregistrer les modifications
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+</html>

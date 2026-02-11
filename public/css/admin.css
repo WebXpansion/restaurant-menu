@@ -1,0 +1,164 @@
+/* ===== BASE ADMIN ===== */
+
+body {
+    margin: 0;
+    background: #f4f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, system-ui;
+    color: #111;
+  }
+
+  h1,h2,h3,h4,h5,h6{
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .inner-admin-header{
+    width: 1100px;
+    display: flex
+;
+    justify-content: space-between;
+  }
+  
+  .container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  
+  /* ===== ADMIN HEADER ===== */
+  
+  .admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    border-bottom: 1px solid #eee;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  .logo {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .nav a {
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    padding-bottom: 4px;
+  }
+  
+  .nav a.active {
+    color: #000;
+    font-weight: 600;
+    border-bottom: 2px solid #000;
+  }
+  
+  .header-right {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .plan {
+    background: #f3f3f3;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  
+  /* ===== UI ELEMENTS ===== */
+  
+  .btn {
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .overlay.hidden {
+    display: none;
+  }
+  
+  .overlay-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+  
+  .overlay-box h2 {
+    margin-bottom: 10px;
+  }
+  
+  .overlay-box p {
+    color: #444;
+    line-height: 1.4;
+  }
+  
+  .overlay-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+
+  
+  .btn.primary {
+    background: black;
+    color: white;
+  }
+  
+  .btn.secondary {
+    background: #eee;
+    color: #111;
+    text-decoration: none;
+  }
+  
+  
+  .required-ar {
+    color: red;
+    margin-left: 4px;
+    display: none;
+  }
+  
+  .ar-usage-pill {
+    background: #fff;
+    color: #000;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
