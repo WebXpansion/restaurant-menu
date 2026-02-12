@@ -1,34 +1,30 @@
 <header class="admin-header">
   <div class="inner-admin-header">
 
-
     <a
-    href="/admin/<%= restaurant.slug %>"
-    class="<%= active === 'dashboard' ? 'active' : '' %>"
-  >
-    <div class="logo">🍽️ Menu SaaS</div>
-  </a>
+      href="/admin"
+      class="<%= active === 'dashboard' ? 'active' : '' %>"
+    >
+      <div class="logo">🍽️ Menu SaaS</div>
+    </a>
   
-     
-
-
     <nav class="nav">
       <a
-        href="/admin/<%= restaurant.slug %>/stats"
+        href="/admin/stats"
         class="<%= active === 'stats' ? 'active' : '' %>"
       >
         Statistiques
       </a>
-
+  
       <a
-        href="/admin/<%= restaurant.slug %>/dishes"
+        href="/admin/dishes"
         class="<%= active === 'dishes' ? 'active' : '' %>"
       >
         Plats
       </a>
-
+  
       <a
-        href="/admin/<%= restaurant.slug %>/settings"
+        href="/admin/settings"
         class="<%= active === 'settings' ? 'active' : '' %>"
       >
         Paramètres
@@ -38,7 +34,7 @@
     <div class="header-right">
       <span class="plan">Offre 1</span>
     </div>
-
+  
   </div>
   </header>
   

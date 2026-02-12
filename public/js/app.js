@@ -102,7 +102,7 @@ document.querySelectorAll(".card").forEach(card => {
 
 
     // Stat vue
-    fetch(`/stats/${window.RESTAURANT_SLUG}/dish/${card.dataset.id}/view`, {
+    fetch(`/stats/dish/${card.dataset.id}/view`, {
       method: "POST"
     });
 
@@ -128,7 +128,7 @@ document.querySelectorAll(".card").forEach(card => {
       arBtn.href = usdz || "#";
 
       arBtn.onclick = () => {
-        fetch(`/stats/${window.RESTAURANT_SLUG}/dish/${card.dataset.id}/ar`, {
+        fetch(`/stats/dish/${card.dataset.id}/ar`, {
           method: "POST"
         });
       };

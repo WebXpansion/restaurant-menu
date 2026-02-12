@@ -208,13 +208,13 @@
   <h1><%= dish ? "✏️ Modifier le plat" : "➕ Nouveau plat" %></h1>
 
   <form
-    id="dishForm"
-    method="POST"
-    enctype="multipart/form-data"
-    action="<%= dish
-      ? `/admin/${restaurant.slug}/dishes/${dish.id}/edit`
-      : `/admin/${restaurant.slug}/dishes/new` %>"
-  >
+  id="dishForm"
+  method="POST"
+  enctype="multipart/form-data"
+  action="<%= dish
+    ? `/admin/dishes/${dish.id}/edit`
+    : `/admin/dishes/new` %>"
+>
 
     <!-- INFOS -->
     <div class="card">
@@ -483,7 +483,7 @@
 
     <!-- ACTIONS -->
     <div class="card actions">
-      <a href="/admin/<%= restaurant.slug %>/dishes" class="btn secondary">Annuler</a>
+      <a href="/admin/dishes" class="btn secondary">Annuler</a>
       <button type="submit" class="btn primary">
         <%= dish ? "Enregistrer" : "Créer le plat" %>
       </button>
@@ -511,27 +511,23 @@
 </div>
 
 <script src="/js/admin/dish-form.js"></script>
-<script>
-  window.RESTAURANT_SLUG = "<%= restaurant.slug %>";
-</script>
+
 
 <script>
-  document.getElementById("addSubBtn")?.addEventListener("click", async () => {
-    const name = prompt("Nom de la sous-catégorie ?");
-    if (!name) return;
+document.getElementById("addSubBtn")?.addEventListener("click", async () => {
+  const name = prompt("Nom de la sous-catégorie ?");
+  if (!name) return;
 
-    const slug = "<%= restaurant.slug %>";
-    const category = document.querySelector('[name="category"]').value;
+  const category = document.querySelector('[name="category"]').value;
 
-    await fetch(`/admin/${slug}/subcategories`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, category })
-    });
-
-    location.reload();
+  await fetch(`/admin/subcategories`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, category })
   });
 
+  location.reload();
+});
   document.querySelectorAll(".desc-short").forEach(textarea => {
     const maxWords = parseInt(textarea.dataset.maxWords, 15);
 

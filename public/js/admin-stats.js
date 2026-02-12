@@ -7,7 +7,7 @@ async function loadStats(period = "day") {
     const compare = document.getElementById("compareToggle").checked;
   
     if (!compare) {
-      const res = await fetch(`/stats/${RESTAURANT_SLUG}/api/stats?period=${period}`
+      const res = await fetch(`/admin/stats/api/stats?period=${period}`
 
       );
       const data = await res.json();
@@ -151,7 +151,7 @@ async function loadDishStats(dishId) {
   
     const period = document.getElementById("dishPeriodSelect").value;
 
-    const res = await fetch(`/stats/${RESTAURANT_SLUG}/api/stats/dish/${dishId}?period=${period}`
+    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}?period=${period}`
 
     );
   
@@ -161,7 +161,7 @@ async function loadDishStats(dishId) {
   
 
 async function loadComparison(period) {
-    const res = await fetch(`/stats/${RESTAURANT_SLUG}/api/stats/compare?period=${period}`
+  const res = await fetch(`/admin/stats/api/stats/compare?period=${period}`
 
     );
     return await res.json();
@@ -206,7 +206,7 @@ async function loadComparison(period) {
   
     const period = document.getElementById("dishPeriodSelect").value;
   
-    const res = await fetch(`/stats/${RESTAURANT_SLUG}/api/stats/dish/${dishId}/ar?period=${period}`
+    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}/ar?period=${period}`
 
     );
   
@@ -297,9 +297,7 @@ document
   
     async function loadQrStats(period = "day") {
   
-      const res = await fetch(
-        `/stats/${RESTAURANT_SLUG}/qr?period=${period}`
-      );
+      const res = await fetch(`/admin/stats/qr?period=${period}`);
       const data = await res.json();
   
       const total = data.values.reduce((a, b) => a + b, 0);

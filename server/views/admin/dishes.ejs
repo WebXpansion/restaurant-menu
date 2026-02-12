@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/css/admin.css">
 
-  <title>Plats – <%= restaurant.slug %></title>
+  <title>Plats – <%= restaurant.name %></title>
 
   <style>
     body {
@@ -245,7 +245,7 @@
       <% } %>
     </h1>
     
-    <a href="/admin/<%= restaurant.slug %>/dishes/new" class="add-btn">
+    <a href="/admin/dishes/new" class="add-btn">
       ➕ Ajouter un plat
     </a>
   </div>
@@ -308,10 +308,10 @@
         </div>
 
         <div class="actions">
-          <a href="/admin/<%= restaurant.slug %>/dishes/<%= d.id %>/edit" class="btn edit">
+          <a href="/admin/dishes/<%= d.id %>/edit" class="btn edit">
             ✏️ Modifier
           </a>
-
+        
           <button
             class="btn delete"
             data-id="<%= d.id %>"
@@ -349,7 +349,7 @@
     <div class="modal-actions">
       <button class="modal-cancel" id="cancelDelete">Annuler</button>
       <form method="POST" id="confirmDeleteForm">
-        <button class="modal-confirm">Supprimer</button>
+        <button type="submit"  class="modal-confirm">Supprimer</button>
       </form>
     </div>
   </div>
@@ -364,7 +364,7 @@
   document.querySelectorAll(".btn.delete").forEach(btn => {
     btn.addEventListener("click", () => {
       const dishId = btn.dataset.id;
-      form.action = `/admin/<%= restaurant.slug %>/dishes/${dishId}/delete`;
+      form.action = `/admin/dishes/${dishId}/delete`;
       modal.style.display = "flex";
     });
   });

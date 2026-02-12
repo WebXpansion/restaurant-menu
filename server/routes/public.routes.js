@@ -7,7 +7,7 @@ const router = express.Router();
 /* =========================
    MENU
 ========================= */
-router.get("/:slug", (req, res) => {
+router.get("/", (req, res) => {
 
   const restaurant = req.restaurant;
 
@@ -47,7 +47,7 @@ router.get("/:slug", (req, res) => {
 /* =========================
    QR CODE
 ========================= */
-router.get("/:slug/qrcode", (req, res) => {
+router.get("/qrcode", (req, res) => {
 
   res.render("public/qrcode", {
     restaurant: req.restaurant,
@@ -56,12 +56,9 @@ router.get("/:slug/qrcode", (req, res) => {
 
 });
 
-router.get("/:slug/qrcode/image", async (req, res) => {
+router.get("/qrcode/image", async (req, res) => {
 
-  const restaurant = req.restaurant;
-
-  const url = `${req.protocol}://${req.get("host")}/r/${restaurant.slug}/scan`;
-
+  const url = `${req.protocol}://${req.get("host")}/scan`;
 
   try {
     const qr = await QRCode.toBuffer(url, {
@@ -78,24 +75,18 @@ router.get("/:slug/qrcode/image", async (req, res) => {
 
 });
 
-
-router.get("/:slug/scan", (req, res) => {
+router.get("/scan", (req, res) => {
 
   const restaurant = req.restaurant;
 
-  if (!restaurant) {
-    return res.status(404).send("Not found");
-  }
-
-  // Track scan
   db.prepare(`
     INSERT INTO stats_events (restaurant_id, type)
     VALUES (?, 'qr_scan')
   `).run(restaurant.id);
 
-  // Redirect vers menu
-  res.redirect(`/r/${restaurant.slug}`);
+  res.redirect("/");
 });
+
 
 
 
@@ -103,7 +94,7 @@ router.get("/:slug/scan", (req, res) => {
 /* =========================
    LISTE
 ========================= */
-router.get("/:slug/liste", (req, res) => {
+router.get("/liste", (req, res) => {
 
   res.render("public/liste", {
     restaurant: req.restaurant,
@@ -116,7 +107,7 @@ router.get("/:slug/liste", (req, res) => {
 /* =========================
    RESTAURANT
 ========================= */
-router.get("/:slug/restaurant", (req, res) => {
+router.get("/restaurant", (req, res) => {
 
   res.render("public/restaurant", {
     restaurant: req.restaurant,

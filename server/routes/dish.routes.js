@@ -3,7 +3,7 @@ import db from "../db/index.js";
 import { upload, uploadToCloudinary } from "../middleware/upload.js";
 import cloudinary, { deleteFromCloudinary } from "../config/cloudinary.js";
 
-
+import { requireAdminRestaurant } from "../middleware/adminRestaurant.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
 import {
   getTagsByRestaurant,
@@ -21,7 +21,7 @@ const router = express.Router();
 /* ======================
    LIST
 ====================== */
-router.get("/:slug/dishes", requireAdmin,   async (req, res) => {
+router.get("/dishes", requireAdmin,   async (req, res) => {
 
 
 
@@ -56,7 +56,7 @@ const usedAR = db.prepare(`
 /* ======================
    FORM
 ====================== */
-router.get("/:slug/dishes/new", requireAdmin,   async (req, res) => {
+router.get("/dishes/new", requireAdmin,   async (req, res) => {
 
   const tags = getTagsByRestaurant(req.restaurant.id);
 
@@ -99,7 +99,7 @@ router.get("/:slug/dishes/new", requireAdmin,   async (req, res) => {
    CREATE
 ====================== */
 router.post(
-  "/:slug/dishes/new",
+  "/dishes/new",
   requireAdmin,
   upload.fields([
     { name: "image", maxCount: 1 },
@@ -274,7 +274,8 @@ req.restaurant.id
 
     
 
-    res.redirect(`/admin/${req.params.slug}/dishes`);
+res.redirect("/admin/dishes");
+
   }
 );
 
@@ -282,18 +283,17 @@ req.restaurant.id
 /* ======================
    DELETE
 ====================== */
-
 router.post(
-  "/:slug/dishes/:id/delete",
-  requireAdmin,
+  "/dishes/:id/delete",
+  requireAdminRestaurant,
   async (req, res) => {
-
+    console.log("DELETE ROUTE HIT", req.params.id);
     const dish = db
       .prepare("SELECT * FROM dishes WHERE id=? AND restaurant_id=?")
       .get(req.params.id, req.restaurant.id);
 
     if (!dish) {
-      return res.redirect(`/admin/${req.params.slug}/dishes`);
+      return res.redirect("/admin/dishes");
     }
 
     const extractPublicId = (url) => {
@@ -312,17 +312,9 @@ router.post(
       const glbId = extractPublicId(dish.glb_path);
       const usdzId = extractPublicId(dish.usdz_path);
 
-      if (imageId) {
-        await deleteFromCloudinary(imageId, "image");
-      }
-
-      if (glbId) {
-        await deleteFromCloudinary(glbId, "raw");
-      }
-
-      if (usdzId) {
-        await deleteFromCloudinary(usdzId, "raw");
-      }
+      if (imageId) await deleteFromCloudinary(imageId, "image");
+      if (glbId) await deleteFromCloudinary(glbId, "raw");
+      if (usdzId) await deleteFromCloudinary(usdzId, "raw");
 
     } catch (err) {
       console.error("Cloudinary delete error:", err);
@@ -333,7 +325,7 @@ router.post(
       WHERE id=? AND restaurant_id=?
     `).run(req.params.id, req.restaurant.id);
 
-    res.redirect(`/admin/${req.params.slug}/dishes`);
+    res.redirect("/admin/dishes");
   }
 );
 
@@ -341,7 +333,7 @@ router.post(
 
 
 
-router.post("/:slug/subcategories", requireAdmin, async (req, res) => {
+router.post("/subcategories", requireAdmin, async (req, res) => {
 
 
 
@@ -357,10 +349,11 @@ router.post("/:slug/subcategories", requireAdmin, async (req, res) => {
 });
 
 
-router.get("/:slug/dishes/:id/edit", requireAdmin, async (req, res) => {
+router.get("/dishes/:id/edit", requireAdmin, async (req, res) => {
 
   if (!req.session.user) {
-    return res.redirect(`/admin/${req.params.slug}/login`);
+    return res.redirect("/admin/dishes");
+
   }
 
   const tags = getTagsByRestaurant(req.restaurant.id);
@@ -422,7 +415,7 @@ const extractPublicId = (url) => {
 };
 
 router.post(
-  "/:slug/dishes/:id/edit",
+  "/dishes/:id/edit",
   requireAdmin,
 
   upload.fields([
@@ -645,7 +638,8 @@ req.restaurant.id
       
       
 
-    res.redirect(`/admin/${req.params.slug}/dishes`);
+res.redirect("/admin/dishes");
+
   }
 );
 
@@ -653,7 +647,7 @@ req.restaurant.id
    TAGS (GLOBAL BADGES)
 ====================== */
 
-router.post("/:slug/tags", requireAdmin,   async (req, res) => {
+router.post("/tags", requireAdmin,   async (req, res) => {
   try {
     createTag(req.restaurant.id, req.body.name);
     res.sendStatus(200);
@@ -662,7 +656,7 @@ router.post("/:slug/tags", requireAdmin,   async (req, res) => {
   }
 });
 
-router.post("/:slug/tags/:id/delete", requireAdmin,   async (req, res) => {
+router.post("/tags/:id/delete", requireAdmin,   async (req, res) => {
   deleteTag(req.restaurant.id, req.params.id);
   res.sendStatus(200);
 });

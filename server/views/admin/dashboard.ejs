@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/css/admin.css">
 
-  <title>Dashboard – <%= restaurant.slug %></title>
+  <title>Dashboard – <%= restaurant.name %></title>
 
 
   <style>
@@ -90,14 +90,12 @@
 
   <h1>Dashboard</h1>
   <p class="subtitle">
-    Gestion du restaurant <strong><%= restaurant.slug %></strong>
-
+    Gestion du restaurant <strong><%= restaurant.name %></strong>
   </p>
-
   <div class="grid">
 
     <!-- STATS -->
-    <a href="/admin/<%= restaurant.slug %>/stats" class="card">
+    <a href="/admin/stats" class="card">
       <div class="icon">📊</div>
       <h3>Statistiques</h3>
       <p>
@@ -107,7 +105,7 @@
     </a>
 
     <!-- DISHES -->
-    <a href="/admin/<%= restaurant.slug %>/dishes" class="card">
+    <a href="/admin/dishes" class="card">
       <div class="icon">🍽️</div>
       <h3>Plats</h3>
       <p>
@@ -117,7 +115,7 @@
     </a>
 
     <!-- SETTINGS -->
-    <a href="/admin/<%= restaurant.slug %>/settings" class="card">
+    <a href="/admin/settings" class="card">
       <div class="icon">⚙️</div>
       <h3>Paramètres</h3>
       <p>

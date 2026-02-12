@@ -10,7 +10,7 @@ import compression from "compression";
 import path from "path";
 import { fileURLToPath } from "url";
 
-
+import { requireAdminRestaurant } from "./middleware/adminRestaurant.js";
 
 
 import { initDB } from "./db/index.js";
@@ -52,43 +52,33 @@ app.use(
   })
 );
 
-/* ========================
-   STATIC FILES
-======================== */
 app.use("/uploads", express.static("uploads"));
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-/* ========================
-   RESTAURANT CONTEXT (UNIQUE)
-======================== */
-app.use("/r/:slug", attachRestaurant);
-app.use("/admin/:slug", attachRestaurant);
-app.use("/stats/:slug", attachRestaurant, statsRoutes);
 
 
 
-/* ========================
-   ROUTES
-======================== */
 
-// public menu
-app.use("/r", publicRoutes);
+app.use(attachRestaurant);
+app.use("/", publicRoutes);
 
-// admin auth (login)
 app.use("/admin", authRoutes);
-
-// admin features
-app.use("/admin", dishRoutes);
+app.use("/admin", requireAdminRestaurant, dishRoutes);
 
 /* ========================
-   ROOT
+   STATS
 ======================== */
-app.get("/", (req, res) => {
-  res.send("Server running 🚀");
-});
+app.use("/admin/stats", requireAdminRestaurant, statsRoutes);
+
+/* ========================
+   PUBLIC (TOUJOURS EN DERNIER)
+======================== */
+app.use("/stats", statsRoutes);
+app.use("/:slug", attachRestaurant, publicRoutes);
+
 
 /* ========================
    START SERVER

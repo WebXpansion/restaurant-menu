@@ -9,48 +9,42 @@ const router = express.Router();
    LOGIN PAGE
 ========================= */
 
-router.get("/:slug/login", (req, res) => {
-  const restaurant = db
-    .prepare("SELECT * FROM restaurants WHERE slug = ?")
-    .get(req.params.slug);
-
-  if (!restaurant) {
-    return res.status(404).send("Restaurant introuvable");
-  }
-
+router.get("/login", (req, res) => {
   res.render("admin/login", {
-    restaurant,
+    restaurant: { slug: "Admin" }, // temporaire propre
     error: null
   });
 });
+
 
 
 /* =========================
    LOGIN POST
 ========================= */
 
-router.post("/:slug/login", async (req, res) => {
-  const { slug } = req.params;
+router.post("/login", async (req, res) => {
+
   const { email, password } = req.body;
-
-  const restaurant = db
-    .prepare("SELECT * FROM restaurants WHERE slug = ?")
-    .get(slug);
-
-  if (!restaurant) return res.send("Restaurant not found");
+  const restaurant = req.restaurant;
 
   const user = db
     .prepare("SELECT * FROM users WHERE email = ? AND restaurant_id = ?")
     .get(email, restaurant.id);
 
   if (!user) {
-    return res.render("admin/login", { slug, error: "Invalid credentials" });
+    return res.render("admin/login", {
+      restaurant,
+      error: "Invalid credentials"
+    });
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);
 
   if (!valid) {
-    return res.render("admin/login", { slug, error: "Invalid credentials" });
+    return res.render("admin/login", {
+      restaurant,
+      error: "Invalid credentials"
+    });
   }
 
   req.session.user = {
@@ -58,16 +52,17 @@ router.post("/:slug/login", async (req, res) => {
     restaurant_id: restaurant.id,
   };
 
-  res.redirect(`/admin/${slug}`);
+  res.redirect("/admin/dashboard");
 });
+
 
 /* =========================
    DASHBOARD
 ========================= */
 
-router.get("/:slug", (req, res) => {
+router.get("/dashboard", (req, res) => {
   if (!req.session.user) {
-    return res.redirect(`/admin/${req.params.slug}/login`);
+    return res.redirect("/admin/login");
   }
 
   res.render("admin/dashboard", {
@@ -76,10 +71,11 @@ router.get("/:slug", (req, res) => {
 });
 
 
+
 export default router;
 
 router.get(
-  "/:slug/settings",
+  "/settings",
   requireAdmin,
   (req, res) => {
     res.render("admin/settings", {
@@ -89,7 +85,7 @@ router.get(
 );
 
 router.post(
-  "/:slug/settings",
+  "/settings",
   requireAdmin,
   (req, res) => {
     db.prepare(`
@@ -101,13 +97,14 @@ router.post(
       req.restaurant.id
     );
 
-    res.redirect(`/admin/${req.params.slug}/settings`);
+    res.redirect("/admin/dashboard");
+
   }
 );
 
 
 router.get(
-  "/:slug/stats",
+  "/stats",
   requireAdmin,
   (req, res) => {
     if (!req.restaurant.features?.stats) {

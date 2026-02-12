@@ -176,7 +176,7 @@ document.getElementById("createTagBtn")?.addEventListener("click", async () => {
   if (!name) return;
 
   const res = await fetch(
-    `/admin/${window.RESTAURANT_SLUG}/tags`,
+    `/admin/tags`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -203,7 +203,7 @@ document.querySelectorAll(".delete-tag-global")
       if (!confirm("Supprimer ce badge définitivement ?")) return;
 
       await fetch(
-        `/admin/${window.RESTAURANT_SLUG}/tags/${btn.dataset.id}/delete`,
+        `/admin/tags/${btn.dataset.id}/delete`,
         { method: "POST" }
       );
 
