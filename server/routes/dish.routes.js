@@ -1,6 +1,9 @@
 import express from "express";
 import db from "../db/index.js";
-import { dishImageUpload, dishModelUpload } from "../middleware/upload.js";
+import { upload, uploadToCloudinary } from "../middleware/upload.js";
+import cloudinary, { deleteFromCloudinary } from "../config/cloudinary.js";
+
+
 import { requireAdmin } from "../middleware/requireAdmin.js";
 import {
   getTagsByRestaurant,
@@ -18,7 +21,7 @@ const router = express.Router();
 /* ======================
    LIST
 ====================== */
-router.get("/:slug/dishes", requireAdmin, (req, res) => {
+router.get("/:slug/dishes", requireAdmin,   async (req, res) => {
 
 
 
@@ -53,7 +56,7 @@ const usedAR = db.prepare(`
 /* ======================
    FORM
 ====================== */
-router.get("/:slug/dishes/new", requireAdmin, (req, res) => {
+router.get("/:slug/dishes/new", requireAdmin,   async (req, res) => {
 
   const tags = getTagsByRestaurant(req.restaurant.id);
 
@@ -98,26 +101,16 @@ router.get("/:slug/dishes/new", requireAdmin, (req, res) => {
 router.post(
   "/:slug/dishes/new",
   requireAdmin,
-  (req, res, next) =>
-    dishModelUpload(req.params.slug).fields([
-      { name: "image", maxCount: 1 },
-      { name: "glb", maxCount: 1 },
-      { name: "usdz", maxCount: 1 }
-    ])(req, res, next),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "glb", maxCount: 1 },
+    { name: "usdz", maxCount: 1 }
+  ]),
+  
 
-  (req, res) => {
+  async (req, res) => {
 
-    /* ======================
-       1️⃣ DÉTECTER SI AR DEMANDÉ
-    ====================== */
-
-
-
-
-
-    /* ======================
-       3️⃣ DATA FORM
-    ====================== */
+ 
     const {
       title_fr,
       title_en,
@@ -177,31 +170,43 @@ router.post(
        4️⃣ FILES
     ====================== */
     let imagePath = null;
-    let imageOriginalName = null;
+let glbPath = null;
+let usdzPath = null;
 
-    if (req.files?.image) {
-      const file = req.files.image[0];
-      imagePath = "/" + file.path;
-      imageOriginalName = file.originalname;
-    }
+const folder = `restaurants/${req.restaurant.slug}/dishes`;
 
-    let glbPath = null;
-    let glbOriginalName = null;
+try {
+if (req.files?.image) {
+  const result = await uploadToCloudinary(
+    req.files.image[0].buffer,
+    folder,
+    "image"
+  );
+  imagePath = result.secure_url;
+}
 
-    if (req.files?.glb) {
-      const file = req.files.glb[0];
-      glbPath = "/" + file.path;
-      glbOriginalName = file.originalname;
-    }
+if (req.files?.glb) {
+  const result = await uploadToCloudinary(
+    req.files.glb[0].buffer,
+    folder,
+    "raw"
+  );
+  glbPath = result.secure_url;
+}
 
-    let usdzPath = null;
-    let usdzOriginalName = null;
+if (req.files?.usdz) {
+  const result = await uploadToCloudinary(
+    req.files.usdz[0].buffer,
+    folder,
+    "raw"
+  );
+  usdzPath = result.secure_url;
+}
+} catch (err) {
+  console.error("UPLOAD ERROR:", err);
+  return res.status(500).send("Upload error");
+}
 
-    if (req.files?.usdz) {
-      const file = req.files.usdz[0];
-      usdzPath = "/" + file.path;
-      usdzOriginalName = file.originalname;
-    }
 
     const scale = req.body.scale || 1;
 
@@ -222,16 +227,13 @@ router.post(
         subcategory_id,
         availability,
         image_path,
-        image_original_name,
         glb_path,
-        glb_original_name,
         usdz_path,
-        usdz_original_name,
         scale,
         status,
         has_ar
       )
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     `).run(
       req.restaurant.id,
       title_fr,
@@ -245,11 +247,8 @@ router.post(
       subcategory_id,
       availability,
       imagePath,
-      imageOriginalName,
       glbPath,
-      glbOriginalName,
       usdzPath,
-      usdzOriginalName,
       scale,
       finalStatus,
       hasAR
@@ -287,7 +286,48 @@ req.restaurant.id
 router.post(
   "/:slug/dishes/:id/delete",
   requireAdmin,
-  (req, res) => {
+  async (req, res) => {
+
+    const dish = db
+      .prepare("SELECT * FROM dishes WHERE id=? AND restaurant_id=?")
+      .get(req.params.id, req.restaurant.id);
+
+    if (!dish) {
+      return res.redirect(`/admin/${req.params.slug}/dishes`);
+    }
+
+    const extractPublicId = (url) => {
+      if (!url) return null;
+
+      const parts = url.split("/upload/")[1];
+      if (!parts) return null;
+
+      const withoutVersion = parts.replace(/^v\d+\//, "");
+      return withoutVersion.replace(/\.[^/.]+$/, "");
+    };
+
+    try {
+
+      const imageId = extractPublicId(dish.image_path);
+      const glbId = extractPublicId(dish.glb_path);
+      const usdzId = extractPublicId(dish.usdz_path);
+
+      if (imageId) {
+        await deleteFromCloudinary(imageId, "image");
+      }
+
+      if (glbId) {
+        await deleteFromCloudinary(glbId, "raw");
+      }
+
+      if (usdzId) {
+        await deleteFromCloudinary(usdzId, "raw");
+      }
+
+    } catch (err) {
+      console.error("Cloudinary delete error:", err);
+    }
+
     db.prepare(`
       DELETE FROM dishes
       WHERE id=? AND restaurant_id=?
@@ -300,7 +340,8 @@ router.post(
 
 
 
-router.post("/:slug/subcategories", requireAdmin, (req, res) => {
+
+router.post("/:slug/subcategories", requireAdmin, async (req, res) => {
 
 
 
@@ -316,7 +357,7 @@ router.post("/:slug/subcategories", requireAdmin, (req, res) => {
 });
 
 
-router.get("/:slug/dishes/:id/edit", requireAdmin, (req, res) => {
+router.get("/:slug/dishes/:id/edit", requireAdmin, async (req, res) => {
 
   if (!req.session.user) {
     return res.redirect(`/admin/${req.params.slug}/login`);
@@ -370,20 +411,28 @@ res.render("admin/dish-form", {
 });
 
 
+const extractPublicId = (url) => {
+  if (!url) return null;
 
+  const parts = url.split("/upload/")[1];
+  if (!parts) return null;
+
+  const withoutVersion = parts.replace(/^v\d+\//, "");
+  return withoutVersion.replace(/\.[^/.]+$/, "");
+};
 
 router.post(
   "/:slug/dishes/:id/edit",
   requireAdmin,
 
-  (req, res, next) =>
-    dishModelUpload(req.params.slug).fields([
-      { name: "image", maxCount: 1 },
-      { name: "glb", maxCount: 1 },
-      { name: "usdz", maxCount: 1 }
-    ])(req, res, next),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "glb", maxCount: 1 },
+    { name: "usdz", maxCount: 1 }
+  ]),
+  
 
-  (req, res) => {
+  async (req, res) => {
 
 
     const {
@@ -418,6 +467,7 @@ const hadAR =
   existing.has_ar === 1 &&
   existing.status === "published";
 
+  const folder = `restaurants/${req.restaurant.slug}/dishes`;
 
 // 3️⃣ limite de l’offre
 const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
@@ -449,92 +499,130 @@ if (
 }
 
 
+
+
 // 5️⃣ valeur finale à enregistrer
 const hasAR =
   status === "published" && wantsAR ? 1 : 0;
 
 
 
-
-
-
-let imagePath = existing.image_path;
-let imageOriginalName = existing.image_original_name;
-
-if (req.files?.image) {
-  const file = req.files.image[0];
-  imagePath = "/" + file.path;
-  imageOriginalName = file.originalname;
-}
-
-      
-let glbPath = existing.glb_path;
-let glbOriginalName = existing.glb_original_name;
-
-if (req.files?.glb) {
-  const file = req.files.glb[0];
-  glbPath = "/" + file.path;
-  glbOriginalName = file.originalname;
-}
-
-      
-let usdzPath = existing.usdz_path;
-let usdzOriginalName = existing.usdz_original_name;
-
-if (req.files?.usdz) {
-  const file = req.files.usdz[0];
-  usdzPath = "/" + file.path;
-  usdzOriginalName = file.originalname;
-}
-
+  let imagePath = existing.image_path;
+  let glbPath = existing.glb_path;
+  let usdzPath = existing.usdz_path;
+  
+  /* ================= IMAGE ================= */
+  
+  if (req.files?.image) {
+  
+    const oldPublicId = extractPublicId(existing.image_path);
+  
+    const result = await uploadToCloudinary(
+      req.files.image[0].buffer,
+      folder,
+      "image"
+    );
+  
+    imagePath = result.secure_url;
+  
+    if (oldPublicId) {
+      try {
+        await deleteFromCloudinary(oldPublicId, "image");
+      } catch (err) {
+        console.error("Old image delete failed:", err);
+      }
+    }
+  }
+  
+  /* ================= GLB ================= */
+  
+  if (req.files?.glb) {
+  
+    const oldPublicId = extractPublicId(existing.glb_path);
+  
+    const result = await uploadToCloudinary(
+      req.files.glb[0].buffer,
+      folder,
+      "raw"
+    );
+  
+    glbPath = result.secure_url;
+  
+    if (oldPublicId) {
+      try {
+        await deleteFromCloudinary(oldPublicId, "raw");
+      } catch (err) {
+        console.error("Old GLB delete failed:", err);
+      }
+    }
+  }
+  
+  /* ================= USDZ ================= */
+  
+  if (req.files?.usdz) {
+  
+    const oldPublicId = extractPublicId(existing.usdz_path);
+  
+    const result = await uploadToCloudinary(
+      req.files.usdz[0].buffer,
+      folder,
+      "raw"
+    );
+  
+    usdzPath = result.secure_url;
+  
+    if (oldPublicId) {
+      try {
+        await deleteFromCloudinary(oldPublicId, "raw");
+      } catch (err) {
+        console.error("Old USDZ delete failed:", err);
+      }
+    }
+  }
+  
       
 
         
-      db.prepare(`
-        UPDATE dishes SET
-          title_fr = ?,
-          title_en = ?,
-          desc_short_fr = ?,
-          desc_short_en = ?,
-          desc_long_fr = ?,
-          desc_long_en = ?,
-          price_cents = ?,
-          category = ?,
-          subcategory_id = ?,
-          availability = ?,
-          image_path = ?,
-          image_original_name = ?,
-          glb_path = ?,
-          glb_original_name = ?,
-          usdz_path = ?,
-          usdz_original_name = ?,
-          scale = ?,
-          status = ?,
-          has_ar = ?
-        WHERE id = ? AND restaurant_id = ?
-      `).run(
-        title_fr,
-        title_en,
-        desc_short_fr,
-        desc_short_en,
-        desc_long_fr,
-        desc_long_en,
-        Math.round(price * 100),
-        category,
-        subcategory_id,
-        availability,
-        imagePath,
-        imageOriginalName,
-        glbPath,
-        glbOriginalName,
-        usdzPath,
-        usdzOriginalName,
-        scale,
-        status,
-        hasAR,               
-        req.params.id,
-        req.restaurant.id
-      );
+db.prepare(`
+  UPDATE dishes SET
+    title_fr = ?,
+    title_en = ?,
+    desc_short_fr = ?,
+    desc_short_en = ?,
+    desc_long_fr = ?,
+    desc_long_en = ?,
+    price_cents = ?,
+    category = ?,
+    subcategory_id = ?,
+    availability = ?,
+    image_path = ?,
+    glb_path = ?,
+    usdz_path = ?,
+    scale = ?,
+    status = ?,
+    has_ar = ?
+  WHERE id = ? AND restaurant_id = ?
+`).run(
+  title_fr,
+  title_en,
+  desc_short_fr,
+  desc_short_en,
+  desc_long_fr,
+  desc_long_en,
+  Math.round(price * 100),
+  category,
+  subcategory_id,
+  availability,
+  imagePath,
+  glbPath,
+  usdzPath,
+  scale,
+  status,
+  hasAR,
+  req.params.id,
+  req.restaurant.id
+);
+
 
       // ======================
 // TAGS (BADGES)
@@ -565,7 +653,7 @@ req.restaurant.id
    TAGS (GLOBAL BADGES)
 ====================== */
 
-router.post("/:slug/tags", requireAdmin, (req, res) => {
+router.post("/:slug/tags", requireAdmin,   async (req, res) => {
   try {
     createTag(req.restaurant.id, req.body.name);
     res.sendStatus(200);
@@ -574,7 +662,7 @@ router.post("/:slug/tags", requireAdmin, (req, res) => {
   }
 });
 
-router.post("/:slug/tags/:id/delete", requireAdmin, (req, res) => {
+router.post("/:slug/tags/:id/delete", requireAdmin,   async (req, res) => {
   deleteTag(req.restaurant.id, req.params.id);
   res.sendStatus(200);
 });

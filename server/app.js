@@ -1,9 +1,17 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+
+
 import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import compression from "compression";
 import path from "path";
 import { fileURLToPath } from "url";
+
+
+
 
 import { initDB } from "./db/index.js";
 import createSeed from "./db/seed.js";

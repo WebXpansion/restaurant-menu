@@ -1,36 +1,56 @@
 import multer from "multer";
-import fs from "fs";
-import path from "path";
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
 
-export function dishImageUpload(slug) {
-  const dir = path.join("uploads", slug, "images");
+/* ==============================
+   MEMORY STORAGE (no disk)
+============================== */
 
-  fs.mkdirSync(dir, { recursive: true });
+const storage = multer.memoryStorage();
 
-  const storage = multer.diskStorage({
-    destination: dir,
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, Date.now() + ext);
-    }
-  });
-
-  return multer({ storage });
-}
-
-export function dishModelUpload(slug) {
-    const dir = `uploads/${slug}/models`;
-  
-    fs.mkdirSync(dir, { recursive: true });
-  
-    const storage = multer.diskStorage({
-      destination: dir,
-      filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, Date.now() + ext);
-      }
-    });
-  
-    return multer({ storage });
+export const upload = multer({
+  storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024 
   }
-  
+});
+
+/* ==============================
+   CLOUDINARY UPLOAD
+============================== */
+
+export const uploadToCloudinary = (
+  fileBuffer,
+  folder,
+  resourceType = "image"
+) => {
+
+
+  return new Promise((resolve, reject) => {
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: resourceType,
+        overwrite: false,
+        transformation:
+          resourceType === "image"
+            ? [
+                { width: 1600, crop: "limit" }, // max largeur
+                { quality: "auto:good" },       // compression intelligente
+                { fetch_format: "auto" },
+                { dpr: "auto" }
+              ]
+            : undefined
+      },
+    
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    
+
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+};
