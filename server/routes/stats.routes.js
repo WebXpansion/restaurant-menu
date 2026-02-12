@@ -1,5 +1,7 @@
 import express from "express";
 import db from "../db/index.js";
+import { requireAdmin } from "../middleware/requireAdmin.js";
+
 
 const router = express.Router();
 
@@ -30,90 +32,112 @@ router.post("/dish/:id/view", (req, res) => {
 });
 
 
-router.get("/api/stats",
-  (req, res) => {
+router.get("/api/stats", requireAdmin, (req, res) => {
 
-    if (!req.restaurant.features?.stats) {
-      return res.sendStatus(404);
-    }
+  const { period = "day" } = req.query;
+  const restaurantId = req.restaurant.id;
 
-    const { period = "day" } = req.query;
+  let groupFormat;
+  let dateFilter = "";
 
-    let format = "%Y-%m-%d";
-    if (period === "hour") format = "%Y-%m-%d %H";
-    if (period === "month") format = "%Y-%m";
-    if (period === "year") format = "%Y";
-
-    const pageViews = db.prepare(`
-      SELECT
-        strftime('${format}', created_at) AS label,
-        COUNT(*) AS count
-      FROM stats_events
-      WHERE restaurant_id = ?
-        AND type = 'page_view'
-      GROUP BY label
-      ORDER BY label
-    `).all(req.restaurant.id);
-
-    const totalPageViews = db.prepare(`
-      SELECT COUNT(*) as total
-      FROM stats_events
-      WHERE restaurant_id = ?
-        AND type = 'page_view'
-    `).get(req.restaurant.id).total;
-
-    const totalDishViews = db.prepare(`
-      SELECT COUNT(*) AS total
-      FROM stats_events s
-      JOIN dishes d ON d.id = s.dish_id
-      WHERE s.restaurant_id = ?
-        AND s.type = 'dish_view'
-        AND d.status = 'published'
-    `).get(req.restaurant.id).total;
-    
-    
-
-    const dishViews = db.prepare(`
-      SELECT
-          s.dish_id AS id,
-      COALESCE(d.title_fr, d.title_en, 'Plat') AS title,
-      COUNT(*) AS count
-      FROM stats_events s
-      JOIN dishes d ON d.id = s.dish_id
-      WHERE s.restaurant_id = ?
-        AND s.type = 'dish_view'
-        AND d.status = 'published'
-      GROUP BY s.dish_id
-      ORDER BY count DESC
-      LIMIT 10
-    `).all(req.restaurant.id);
-
-    res.json({
-      pageViews,
-      dishViews,
-      totals: {
-        pageViews: totalPageViews,
-        dishViews: totalDishViews
-      }
-    });
+  switch (period) {
+    case "hour":
+      groupFormat = "%H:00";
+      dateFilter = "AND DATE(created_at) = DATE('now')";
+      break;
+  
+    case "month":
+      groupFormat = "%Y-%m-%d";
+      dateFilter = "AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')";
+      break;
+  
+    case "year":
+      groupFormat = "%Y-%m";
+      dateFilter = "AND strftime('%Y', created_at) = strftime('%Y', 'now')";
+      break;
+  
+      default: // day
+      groupFormat = "%Y-%m-%d";
+      dateFilter = "AND created_at >= datetime('now', '-7 days')";
     
   }
-);
+  
+
+  const pageViews = db.prepare(`
+    SELECT
+      strftime('${groupFormat}', created_at) as label,
+      COUNT(*) as count
+    FROM stats_events
+    WHERE restaurant_id = ?
+      AND type = 'page_view'
+      ${dateFilter}
+    GROUP BY label
+    ORDER BY label ASC
+  `).all(restaurantId);
+
+  const dishViews = db.prepare(`
+    SELECT
+      d.id,
+      d.title_fr as title,
+      COUNT(se.id) as count
+    FROM stats_events se
+    JOIN dishes d ON se.dish_id = d.id
+    WHERE se.restaurant_id = ?
+      AND se.type = 'dish_view'
+      ${dateFilter}
+    GROUP BY d.id
+    ORDER BY count DESC
+  `).all(restaurantId);
+
+  res.json({
+    pageViews,
+    dishViews,
+    totals: {
+      pageViews: pageViews.reduce((a,b) => a + b.count, 0),
+      dishViews: dishViews.reduce((a,b) => a + b.count, 0)
+    }
+  });
+
+});
+
 
 router.get(
   "/api/stats/dish/:id",
+  requireAdmin,
   (req, res) => {
 
     const { period = "day" } = req.query;
+    const restaurantId = req.restaurant.id;
+    const dishId = req.params.id;
 
-    let format = "%Y-%m-%d";
-    if (period === "hour") format = "%Y-%m-%d %H";
-    if (period === "month") format = "%Y-%m";
-    if (period === "year") format = "%Y";
+    let groupFormat;
+    let dateFilter = "";
+
+    switch (period) {
+
+      case "hour":
+        groupFormat = "%H:00";
+        dateFilter = "AND DATE(s.created_at) = DATE('now')";
+        break;
+
+      case "month":
+        groupFormat = "%Y-%m-%d";
+        dateFilter = "AND strftime('%Y-%m', s.created_at) = strftime('%Y-%m', 'now')";
+        break;
+
+      case "year":
+        groupFormat = "%Y-%m";
+        dateFilter = "AND strftime('%Y', s.created_at) = strftime('%Y', 'now')";
+        break;
+
+      default: // day
+        groupFormat = "%H:00";
+        dateFilter = "AND DATE(s.created_at) = DATE('now')";
+    }
 
     const data = db.prepare(`
       SELECT
-        strftime('${format}', s.created_at) AS label,
+        strftime('${groupFormat}', s.created_at) AS label,
         COUNT(*) AS count
       FROM stats_events s
       JOIN dishes d ON d.id = s.dish_id
@@ -121,14 +145,65 @@ router.get(
         AND s.type = 'dish_view'
         AND s.dish_id = ?
         AND d.status = 'published'
+        ${dateFilter}
       GROUP BY label
-      ORDER BY label
-    `).all(req.restaurant.id, req.params.id);
-    
+      ORDER BY label ASC
+    `).all(restaurantId, dishId);
 
     res.json(data);
   }
 );
+
+
+router.get("/qr", requireAdmin, (req, res) => {
+
+  const { period = "day" } = req.query;
+  const restaurantId = req.restaurant.id;
+
+  let groupFormat;
+  let dateFilter = "";
+
+  switch (period) {
+
+    case "hour":
+      groupFormat = "%H:00";
+      dateFilter = "AND DATE(created_at) = DATE('now')";
+      break;
+
+    case "month":
+      groupFormat = "%Y-%m-%d";
+      dateFilter = "AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')";
+      break;
+
+    case "year":
+      groupFormat = "%Y-%m";
+      dateFilter = "AND strftime('%Y', created_at) = strftime('%Y', 'now')";
+      break;
+
+    default: // day
+      groupFormat = "%H:00";
+      dateFilter = "AND DATE(created_at) = DATE('now')";
+  }
+
+  const rows = db.prepare(`
+    SELECT
+      strftime('${groupFormat}', created_at) as label,
+      COUNT(*) as count
+    FROM stats_events
+    WHERE restaurant_id = ?
+      AND type = 'qr_scan'
+      ${dateFilter}
+    GROUP BY label
+    ORDER BY label ASC
+  `).all(restaurantId);
+
+  const labels = rows.map(r => r.label);
+  const values = rows.map(r => r.count);
+
+  res.json({ labels, values });
+});
+
+
 
 router.get(
   "/api/stats/compare",
@@ -202,18 +277,41 @@ router.post(
 
 router.get(
   "/api/stats/dish/:id/ar",
+  requireAdmin,
   (req, res) => {
 
     const { period = "day" } = req.query;
+    const restaurantId = req.restaurant.id;
+    const dishId = req.params.id;
 
-    let format = "%Y-%m-%d";
-    if (period === "hour") format = "%Y-%m-%d %H";
-    if (period === "month") format = "%Y-%m";
-    if (period === "year") format = "%Y";
+    let groupFormat;
+    let dateFilter = "";
+
+    switch (period) {
+
+      case "hour":
+        groupFormat = "%H:00";
+        dateFilter = "AND DATE(s.created_at) = DATE('now')";
+        break;
+
+      case "month":
+        groupFormat = "%Y-%m-%d";
+        dateFilter = "AND strftime('%Y-%m', s.created_at) = strftime('%Y-%m', 'now')";
+        break;
+
+      case "year":
+        groupFormat = "%Y-%m";
+        dateFilter = "AND strftime('%Y', s.created_at) = strftime('%Y', 'now')";
+        break;
+
+      default:
+        groupFormat = "%H:00";
+        dateFilter = "AND DATE(s.created_at) = DATE('now')";
+    }
 
     const data = db.prepare(`
       SELECT
-        strftime('${format}', s.created_at) AS label,
+        strftime('${groupFormat}', s.created_at) AS label,
         COUNT(*) AS count
       FROM stats_events s
       JOIN dishes d ON d.id = s.dish_id
@@ -221,14 +319,15 @@ router.get(
         AND s.type = 'dish_ar_view'
         AND s.dish_id = ?
         AND d.status = 'published'
+        ${dateFilter}
       GROUP BY label
-      ORDER BY label
-    `).all(req.restaurant.id, req.params.id);
-    
+      ORDER BY label ASC
+    `).all(restaurantId, dishId);
 
     res.json(data);
   }
 );
+
 
 
 export default router;

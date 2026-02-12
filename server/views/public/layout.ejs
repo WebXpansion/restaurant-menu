@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= restaurant.name %></title>
+  <link rel="stylesheet" href="/css/menu.css">
+</head>
+
+<body>
+
+  <div class="page-content">
+    <%- body %>
+  </div>
+
+  <%- include("/public/partials/mobile-nav") %>
+
+
+
+  <script>
+    window.RESTAURANT_SLUG = "<%= restaurant.slug %>";
+  </script>
+
+</body>
+</html>

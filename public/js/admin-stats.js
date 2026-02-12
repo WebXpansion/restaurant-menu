@@ -286,6 +286,55 @@ document
     loadDishArStats(dishId); 
   });
 
+  const qrCtx = document.getElementById("qrChart");
 
-/* ===== INIT ===== */
-loadStats();
+  if (qrCtx) {
+  
+    const qrPeriodSelect = document.getElementById("qrPeriodSelect");
+    const totalQrScans = document.getElementById("totalQrScans");
+  
+    let qrChart;
+  
+    async function loadQrStats(period = "day") {
+  
+      const res = await fetch(
+        `/stats/${RESTAURANT_SLUG}/qr?period=${period}`
+      );
+      const data = await res.json();
+  
+      const total = data.values.reduce((a, b) => a + b, 0);
+      totalQrScans.textContent = `· ${total} scans`;
+  
+      if (qrChart) {
+        qrChart.destroy();
+      }
+  
+      qrChart = new Chart(qrCtx, {
+        type: "line",
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: "Scans QR",
+            data: data.values,
+            tension: 0.3,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  
+    qrPeriodSelect.addEventListener("change", e => {
+      loadQrStats(e.target.value);
+    });
+  
+    loadQrStats();
+  }
+  
+
+  loadStats();
+
+

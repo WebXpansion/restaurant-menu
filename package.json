@@ -23,6 +23,7 @@
     "express-session": "^1.19.0",
     "helmet": "^8.1.0",
     "multer": "^2.0.2",
+    "qrcode": "^1.5.4",
     "three": "^0.182.0"
   },
   "devDependencies": {

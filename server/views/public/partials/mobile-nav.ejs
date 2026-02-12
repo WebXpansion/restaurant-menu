@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="/css/mobile-nav.css">
+
+<nav class="mobile-nav">
+
+  <a href="/r/<%= restaurant.slug %>/qrcode"
+     class="nav-item <%= activeTab === 'qr' ? 'active' : '' %>">
+    <img src="/icons/QRCODE.svg" class="nav-icon" alt="">
+    <span class="nav-label">QR Code</span>
+  </a>
+
+  <a href="/r/<%= restaurant.slug %>"
+     class="nav-item <%= activeTab === 'menu' ? 'active' : '' %>">
+    <img src="/icons/Menu.svg" class="nav-icon" alt="">
+    <span class="nav-label">Menu</span>
+  </a>
+
+  <a href="/r/<%= restaurant.slug %>/liste"
+     class="nav-item <%= activeTab === 'liste' ? 'active' : '' %>">
+    <img src="/icons/Liste.svg" class="nav-icon" alt="">
+    <span class="nav-label">Liste</span>
+  </a>
+
+  <a href="/r/<%= restaurant.slug %>/restaurant"
+     class="nav-item <%= activeTab === 'restaurant' ? 'active' : '' %>">
+    <img src="/icons/Restaurant.svg" class="nav-icon" alt="">
+    <span class="nav-label">Restaurant</span>
+  </a>
+
+</nav>
+

@@ -165,12 +165,35 @@
     <div class="card-header">
       <h3>
         Plats les plus consultés
-        <span class="meta">· <%= totalDishViews %> consultations</span>
+        <span id="totalDishViews" class="meta"></span>
       </h3>
     </div>
 
     <div id="topDishes" class="list"></div>
   </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h3>
+          Scans QR Code
+          <span id="totalQrScans" class="meta"></span>
+        </h3>
+      </div>
+  
+      <div class="controls">
+        <select id="qrPeriodSelect" class="select">
+          <option value="hour">Heure</option>
+          <option value="day" selected>Jour</option>
+          <option value="month">Mois</option>
+          <option value="year">Année</option>
+        </select>
+      </div>
+    </div>
+  
+    <canvas id="qrChart"></canvas>
+  </div>
+  
 
   <!-- ===== DISH TIMELINE ===== -->
   <div class="card full">

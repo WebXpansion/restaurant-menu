@@ -9,7 +9,6 @@ import { initDB } from "./db/index.js";
 import createSeed from "./db/seed.js";
 
 import { attachRestaurant } from "./middleware/attachRestaurant.js";
-
 import authRoutes from "./routes/auth.routes.js";
 import dishRoutes from "./routes/dish.routes.js";
 import publicRoutes from "./routes/public.routes.js";
@@ -60,6 +59,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/r/:slug", attachRestaurant);
 app.use("/admin/:slug", attachRestaurant);
 app.use("/stats/:slug", attachRestaurant, statsRoutes);
+
 
 
 /* ========================
