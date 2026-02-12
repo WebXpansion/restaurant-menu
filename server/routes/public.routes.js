@@ -60,7 +60,8 @@ router.get("/:slug/qrcode/image", async (req, res) => {
 
   const restaurant = req.restaurant;
 
-  const url = `${req.protocol}://${req.get("host")}/qr/${restaurant.slug}`;
+  const url = `${req.protocol}://${req.get("host")}/r/${restaurant.slug}/scan`;
+
 
   try {
     const qr = await QRCode.toBuffer(url, {
@@ -78,13 +79,9 @@ router.get("/:slug/qrcode/image", async (req, res) => {
 });
 
 
-router.get("/qr/:slug", (req, res) => {
+router.get("/:slug/scan", (req, res) => {
 
-  const restaurant = db.prepare(`
-    SELECT id, slug
-    FROM restaurants
-    WHERE slug = ?
-  `).get(req.params.slug);
+  const restaurant = req.restaurant;
 
   if (!restaurant) {
     return res.status(404).send("Not found");
@@ -99,6 +96,7 @@ router.get("/qr/:slug", (req, res) => {
   // Redirect vers menu
   res.redirect(`/r/${restaurant.slug}`);
 });
+
 
 
 
