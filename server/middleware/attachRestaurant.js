@@ -6,22 +6,30 @@ export function attachRestaurant(req, res, next) {
 
   let slug;
 
-  // ===== LOCAL DEV =====
-  // demo.localhost:3000
+  // =========================
+  // LOCAL DEV
+  // =========================
   if (hostname.includes("localhost")) {
 
     const parts = hostname.split(".");
-    slug = parts.length > 1 ? parts[0] : null;
+    slug = parts.length > 1 ? parts[0] : "demo";
 
-    // Si pas de sous-domaine → fallback demo
-    if (!slug || slug === "localhost") {
-      slug = "demo";
-    }
+  }
 
-  } else {
+  // =========================
+  // RENDER (pas de sous-domaine custom)
+  // =========================
+  else if (hostname.includes("onrender.com")) {
 
-    // ===== PRODUCTION =====
-    // demo.monsaas.com
+    slug = "demo"; // ⚠️ temporaire pour test
+
+  }
+
+  // =========================
+  // PRODUCTION FUTURE (wildcard domain)
+  // =========================
+  else {
+
     slug = hostname.split(".")[0];
 
   }
@@ -32,14 +40,6 @@ export function attachRestaurant(req, res, next) {
 
   if (!restaurant) {
     return res.status(404).send("Restaurant not found");
-  }
-
-  try {
-    restaurant.features = restaurant.features
-      ? JSON.parse(restaurant.features)
-      : {};
-  } catch {
-    restaurant.features = {};
   }
 
   req.restaurant = restaurant;
