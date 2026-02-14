@@ -1,14 +1,20 @@
 import db from "../db/index.js";
 
 export function canEnableAR(restaurantId, maxAllowed) {
-  if (maxAllowed === null) return true; // illimité
 
-  const count = db.prepare(`
+  // illimité si null ou undefined
+  if (maxAllowed == null) {
+    return true;
+  }
+
+  const row = db.prepare(`
     SELECT COUNT(*) as total
     FROM dishes
     WHERE restaurant_id = ?
       AND has_ar = 1
-  `).get(restaurantId).total;
+  `).get(restaurantId);
 
-  return count < maxAllowed;
+  const currentCount = row?.total ?? 0;
+
+  return currentCount < maxAllowed;
 }

@@ -1,21 +1,128 @@
-<%- include("partials/header") %>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code – <%= restaurant.name %></title>
+<link rel="stylesheet" href="/css/mobile-nav.css">
 <style>
-    body{
-        font-family: system-ui;
+  body{
     margin: 0;
-    background: #f4f5f7;
-    }
+    font-family: -apple-system, BlinkMacSystemFont, system-ui;
+  }
+.qr-page {
+  min-height: 100dvh; /* mieux que 100vh sur mobile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url("/images/fond-resto.webp") center/cover no-repeat;
+  position: relative;
+  padding: 20px;
+  padding-bottom: 100px; /* 🔥 espace pour mobile nav */
+}
+
+.qr-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+}
+
+.qr-container {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 420px;
+  background: white;
+  border-radius: 28px;
+  padding: 24px;
+  text-align: center;
+
+  margin-bottom: 80px;
+}
+
+.qr-container h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+
+.qr-image {
+  width: 240px;
+  height: 240px;
+  margin: 0 auto 28px;
+}
+
+.share-btn {
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 24px 16px;
+    border-radius: 16px;
+    border: none;
+    background: black;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    gap: 14px;
+}
+
+.share-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+@media (min-width: 768px) {
+  .qr-container {
+    padding: 40px;
+  }
+}
 </style>
 <div class="qr-page">
+  <div class="qr-container">
 
-  <h1>Scannez le menu</h1>
+    <h1>Scannez pour <br>découvrir la carte</h1>
 
-  <img
-    src="/qrcode/image"
-    alt="QR Code"
-    class="qr-image"
-  >
+    <img src="/qrcode/image" class="qr-image" alt="QR Code">
 
+    <button id="shareBtn" class="share-btn">
+      <img src="/icons/share.svg" alt="">
+      Partager
+    </button>
+
+  </div>
 </div>
+<%- include("partials/mobile-nav") %>
 
-<%- include("partials/footer") %>
+<script>
+  const shareBtn = document.getElementById("shareBtn");
+  
+  shareBtn.addEventListener("click", async () => {
+  
+    const url = window.location.origin;
+  
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "<%= restaurant.name %>",
+          text: "Découvrez notre menu en réalité augmenté sur votre table",
+          url: url
+        });
+      } catch (err) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        shareBtn.innerText = "Lien copié ✓";
+        setTimeout(() => {
+          shareBtn.innerHTML = '<img src="/icons/share.svg" alt=""> Partager';
+        }, 2000);
+      } catch (err) {
+        alert(url);
+      }
+    }
+  
+  });
+  </script>
+

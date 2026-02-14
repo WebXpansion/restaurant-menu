@@ -9,7 +9,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-  
+    font-family: -apple-system, BlinkMacSystemFont, system-ui;
     height: 70px;
   
     backdrop-filter: blur(12px);
@@ -28,6 +28,27 @@
     }
   }
   
+
+  .nav-list {
+    position: relative;
+  }
+  
+  .list-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 999px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -39,7 +60,7 @@
     opacity: 0.5;
     font-size: 12px;
     font-weight: 500;
-  
+    position: relative;
     transition: all 0.2s ease;
   }
   

@@ -1,0 +1,136 @@
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="/css/carte-produit.css">
+<script type="importmap">
+    {
+      "imports": {
+        "three": "/vendor/three/three.module.js",
+        "three/examples/jsm/": "/vendor/three/examples/jsm/"
+      }
+    }
+    </script>
+<div class="list-page">
+    <h1>Vos choix</h1>
+    <p class="subtitle">
+      Voici un récapitulatif des produits sélectionnés. 
+      Présentez cette liste à votre serveur pour passer commande.
+    </p>
+  
+    <div id="listItems" class="grid"></div>
+  </div>
+
+   
+    <!-- ===== Overlay (inchangé) ===== -->
+    
+    <div id="sheet" class="sheet">
+
+        <div class="sheet-panel">
+    
+        <!-- VISUAL -->
+        <div class="sheet-visual">
+            <button id="sheet-close" class="sheet-close">✕</button>
+            <% if (restaurant.features?.share) { %>
+            <button id="sheet-share" class="sheet-share">🔗</button>
+            <% } %>
+    
+            <div id="viewer">
+            <div class="viewer-bg"></div>
+            <div id="loader">Chargement…</div>
+            <canvas id="three-canvas"></canvas>
+            <img id="fallback-image" />
+            </div>
+        </div>
+    
+        <!-- CONTENT -->
+        <div class="sheet-content">
+
+            <div class="inner-sheet-content">
+                <div class="sheet-header-row">
+                <h2 id="sheet-title"></h2>
+                <div id="sheet-price"></div>
+                </div>
+        
+                <p id="sheet-desc"></p>
+            </div>
+    
+            <!-- FUTURE TAGS -->
+            <div class="sheet-tags">
+            <!-- Pastilles dynamiques plus tard -->
+            </div>
+
+            <div class="btn-overlay">
+              <button class="list-btn">
+                Ajouter dans ma liste
+              </button>
+        
+                <a id="ar-btn" class="ar-btn" rel="ar">
+                Voir en réalité augmentée
+                </a>
+            </div>
+    
+        </div>
+    
+        </div>
+  
+  </div>
+
+  <%- include("partials/mobile-nav") %>
+  
+  <style>
+    body{
+        margin: 0;
+    }
+    .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+  .list-page {
+    padding: 20px;
+    padding-bottom: 120px;
+    font-family: -apple-system, BlinkMacSystemFont, system-ui;
+  }
+  
+  .list-page h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+  }
+  
+  .list-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  
+  .list-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  
+  .list-item-info {
+    flex: 1;
+  }
+  
+  .list-item-title {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  
+  .list-item-price {
+    font-size: 14px;
+    color: #777;
+  }
+  </style>
+  
+
+
+ 
+<script type="module" src="/js/app.js"></script>

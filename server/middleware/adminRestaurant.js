@@ -1,4 +1,5 @@
 import db from "../db/index.js";
+import { resolveRestaurantPlan } from "../services/restaurantPlan.js";
 
 export function requireAdminRestaurant(req, res, next) {
 
@@ -14,9 +15,8 @@ export function requireAdminRestaurant(req, res, next) {
     return res.status(403).send("Restaurant not found");
   }
 
-  restaurant.features = restaurant.features
-    ? JSON.parse(restaurant.features)
-    : {};
+  // ✅ Source unique de vérité
+  resolveRestaurantPlan(restaurant);
 
   req.restaurant = restaurant;
   res.locals.restaurant = restaurant;

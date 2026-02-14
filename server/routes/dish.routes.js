@@ -30,7 +30,7 @@ router.get("/dishes", requireAdmin,   async (req, res) => {
     .prepare("SELECT * FROM dishes WHERE restaurant_id=?")
     .all(req.restaurant.id);
 
-    const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
+    const maxAR = req.restaurant.limits?.ar_limit ?? 0;
 
 const usedAR = db.prepare(`
   SELECT COUNT(*) as count
@@ -58,6 +58,7 @@ const usedAR = db.prepare(`
 ====================== */
 router.get("/dishes/new", requireAdmin,   async (req, res) => {
 
+
   const tags = getTagsByRestaurant(req.restaurant.id);
 
   const subcategories = db
@@ -68,7 +69,7 @@ router.get("/dishes/new", requireAdmin,   async (req, res) => {
     `)
     .all(req.restaurant.id);
 
-  const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
+    const maxAR = req.restaurant.limits?.ar_limit ?? 0;
 
   const usedAR = db.prepare(`
     SELECT COUNT(*) as count
@@ -125,6 +126,10 @@ router.post(
       status
     } = req.body;
 
+    const cleanSubcategoryId = subcategory_id
+  ? parseInt(subcategory_id)
+  : null;
+
     const finalStatus = status || "published";
 
     const wantsAR =
@@ -139,7 +144,7 @@ router.post(
         /* ======================
        2️⃣ LIMITE DE L’OFFRE
     ====================== */
-    const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
+    const maxAR = req.restaurant.limits?.ar_limit ?? 0;
 
     if (status === "published" && wantsAR && maxAR > 0) {
 
@@ -213,6 +218,8 @@ if (req.files?.usdz) {
     /* ======================
        5️⃣ INSERT
     ====================== */
+    console.log("SUBCATEGORY ID:", subcategory_id);
+
     const insertResult = db.prepare(`
       INSERT INTO dishes (
         restaurant_id,
@@ -244,7 +251,7 @@ if (req.files?.usdz) {
       desc_long_en,
       Math.round(price * 100),
       category,
-      subcategory_id,
+      cleanSubcategoryId,  
       availability,
       imagePath,
       glbPath,
@@ -373,7 +380,7 @@ router.get("/dishes/:id/edit", requireAdmin, async (req, res) => {
     `)
     .all(req.restaurant.id);
 
-    const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
+    const maxAR = req.restaurant.limits?.ar_limit ?? 0;
 
 const usedAR = db.prepare(`
   SELECT COUNT(*) as count
@@ -382,6 +389,7 @@ const usedAR = db.prepare(`
     AND has_ar = 1
     AND status = 'published'
 `).get(req.restaurant.id).count;
+
 
 
 res.render("admin/dish-form", {
@@ -443,6 +451,10 @@ router.post(
       status
     } = req.body;
 
+    const cleanSubcategoryId = subcategory_id
+  ? parseInt(subcategory_id)
+  : null;
+
     const existing = db
     .prepare("SELECT * FROM dishes WHERE id = ? AND restaurant_id = ?")
     .get(req.params.id, req.restaurant.id);
@@ -455,41 +467,41 @@ router.post(
   const wantsAR = req.body.has_ar === "1";
 
 
-// 2️⃣ ancien état
-const hadAR =
-  existing.has_ar === 1 &&
-  existing.status === "published";
+  // 2️⃣ ancien état
+  const hadAR =
+    existing.has_ar === 1 &&
+    existing.status === "published";
 
-  const folder = `restaurants/${req.restaurant.slug}/dishes`;
+    const folder = `restaurants/${req.restaurant.slug}/dishes`;
 
-// 3️⃣ limite de l’offre
-const maxAR = req.restaurant.limits?.maxArDishes ?? 0;
+  // 3️⃣ limite de l’offre
+  const maxAR = req.restaurant.limits?.ar_limit ?? 0;
 
 
-// 4️⃣ SI on essaie d’activer l’AR ET publier
-if (
-  status === "published" &&
-  !hadAR &&
-  wantsAR &&
-  maxAR > 0
-) {
-  const { count } = db
-    .prepare(`
-      SELECT COUNT(*) as count
-      FROM dishes
-      WHERE restaurant_id = ?
-        AND has_ar = 1
-        AND status = 'published'
-    `)
-    .get(req.restaurant.id);
+  // 4️⃣ SI on essaie d’activer l’AR ET publier
+  if (
+    status === "published" &&
+    !hadAR &&
+    wantsAR &&
+    maxAR > 0
+  ) {
+    const { count } = db
+      .prepare(`
+        SELECT COUNT(*) as count
+        FROM dishes
+        WHERE restaurant_id = ?
+          AND has_ar = 1
+          AND status = 'published'
+      `)
+      .get(req.restaurant.id);
 
-  if (count >= maxAR) {
-    return res.status(403).json({
-      error: "AR_LIMIT_REACHED",
-      maxAR
-    });
+    if (count >= maxAR) {
+      return res.status(403).json({
+        error: "AR_LIMIT_REACHED",
+        maxAR
+      });
+    }
   }
-}
 
 
 
@@ -604,7 +616,7 @@ db.prepare(`
   desc_long_en,
   Math.round(price * 100),
   category,
-  subcategory_id,
+  cleanSubcategoryId,
   availability,
   imagePath,
   glbPath,

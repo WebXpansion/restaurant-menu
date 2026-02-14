@@ -7,9 +7,10 @@ async function loadStats(period = "day") {
     const compare = document.getElementById("compareToggle").checked;
   
     if (!compare) {
-      const res = await fetch(`/admin/stats/api/stats?period=${period}`
+      const res = await fetch(`/admin/stats/api/stats?period=${period}`);
 
-      );
+      if (!res.ok) return;
+      
       const data = await res.json();
   
       renderPageChart(data.pageViews);
@@ -151,20 +152,21 @@ async function loadDishStats(dishId) {
   
     const period = document.getElementById("dishPeriodSelect").value;
 
-    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}?period=${period}`
+    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}?period=${period}`);
 
-    );
-  
+    if (!res.ok) return;
+    
     const data = await res.json();
     renderDishChart(data);
   }
   
 
 async function loadComparison(period) {
-  const res = await fetch(`/admin/stats/api/stats/compare?period=${period}`
+  const res = await fetch(`/admin/stats/api/stats/compare?period=${period}`);
 
-    );
-    return await res.json();
+  if (!res.ok) return { current: [], previous: [] };
+  
+  return await res.json();
   }
   
 
@@ -206,10 +208,10 @@ async function loadComparison(period) {
   
     const period = document.getElementById("dishPeriodSelect").value;
   
-    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}/ar?period=${period}`
+    const res = await fetch(`/admin/stats/api/stats/dish/${dishId}/ar?period=${period}`);
 
-    );
-  
+    if (!res.ok) return;
+    
     const data = await res.json();
     renderDishArChart(data);
   }
@@ -298,6 +300,9 @@ document
     async function loadQrStats(period = "day") {
   
       const res = await fetch(`/admin/stats/qr?period=${period}`);
+
+      if (!res.ok) return;
+      
       const data = await res.json();
   
       const total = data.values.reduce((a, b) => a + b, 0);

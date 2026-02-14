@@ -22,11 +22,18 @@ const createSeed = async () => {
     UPDATE restaurants
     SET
       features = ?,
+      limits = ?,
       languages = ?,
       menus = ?
     WHERE slug = ?
   `).run(
-    JSON.stringify({ googleReview: true }),
+    JSON.stringify({
+      stats: true,
+      googleReview: true
+    }),
+    JSON.stringify({
+      ar_limit: 10
+    }),
     JSON.stringify(["fr", "en"]),
     JSON.stringify(["lunch", "dinner"]),
     "demo"

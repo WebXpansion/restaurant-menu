@@ -1,3 +1,4 @@
+import { updateButtons } from "./list.js";
 import { createViewer } from "./viewer3d/viewer.js";
 
 const sheet = document.getElementById("sheet");
@@ -6,7 +7,7 @@ const sheetPrice = document.getElementById("sheet-price");
 const sheetDesc = document.getElementById("sheet-desc");
 const closeBtn = document.getElementById("sheet-close");
 const arBtn = document.getElementById("ar-btn");
-
+const shareBtn = document.getElementById("sheet-share");
 const canvas = document.getElementById("three-canvas");
 const loaderEl = document.getElementById("loader");
 const fallbackImg = document.getElementById("fallback-image");
@@ -23,136 +24,183 @@ let currentFilter = "all";
 function closeSheet() {
   sheet.classList.remove("open");
 
-  canvas.innerHTML = "";
-  canvas.style.display = "none";
-  loaderEl.style.display = "none";
-  fallbackImg.style.display = "none";
+  if (canvas) {
+    canvas.innerHTML = "";
+    canvas.style.display = "none";
+  }
+  if (loaderEl) loaderEl.style.display = "none";
+  if (fallbackImg) fallbackImg.style.display = "none";
 
   viewerBg.style.opacity = "0";
-  viewerBg.style.backgroundImage = "";
+  if (viewerBg) {
+    viewerBg.style.opacity = "0";
+    viewerBg.style.backgroundImage = "";
+  }
 
   arBtn.style.display = "none";
   arBtn.onclick = null;
+  history.pushState(null, "", window.location.pathname);
 }
 
+
+if (shareBtn) {
+  shareBtn.addEventListener("click", async () => {
+
+    const id = shareBtn.dataset.id;
+    const title = sheetTitle.textContent;
+
+    const url = `${window.location.origin}/?dish=${id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: `Découvre ce plat : ${title}`,
+          url
+        });
+      } catch (err) {
+        console.log("Share cancelled");
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      alert("Lien copié !");
+    }
+  });
+}
 
 // ==============================
 // 🔥 LISTENERS GLOBAUX (UNE FOIS)
 // ==============================
-closeBtn.addEventListener("click", closeSheet);
+if (closeBtn) {
+  closeBtn.addEventListener("click", closeSheet);
+}
 
-sheet.addEventListener("click", (e) => {
-  if (e.target === sheet) {
-    closeSheet();
-  }
-});
+if (arBtn) {
+  arBtn.addEventListener("click", () => {
+
+    const dishId = arBtn.dataset.id;
+
+    if (!dishId) return;
+
+    fetch(`/stats/ar/${dishId}`, {
+      method: "POST"
+    });
+
+  });
+}
+
+if (sheet) {
+  sheet.addEventListener("click", (e) => {
+    if (e.target === sheet) {
+      closeSheet();
+    }
+  });
+}
 
 
 // ==============================
 // 🔥 OUVERTURE CARTE
 // ==============================
-document.querySelectorAll(".card").forEach(card => {
+document.addEventListener("click", function(e) {
 
-  card.addEventListener("click", () => {
+  const card = e.target.closest(".card");
+  if (!card) return;
 
-    const langKey =
-      currentLang.charAt(0).toUpperCase() + currentLang.slice(1);
+  if (e.target.closest(".list-btn")) return;
 
-    const glb = card.dataset.glb;
-    const usdz = card.dataset.usdz;
-    const image = card.dataset.image;
-    const scale = parseFloat(card.dataset.scale || 1);
+  // 🔥 si pas d’overlay sur la page → on ne fait rien
+  if (!sheet || !sheetTitle || !sheetDesc) return;
 
-    // Reset état
+  const langKey =
+    currentLang.charAt(0).toUpperCase() + currentLang.slice(1);
+
+  const glb = card.dataset.glb;
+  const image = card.dataset.image;
+  const scale = parseFloat(card.dataset.scale || 1);
+
+  if (canvas) {
     canvas.innerHTML = "";
     canvas.style.display = "none";
-    loaderEl.style.display = "none";
-    fallbackImg.style.display = "none";
+  }
+  if (loaderEl) loaderEl.style.display = "none";
+  if (fallbackImg) fallbackImg.style.display = "none";
 
-    // Contenu texte
-    sheetTitle.textContent =
-      card.dataset[`title${langKey}`] || card.dataset.titleFr || "";
+  sheetTitle.textContent =
+    card.dataset[`title${langKey}`] || card.dataset.titleFr || "";
 
-    sheetDesc.textContent =
-      card.dataset[`long${langKey}`] || card.dataset.longFr || "";
+  sheetDesc.textContent =
+    card.dataset[`long${langKey}`] || card.dataset.longFr || "";
 
-    sheetPrice.textContent = card.dataset.price;
+  sheetPrice.textContent = card.dataset.price;
 
-    sheet.classList.add("open");
+  sheet.classList.add("open");
+  history.pushState(
+    { dish: card.dataset.id },
+    "",
+    `?dish=${card.dataset.id}`
+  );
 
-    // ==========================
-    // BADGES
-    // ==========================
+  fetch(`/api/dish-view/${card.dataset.id}`, {
+    method: "POST"
+  });
 
-    const tagContainer = document.querySelector(".sheet-tags");
+  const tagContainer = document.querySelector(".sheet-tags");
+  if (tagContainer) {
     tagContainer.innerHTML = "";
-
+  
     const rawTags = card.dataset.tags;
-
     if (rawTags) {
-      const tags = rawTags.split("|");
-
-      tags.forEach(tag => {
+      rawTags.split("|").forEach(tag => {
         const span = document.createElement("span");
         span.className = "sheet-tag";
         span.textContent = tag;
         tagContainer.appendChild(span);
       });
     }
+  }
 
+  if (viewerBg && image) {
+    viewerBg.style.backgroundImage = `url(${image})`;
+  }
 
-    // Stat vue
-    fetch(`/stats/dish/${card.dataset.id}/view`, {
-      method: "POST"
-    });
-
-    // Background blur
-    if (image) {
-      viewerBg.style.backgroundImage = `url(${image})`;
+  if (glb && glb.trim() !== "") {
+    canvas.style.display = "block";
+    loaderEl.style.display = "flex";
+    viewerBg.style.opacity = "1";
+    createViewer(canvas, loaderEl, glb, scale);
+  } else {
+    viewerBg.style.opacity = "0";
+    if (image && image.trim() !== "") {
+      fallbackImg.src = image;
+      fallbackImg.style.display = "block";
     }
+  }
 
-    // ==========================
-    // CAS 1 — AR ACTIVÉE
-    // ==========================
-    if (glb && glb !== "") {
+  const listBtn = document.querySelector(".list-btn");
+  if (listBtn) {
+    listBtn.dataset.id = card.dataset.id;
+    arBtn.dataset.id = card.dataset.id;
+    listBtn.dataset.title = sheetTitle.textContent;
+    listBtn.dataset.price = card.dataset.priceCents || "0";
+    listBtn.dataset.image = card.dataset.image || "";
+    listBtn.dataset.glb = card.dataset.glb || "";
+listBtn.dataset.usdz = card.dataset.usdz || "";
+listBtn.dataset.scale = card.dataset.scale || "1";
+listBtn.dataset.tags = card.dataset.tags || "";
+if (shareBtn) {
+  shareBtn.dataset.id = card.dataset.id;
+}
+ listBtn.dataset.shortFr = card.dataset.shortFr || "";
+ listBtn.dataset.shortEn = card.dataset.shortEn || "";
+ listBtn.dataset.longFr = card.dataset.longFr || "";
+ listBtn.dataset.longEn = card.dataset.longEn || "";
 
-      canvas.style.display = "block";
-      loaderEl.style.display = "flex";
-      loaderEl.textContent = "Chargement…";
-
-      viewerBg.style.opacity = "1";
-
-      createViewer(canvas, loaderEl, glb, scale);
-
-      arBtn.style.display = "block";
-      arBtn.href = usdz || "#";
-
-      arBtn.onclick = () => {
-        fetch(`/stats/dish/${card.dataset.id}/ar`, {
-          method: "POST"
-        });
-      };
-
-    }
-
-    // ==========================
-    // CAS 2 — PAS D’AR
-    // ==========================
-    else {
-
-      viewerBg.style.opacity = "0";
-
-      if (image) {
-        fallbackImg.src = image;
-        fallbackImg.style.display = "block";
-      }
-
-      arBtn.style.display = "none";
-    }
-
-  });
+    updateButtons();
+  }
 
 });
+
+
 
 
   
@@ -207,15 +255,16 @@ function updateCards() {
     cards.forEach(card => {
   
       const availability = card.dataset.availability;
-      const category = card.dataset.category;
+      const category = (card.dataset.category || "").trim().toLowerCase();
+      const filter = (currentFilter || "").trim().toLowerCase();
   
       const matchMenu =
         availability === "both" ||
         availability === currentMenu;
   
-      const matchFilter =
-        currentFilter === "all" ||
-        category === currentFilter;
+        const matchFilter =
+        filter === "all" ||
+        category === filter;
   
       const show = matchMenu && matchFilter;
   
@@ -244,32 +293,61 @@ function updateCards() {
        2. UPDATE GROUPS
     ====================== */
     groups.forEach(group => {
-        const groupCards = group.querySelectorAll(".group-cards .card");
-      
-        const anyVisible =
-          [...groupCards].some(c => !c.classList.contains("hidden"));
-      
-        group.classList.toggle("show", anyVisible);
-      });
+
+      const groupCards = group.querySelectorAll(".card");
+    
+      const anyVisible =
+        [...groupCards].some(c => !c.classList.contains("hidden"));
+    
+      if (anyVisible) {
+        group.style.display = "block";
+      } else {
+        group.style.display = "none";
+      }
+    
+    });
       
   
   }
   
+  window.addEventListener("popstate", () => {
+    const params = new URLSearchParams(window.location.search);
+    const dishId = params.get("dish");
   
+    if (!dishId) {
+      closeSheet();
+    }
+  });
 
   
+  document.addEventListener("DOMContentLoaded", () => {
 
-menuToggle.addEventListener("change", e => {
-  currentMenu = e.target.value;
-  updateCards();
-});
-
-langToggle.addEventListener("change", e => {
-    currentLang = e.target.value;
-    console.log("LANG CHANGED →", currentLang);
-    updateCards();
+    const params = new URLSearchParams(window.location.search);
+    const dishId = params.get("dish");
+  
+    if (!dishId) return;
+  
+    const card = document.querySelector(`.card[data-id="${dishId}"]`);
+    if (card) {
+      card.click();
+    }
+  
   });
   
+
+  if (menuToggle) {
+    menuToggle.addEventListener("change", e => {
+      currentMenu = e.target.value;
+      updateCards();
+    });
+  }
+  
+  if (langToggle) {
+    langToggle.addEventListener("change", e => {
+      currentLang = e.target.value;
+      updateCards();
+    });
+  }
 
 // 🔥 au chargement
 updateCards();

@@ -1,14 +1,23 @@
 import db from "../db/index.js";
 
+/* =========================
+   GET TAGS BY RESTAURANT
+========================= */
 export function getTagsByRestaurant(restaurantId) {
   return db.prepare(`
-    SELECT * FROM pastilles
+    SELECT *
+    FROM tags
     WHERE restaurant_id = ?
-    ORDER BY name
+    ORDER BY name ASC
   `).all(restaurantId);
 }
 
+
+/* =========================
+   CREATE TAG
+========================= */
 export function createTag(restaurantId, name) {
+
   if (!name || name.trim().length === 0) {
     throw new Error("INVALID_NAME");
   }
@@ -19,56 +28,71 @@ export function createTag(restaurantId, name) {
   }
 
   return db.prepare(`
-    INSERT INTO pastilles (restaurant_id, name)
+    INSERT INTO tags (restaurant_id, name)
     VALUES (?, ?)
   `).run(restaurantId, name.trim());
 }
 
+
+/* =========================
+   DELETE TAG
+========================= */
 export function deleteTag(restaurantId, tagId) {
+
   db.prepare(`
-    DELETE FROM pastilles
+    DELETE FROM tags
     WHERE id = ? AND restaurant_id = ?
   `).run(tagId, restaurantId);
 
   db.prepare(`
     DELETE FROM dishes_pastilles
-    WHERE pastille_id = ?
+    WHERE tag_id = ?
   `).run(tagId);
 }
 
+
+/* =========================
+   GET DISH TAGS
+========================= */
 export function getDishTags(dishId) {
   return db.prepare(`
-    SELECT p.*
-    FROM pastilles p
-    JOIN dishes_pastilles dp ON dp.pastille_id = p.id
-    WHERE dp.dish_id = ?
-  `).all(dishId);
+    SELECT tag_id
+    FROM dishes_pastilles
+    WHERE dish_id = ?
+  `).all(dishId).map(row => row.tag_id);
 }
 
+
+/* =========================
+   SET DISH TAGS
+========================= */
 export function setDishTags(dishId, tagIds, restaurantId) {
 
   if (tagIds.length > 5) {
     throw new Error("MAX_5_TAGS");
   }
 
+  // Supprime anciennes liaisons
   db.prepare(`
     DELETE FROM dishes_pastilles
     WHERE dish_id = ?
   `).run(dishId);
 
   const insert = db.prepare(`
-    INSERT INTO dishes_pastilles (dish_id, pastille_id)
-    VALUES (?, ?)
+    INSERT INTO dishes_pastilles
+    (dish_id, tag_id, restaurant_id)
+    VALUES (?, ?, ?)
   `);
 
   for (const id of tagIds) {
+
     const exists = db.prepare(`
-      SELECT id FROM pastilles
+      SELECT id FROM tags
       WHERE id = ? AND restaurant_id = ?
     `).get(id, restaurantId);
 
     if (exists) {
-      insert.run(dishId, id);
+      insert.run(dishId, id, restaurantId);
     }
   }
 }

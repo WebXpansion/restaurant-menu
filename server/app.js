@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-
+import internalRoutes from "./routes/internal.routes.js";
 import express from "express";
 import session from "express-session";
 import helmet from "helmet";
@@ -15,6 +15,7 @@ import { requireAdminRestaurant } from "./middleware/adminRestaurant.js";
 
 import { initDB } from "./db/index.js";
 import createSeed from "./db/seed.js";
+
 
 import { attachRestaurant } from "./middleware/attachRestaurant.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -42,29 +43,44 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "super-secret-change-me",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production"
     }
   })
 );
 
+
+/* ========================
+   STATIC FILES (TOUJOURS EN PREMIER)
+======================== */
 app.use("/uploads", express.static("uploads"));
 app.use(express.static(path.join(__dirname, "../public")));
 
+/* ========================
+   VIEW ENGINE
+======================== */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-
-
-
-
+/* ========================
+   ATTACH RESTAURANT
+======================== */
+app.use("/admin/internal", internalRoutes);
 app.use(attachRestaurant);
+
+/* ========================
+   PUBLIC ROUTES
+======================== */
 app.use("/", publicRoutes);
 
+/* ========================
+   ADMIN
+======================== */
 app.use("/admin", authRoutes);
 app.use("/admin", requireAdminRestaurant, dishRoutes);
 
@@ -72,12 +88,8 @@ app.use("/admin", requireAdminRestaurant, dishRoutes);
    STATS
 ======================== */
 app.use("/admin/stats", requireAdminRestaurant, statsRoutes);
-
-/* ========================
-   PUBLIC (TOUJOURS EN DERNIER)
-======================== */
 app.use("/stats", statsRoutes);
-app.use("/:slug", attachRestaurant, publicRoutes);
+
 
 
 /* ========================
