@@ -83,17 +83,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+
 app.use(
    session({
      secret: process.env.SESSION_SECRET,
      resave: false,
      saveUninitialized: false,
      cookie: {
-       httpOnly: true,
-       sameSite: "None", // Permet de partager entre sous-domaines
-       secure: process.env.NODE_ENV === "production", // True seulement en production
-       domain: ".onrender.com", // Important pour partager entre les sous-domaines
-       maxAge: 1000 * 60 * 60 * 4, // 4 heures
+       httpOnly: true,  // Empêche l'accès au cookie par JS
+       sameSite: 'None',  // Nécessaire pour le partage entre sous-domaines
+       secure: process.env.NODE_ENV === 'production',  // True en production
+       domain: '.onrender.com',  // Important pour partager entre sous-domaines
+       maxAge: 1000 * 60 * 60 * 4  // Durée du cookie (4 heures)
      }
    })
  );
