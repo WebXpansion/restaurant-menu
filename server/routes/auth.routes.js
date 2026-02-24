@@ -29,14 +29,14 @@ router.get("/login", (req, res) => {
 ========================= */
 
 router.post("/login", async (req, res) => {
-
+  console.log("Email entered:", req.body.email);
+  console.log("Password entered:", req.body.password);
   
   const pool = getPool();
   const { email, password } = req.body;
   const restaurant = req.restaurant;
 
-  console.log("Email entered:", email);  
-  console.log("Password entered:", password); 
+
 
   const { rows } = await pool.query(
     `
@@ -74,7 +74,8 @@ router.post("/login", async (req, res) => {
   };
 
   console.log("SESSION AFTER LOGIN:", req.session); 
-  
+  console.log("Redirection vers /admin/dashboard");
+
   res.redirect("/admin/dashboard");
 });
 

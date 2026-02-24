@@ -1,7 +1,8 @@
 export function requireAdmin(req, res, next) {
+  console.log("SESSION USER (requireAdmin):", req.session.user);
 
-  console.log("SESSION USER:", req.session.user);
   console.log("REQ RESTAURANT:", req.restaurant.id);
+  console.log("SESSION USER (requireAdmin):", req.session.user);
   console.log("TYPES:",
     typeof req.session.user?.restaurant_id,
     typeof req.restaurant.id
@@ -15,6 +16,7 @@ export function requireAdmin(req, res, next) {
   }
 
   if (req.session.user.restaurant_id !== req.restaurant.id) {
+    
     console.log("MISMATCH DETECTED");
     return res.status(403).send("Forbidden");
   }
