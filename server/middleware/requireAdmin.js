@@ -7,6 +7,9 @@ export function requireAdmin(req, res, next) {
     typeof req.restaurant.id
   );
 
+  console.log("SESSION USER dans requireAdmin:", req.session.user);
+
+
   if (!req.session.user) {
     return res.redirect(`/admin/login`);
   }
