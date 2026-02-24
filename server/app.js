@@ -90,7 +90,7 @@ app.use(
      cookie: {
        httpOnly: true,
        sameSite: "strict",
-       secure: true,  // Met à false pour tester sans sécurisation des cookies
+       secure: false,  // Met à false pour tester sans sécurisation des cookies
        maxAge: 1000 * 60 * 60 * 4
      }
    })
