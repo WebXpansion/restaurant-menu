@@ -91,6 +91,7 @@ app.use(
        httpOnly: true,
        sameSite: "strict",
        secure: process.env.NODE_ENV === "production",
+       domain: process.env.NODE_ENV === "production" ? ".onrender.com" : undefined,
        maxAge: 1000 * 60 * 60 * 4
      }
    })
