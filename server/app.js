@@ -92,7 +92,7 @@ app.use(
      cookie: {
        httpOnly: true,
        sameSite: "strict",
-       secure: process.env.NODE_ENV === "production",
+       secure: false,
        domain: ".onrender.com",  // Important pour partager entre les sous-domaines
        maxAge: 1000 * 60 * 60 * 4
      }
