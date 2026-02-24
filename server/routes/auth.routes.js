@@ -46,6 +46,7 @@ router.post("/login", async (req, res) => {
   );
 
   const user = rows[0];
+  console.log("User found:", user);
 
   if (!user) {
     return res.render("admin/login", {
@@ -55,6 +56,7 @@ router.post("/login", async (req, res) => {
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);
+  console.log("Password valid:", valid);
 
   if (!valid) {
     return res.render("admin/login", {
@@ -67,6 +69,7 @@ router.post("/login", async (req, res) => {
     id: user.id,
     restaurant_id: restaurant.id,
   };
+  console.log("User logged in:", req.session.user);
 
   res.redirect("/admin/dashboard");
 });

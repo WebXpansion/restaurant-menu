@@ -191,6 +191,10 @@ app.use("/admin", requireAdminRestaurant, dishRoutes);
 app.use("/admin/stats", requireAdminRestaurant, statsRoutes);
 app.use("/stats", statsRoutes);
 
+// Route pour la page d'accueil
+app.get("/", (req, res) => {
+   res.send("Welcome to Restaurant Menu Service!");
+ });
 
 
 /* ========================
