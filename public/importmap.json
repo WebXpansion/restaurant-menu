@@ -1,7 +1,6 @@
 {
-    "imports": {
-      "three": "/node_modules/three/build/three.module.js",
-      "three/examples/": "/node_modules/three/examples/"
-    }
+  "imports": {
+    "three": "/vendor/three/three.module.js",
+    "three/examples/jsm/": "/vendor/three/examples/jsm/"
   }
-  
+}

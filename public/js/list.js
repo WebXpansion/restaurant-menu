@@ -1,4 +1,5 @@
-
+const uiData = document.getElementById("ui-data");
+const UI = uiData ? JSON.parse(uiData.textContent) : {};
 
 export function getList() {
     return JSON.parse(localStorage.getItem("menuList") || "[]");
@@ -11,17 +12,23 @@ export function getList() {
   export function updateButtons() {
     const list = getList();
   
-    const btn = document.querySelector(".list-btn");
+    const btn = document.querySelector("#sheet .list-btn");
     if (!btn) return;
   
     const exists = list.find(p => p.id == btn.dataset.id);
   
+    const addText =
+    UI?.buttons?.add_to_list || "Ajouter dans ma liste";
+  
+    const removeText =
+    UI?.buttons?.remove_from_list || "Enlever de ma liste";
+  
     if (exists) {
-      btn.textContent = "Enlever de ma liste";
+      btn.textContent = removeText;
       btn.style.background = "#F3F3F3";
       btn.style.color = "#000";
     } else {
-      btn.textContent = "Ajouter dans ma liste";
+      btn.textContent = addText;
       btn.style.color = "#000";
       btn.style.background = "#FFFFFF";
     }
@@ -31,31 +38,26 @@ export function getList() {
     const btn = e.target.closest(".list-btn");
     if (!btn) return;
   
-    const id = parseInt(btn.dataset.id);
+    const id = btn.dataset.id;
     const title = btn.dataset.title;
     const price = parseInt(btn.dataset.price);
     const image = btn.dataset.image;
   
     let list = getList();
-    const index = list.findIndex(item => item.id === id);
+    const index = list.findIndex(item => item.id == id);
   
     if (index > -1) {
       list.splice(index, 1);
     } else {
-        list.push({
-            id,
-            title,
-            price,
-            image,
-            glb: btn.dataset.glb || "",
-            usdz: btn.dataset.usdz || "",
-            scale: btn.dataset.scale || "1",
-            tags: btn.dataset.tags || "",
-            shortFr: btn.dataset.shortFr || "",
-            shortEn: btn.dataset.shortEn || "",
-            longFr: btn.dataset.longFr || "",
-            longEn: btn.dataset.longEn || "",
-          });
+      list.push({
+        id,
+        price,
+        image,
+        glb: btn.dataset.glb || "",
+        usdz: btn.dataset.usdz || "",
+        scale: btn.dataset.scale || "1",
+        tags: btn.dataset.tags || ""
+      });
     }
   
     saveList(list);
@@ -92,7 +94,7 @@ export function getList() {
     container.innerHTML = "";
   
     if (list.length === 0) {
-      container.innerHTML = "<p>Votre liste est vide.</p>";
+      container.innerHTML = `<p>${UI?.list_page?.empty || ""}</p>`;
       updateListBadge();
       return;
     }
@@ -122,45 +124,63 @@ export function getList() {
     }
   
     if (list.length === 0) {
-      container.innerHTML = "<p>Votre liste est vide.</p>";
+      container.innerHTML = `<p>${UI?.list_page?.empty || ""}</p>`;
       updateListBadge();
       return;
     }
   
-    list.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "card";
-    
-      div.dataset.id = item.id;
-      div.dataset.titleFr = item.title;
-      div.dataset.titleEn = item.title;
-      div.dataset.priceCents = item.price;
-      div.dataset.image = item.image;
-      div.dataset.glb = item.glb || "";
-      div.dataset.usdz = item.usdz || "";
-      div.dataset.scale = item.scale || "1";
-      div.dataset.tags = item.tags || "";
-      div.dataset.shortFr = item.shortFr || "";
-      div.dataset.shortEn = item.shortEn || "";
-      div.dataset.longFr = item.longFr || "";
-      div.dataset.longEn = item.longEn || "";
-    
-      div.innerHTML = `
-        <div class="card-image">
-          <img src="${item.image}" />
-        </div>
-    
-        <div class="card-content">
-          <strong class="card-title">${item.title}</strong>
-          <p class="desc-short">${item.shortFr || ""}</p>
-          <div class="card-price">
-            ${(item.price / 100).toFixed(2)} €
-          </div>
-        </div>
-      `;
-    
-      container.appendChild(div);
-    });
+    // 🔥 Charger données dynamiques selon langue
+let freshData = [];
+
+try {
+  const response = await fetch("/api/list-data", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ids: list.map(i => i.id) })
+  });
+
+  if (!response.ok) return;
+
+  freshData = await response.json();
+
+} catch (err) {
+  console.error("List data error:", err);
+  return;
+}
+
+freshData.forEach(item => {
+
+  const div = document.createElement("div");
+  div.className = "card";
+
+  div.dataset.id = item.id;
+  div.dataset.title = item.title || "";
+  div.dataset.desc = item.desc_short || "";
+  div.dataset.price = (item.price_cents / 100).toFixed(2) + " €";
+  div.dataset.priceCents = item.price_cents;
+  div.dataset.image = item.image_url || "";
+  div.dataset.glb = item.glb_url || "";
+  div.dataset.usdz = item.usdz_url || "";
+  div.dataset.scale = item.scale || "1";
+
+  div.innerHTML = `
+    <div class="card-image">
+      <img src="${item.image_url || ""}" />
+    </div>
+
+    <div class="card-content">
+      <strong class="card-title">${item.title || ""}</strong>
+      <p class="desc-short">${item.desc_short || ""}</p>
+      <div class="card-price">
+        ${(item.price_cents / 100).toFixed(2)} €
+      </div>
+    </div>
+  `;
+
+  container.appendChild(div);
+});
   
     updateListBadge();
     updateButtons();

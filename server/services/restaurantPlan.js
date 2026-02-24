@@ -10,10 +10,19 @@ export function resolveRestaurantPlan(restaurant) {
     throw new Error("Invalid plan configuration");
   }
 
+  // 🔥 NOUVEAU → label plan pour affichage
+  restaurant.planLabel = planConfig.label;
+
+  // 🔥 OPTIONNEL MAIS PRO → garder config complète
+  restaurant.planConfig = planConfig;
+
   restaurant.features = {
     stats: planConfig.hasStats,
     googleReview: planConfig.hasGoogleReviews,
-    share: planConfig.hasShare 
+    share: planConfig.hasShare,
+    publication: planConfig.hasPublication,
+    advancedMenus: planConfig.hasAdvancedMenus,
+    advancedDishStats: planConfig.hasAdvancedDishStats
   };
 
   restaurant.limits = {

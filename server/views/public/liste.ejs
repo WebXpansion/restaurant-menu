@@ -9,11 +9,10 @@
     }
     </script>
 <div class="list-page">
-    <h1>Vos choix</h1>
-    <p class="subtitle">
-      Voici un récapitulatif des produits sélectionnés. 
-      Présentez cette liste à votre serveur pour passer commande.
-    </p>
+  <h1><%= ui.list_page.title %></h1>
+  <p class="subtitle">
+    <%= ui.list_page.subtitle %>
+  </p>
   
     <div id="listItems" class="grid"></div>
   </div>
@@ -59,11 +58,11 @@
 
             <div class="btn-overlay">
               <button class="list-btn">
-                Ajouter dans ma liste
+                <%= ui.buttons.add_to_list %>
               </button>
         
                 <a id="ar-btn" class="ar-btn" rel="ar">
-                Voir en réalité augmentée
+                  <%= ui.buttons.ar_view %>
                 </a>
             </div>
     
@@ -131,6 +130,12 @@
   </style>
   
 
+  <script id="ui-data" type="application/json">
+    <%- JSON.stringify(ui) %>
+  </script>
 
+  <script>
+    window.UI = <%- JSON.stringify(ui) %>;
+  </script>
  
 <script type="module" src="/js/app.js"></script>

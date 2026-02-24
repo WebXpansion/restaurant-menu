@@ -1,22 +1,27 @@
-import db from "../db/index.js";
+import { getPool } from "../db/postgres.js";
 
 /* =========================
    GET TAGS BY RESTAURANT
 ========================= */
-export function getTagsByRestaurant(restaurantId) {
-  return db.prepare(`
+export async function getTagsByRestaurant(restaurantId) {
+
+  const pool = getPool();
+
+  const { rows } = await pool.query(`
     SELECT *
     FROM tags
-    WHERE restaurant_id = ?
+    WHERE restaurant_id = $1
     ORDER BY name ASC
-  `).all(restaurantId);
+  `, [restaurantId]);
+
+  return rows;
 }
 
 
 /* =========================
    CREATE TAG
 ========================= */
-export function createTag(restaurantId, name) {
+export async function createTag(restaurantId, name) {
 
   if (!name || name.trim().length === 0) {
     throw new Error("INVALID_NAME");
@@ -27,72 +32,81 @@ export function createTag(restaurantId, name) {
     throw new Error("MAX_5_WORDS");
   }
 
-  return db.prepare(`
+  const pool = getPool();
+
+  await pool.query(`
     INSERT INTO tags (restaurant_id, name)
-    VALUES (?, ?)
-  `).run(restaurantId, name.trim());
+    VALUES ($1, $2)
+  `, [restaurantId, name.trim()]);
 }
 
 
 /* =========================
    DELETE TAG
 ========================= */
-export function deleteTag(restaurantId, tagId) {
+export async function deleteTag(restaurantId, tagId) {
 
-  db.prepare(`
+  const pool = getPool();
+
+  await pool.query(`
     DELETE FROM tags
-    WHERE id = ? AND restaurant_id = ?
-  `).run(tagId, restaurantId);
+    WHERE id = $1 AND restaurant_id = $2
+  `, [tagId, restaurantId]);
 
-  db.prepare(`
-    DELETE FROM dishes_pastilles
-    WHERE tag_id = ?
-  `).run(tagId);
+  await pool.query(`
+    DELETE FROM dish_tags
+    WHERE tag_id = $1
+  `, [tagId]);
 }
 
 
 /* =========================
    GET DISH TAGS
 ========================= */
-export function getDishTags(dishId) {
-  return db.prepare(`
+export async function getDishTags(dishId) {
+
+  const pool = getPool();
+
+  const { rows } = await pool.query(`
     SELECT tag_id
-    FROM dishes_pastilles
-    WHERE dish_id = ?
-  `).all(dishId).map(row => row.tag_id);
+    FROM dish_tags
+    WHERE dish_id = $1
+  `, [dishId]);
+
+  return rows.map(row => row.tag_id);
 }
 
 
 /* =========================
    SET DISH TAGS
 ========================= */
-export function setDishTags(dishId, tagIds, restaurantId) {
+export async function setDishTags(dishId, tagIds, restaurantId) {
 
   if (tagIds.length > 5) {
     throw new Error("MAX_5_TAGS");
   }
 
-  // Supprime anciennes liaisons
-  db.prepare(`
-    DELETE FROM dishes_pastilles
-    WHERE dish_id = ?
-  `).run(dishId);
+  const pool = getPool();
 
-  const insert = db.prepare(`
-    INSERT INTO dishes_pastilles
-    (dish_id, tag_id, restaurant_id)
-    VALUES (?, ?, ?)
-  `);
+  // Supprimer anciennes liaisons
+  await pool.query(`
+    DELETE FROM dish_tags
+    WHERE dish_id = $1
+  `, [dishId]);
 
   for (const id of tagIds) {
 
-    const exists = db.prepare(`
-      SELECT id FROM tags
-      WHERE id = ? AND restaurant_id = ?
-    `).get(id, restaurantId);
+    const { rows } = await pool.query(`
+      SELECT id
+      FROM tags
+      WHERE id = $1 AND restaurant_id = $2
+    `, [id, restaurantId]);
 
-    if (exists) {
-      insert.run(dishId, id, restaurantId);
+    if (rows[0]) {
+      await pool.query(`
+        INSERT INTO dish_tags (dish_id, tag_id, restaurant_id)
+        VALUES ($1, $2, $3)
+      `, [dishId, id, restaurantId]);
     }
   }
 }

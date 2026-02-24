@@ -220,17 +220,18 @@
     <div class="card">
       <h2>Informations</h2>
 
-      <div class="row">
-        <div class="field">
-          <label>Titre FR</label>
-          <input name="title_fr" required value="<%= dish?.title_fr || "" %>">
-        </div>
+      <% restaurant.languages.forEach(lang => { %>
 
         <div class="field">
-          <label>Titre EN</label>
-          <input name="title_en" required value="<%= dish?.title_en || "" %>">
+          <label>Titre <%= lang.toUpperCase() %></label>
+          <input 
+          name="title_<%= lang %>" 
+          required 
+          value="<%= translations?.[lang]?.title || '' %>"
+        >
         </div>
-      </div>
+      
+      <% }) %>
 
       <div class="row">
         <div class="field">
@@ -261,48 +262,29 @@
       </div>
     </div>
 
-    <!-- DESCRIPTIONS -->
-    <div class="card">
-      <h2>Descriptions</h2>
+<!-- DESCRIPTIONS -->
+<div class="card">
+  <h2>Descriptions</h2>
 
-      <div class="row">
-        <div class="field">
-          <label>
-            Courte FR
-            <span class="hint">15 mots maximum</span>
-          </label>
-          <textarea
-            name="desc_short_fr"
-            class="desc-short"
-            data-max-words="15"
-          ><%= dish?.desc_short_fr || "" %></textarea>
-          
-        </div>
-        <div class="field">
-          <label>
-            Courte EN
-            <span class="hint">15 mots maximum</span>
-          </label>
-          <textarea
-            name="desc_short_en"
-            class="desc-short"
-            data-max-words="15"
-          ><%= dish?.desc_short_en || "" %></textarea>
-          
-        </div>
-      </div>
+  <% restaurant.languages.forEach(lang => { %>
 
-      <div class="row">
-        <div class="field">
-          <label>Longue FR</label>
-          <textarea required name="desc_long_fr"><%= dish?.desc_long_fr || "" %></textarea>
-        </div>
-        <div class="field">
-          <label>Longue EN</label>
-          <textarea required name="desc_long_en"><%= dish?.desc_long_en || "" %></textarea>
-        </div>
-      </div>
+    <div class="field">
+      <label>
+        Courte <%= lang.toUpperCase() %>
+        <span class="hint">15 mots maximum</span>
+      </label>
+
+      <textarea
+      name="desc_short_<%= lang %>"
+      class="desc-short"
+      data-max-words="15"
+    ><%= translations?.[lang]?.desc_short || '' %></textarea>
+
     </div>
+
+  <% }) %>
+
+</div>
 
     
 
@@ -320,16 +302,43 @@
         <div class="field">
           <label>Disponibilité</label>
           <select required name="availability">
-            <option value="both" <%= dish?.availability==="both"?"selected":"" %>>Midi + Soir</option>
-            <option value="lunch" <%= dish?.availability==="lunch"?"selected":"" %>>Midi</option>
-            <option value="dinner" <%= dish?.availability==="dinner"?"selected":"" %>>Soir</option>
+        
+            <option value="both"
+              <%= dish?.availability==="both"?"selected":"" %>>
+              Tout
+            </option>
+        
+            <option value="lunch"
+              <%= dish?.availability==="lunch"?"selected":"" %>>
+              Midi
+            </option>
+        
+            <option value="dinner"
+              <%= dish?.availability==="dinner"?"selected":"" %>>
+              Soir
+            </option>
+        
+            <% if (restaurant.features?.advancedMenus) { %>
+        
+              <option value="events"
+                <%= dish?.availability==="events"?"selected":"" %>>
+                Événements
+              </option>
+        
+              <option value="seasonal"
+                <%= dish?.availability==="seasonal"?"selected":"" %>>
+                Saisonniers
+              </option>
+        
+            <% } %>
+        
           </select>
         </div>
 
         <div class="field">
           <label>Statut</label>
           <select name="status">
-            <option value="published" <%= dish?.status==="published"?"selected":"" %>>🟢 En ligne</option>
+            <option value="published" <%= dish?.status==="published"?"selected":"" %>>🟢 Publié</option>
             <option value="draft" <%= dish?.status==="draft"?"selected":"" %>>⚪ Brouillon</option>
           </select>
         </div>
@@ -436,14 +445,14 @@
           <!-- PREVIEW -->
           <img
             id="imagePreview"
-            src="<%= dish?.image_path || '' %>"
+            src="<%= dish?.image_url || '' %>"
             style="
               margin-top:10px;
               width:100%;
               max-height:180px;
               object-fit:cover;
               border-radius:12px;
-              display:<%= dish?.image_path ? 'block' : 'none' %>;
+              display:<%= dish?.image_url ? 'block' : 'none' %>;
             "
           >
         
@@ -457,7 +466,7 @@
           <div class="file-box">
             Modèle 3D (GLB)
             <span class="required-ar">*</span>
-            <input type="file" name="glb" accept=".glb" id="glbInput" data-existing="<%= dish?.glb_path ? 1 : 0 %>">
+            <input type="file" name="glb" accept=".glb" id="glbInput" data-existing="<%= dish?.glb_url ? 1 : 0 %>">
             <% if (dish?.glb_original_name) { %>
               <strong><%= dish.glb_original_name %></strong>
             <% } %>
@@ -466,7 +475,7 @@
           <div class="file-box">
             Réalité augmentée (USDZ)
             <span class="required-ar">*</span>
-            <input type="file" name="usdz" accept=".usdz" id="usdzInput" data-existing="<%= dish?.usdz_path ? 1 : 0 %>">
+            <input type="file" name="usdz" accept=".usdz" id="usdzInput" data-existing="<%= dish?.usdz_url ? 1 : 0 %>">
             <% if (dish?.usdz_original_name) { %>
               <strong><%= dish.usdz_original_name %></strong>
             <% } %>
@@ -511,40 +520,8 @@
 </div>
 
 <script src="/js/admin/dish-form.js"></script>
+<script src="/js/admin-dishes.js"></script>
 
-
-<script>
-document.getElementById("addSubBtn")?.addEventListener("click", async () => {
-  const name = prompt("Nom de la sous-catégorie ?");
-  if (!name) return;
-
-  const category = document.querySelector('[name="category"]').value;
-
-  await fetch(`/admin/subcategories`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, category })
-  });
-
-  location.reload();
-});
-  document.querySelectorAll(".desc-short").forEach(textarea => {
-    const maxWords = parseInt(textarea.dataset.maxWords, 15);
-
-    textarea.addEventListener("input", () => {
-      const words = textarea.value
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
-
-      if (words.length > maxWords) {
-        textarea.value = words.slice(0, maxWords).join(" ");
-      }
-    });
-  });
-
-
-</script>
 
 </body>
 </html>

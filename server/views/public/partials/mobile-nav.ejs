@@ -5,26 +5,26 @@
   <a href="/qrcode"
      class="nav-item <%= activeTab === 'qr' ? 'active' : '' %>">
     <img src="/icons/QRCODE.svg" class="nav-icon" alt="">
-    <span class="nav-label">QR Code</span>
+    <span class="nav-label"><%= ui.nav.qr %></span>
   </a>
 
   <a href="/"
      class="nav-item <%= activeTab === 'menu' ? 'active' : '' %>">
     <img src="/icons/Menu.svg" class="nav-icon" alt="">
-    <span class="nav-label">Menu</span>
+    <span class="nav-label"><%= ui.nav.menu %></span>
   </a>
 
   <a href="/liste"
      class="nav-item <%= activeTab === 'liste' ? 'active' : '' %>">
     <img src="/icons/Liste.svg" class="nav-icon" alt="">
     <span id="list-badge" class="list-badge"></span>
-    <span class="nav-label">Liste</span>
+    <span class="nav-label"><%= ui.nav.liste %></span>
   </a>
 
   <a href="/restaurant"
      class="nav-item <%= activeTab === 'restaurant' ? 'active' : '' %>">
     <img src="/icons/Restaurant.svg" class="nav-icon" alt="">
-    <span class="nav-label">Restaurant</span>
+    <span class="nav-label"><%= ui.nav.restaurant %></span>
   </a>
 
 </nav>

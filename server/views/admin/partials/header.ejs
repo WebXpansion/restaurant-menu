@@ -1,40 +1,134 @@
 <header class="admin-header">
-  <div class="inner-admin-header">
+  <div class="header-container">
 
-    <a
-      href="/admin/dashboard"
-      class="<%= active === 'dashboard' ? 'active' : '' %>"
-    >
-      <div class="logo">🍽️ Menu SaaS</div>
+    <!-- LEFT : LOGO -->
+    <a href="/admin/dashboard" class="logo">
+      <img src="/icons/logo.webp" alt="Logo">
     </a>
-  
-    <nav class="nav">
-      <a
-        href="/admin/stats"
+
+    <!-- CENTER NAV (DESKTOP) -->
+    <nav class="nav-desktop">
+
+      <% const statsEnabled = restaurant.features?.stats; %>
+      <% const publicationEnabled = restaurant.features?.publication; %>
+      <% const reviewsEnabled = restaurant.features?.googleReview; %>
+    
+      <a 
+        href="<%= statsEnabled ? '/admin/stats' : '#' %>"
         class="<%= active === 'stats' ? 'active' : '' %>"
+        <% if (!statsEnabled) { %>
+          data-locked="stats"
+        <% } %>
       >
         Statistiques
       </a>
-  
-      <a
-        href="/admin/dishes"
-        class="<%= active === 'dishes' ? 'active' : '' %>"
-      >
-        Plats
+    
+      <a href="/admin/dishes"
+         class="<%= active === 'dishes' ? 'active' : '' %>">
+         Plats
       </a>
-  
-      <a
-        href="/admin/settings"
-        class="<%= active === 'settings' ? 'active' : '' %>"
+    
+      <a 
+        href="<%= publicationEnabled ? '/admin/publication' : '#' %>"
+        class="<%= active === 'publication' ? 'active' : '' %>"
+        <% if (!publicationEnabled) { %>
+          data-locked="publication"
+        <% } %>
       >
-        Paramètres
+        Publications
       </a>
+    
+
+    
+      <a 
+      href="<%= reviewsEnabled ? '/admin/settings' : '#' %>"
+      class="<%= active === 'settings' ? 'active' : '' %>"
+      <% if (!reviewsEnabled) { %>
+        data-locked="reviews"
+      <% } %>
+    >
+      Avis
+    </a>
+    
     </nav>
-  
+
+    <!-- RIGHT BLOCK -->
     <div class="header-right">
-      <span class="plan">Offre 1</span>
+
+      <div class="icon-btn">
+        ?
+      </div>
+
+      <div class="icon-btn">
+        👤
+      </div>
+
+      <div class="plan-badge">
+        <%= restaurant.planLabel %>
+      </div>
+
+      <!-- MOBILE HAMBURGER -->
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
     </div>
-  
   </div>
-  </header>
-  
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu">
+  <!-- CLOSE BUTTON -->
+  <div class="mobile-close">
+    <div class="icon-btn" id="mobileCloseBtn">✕</div>
+  </div>
+
+  <div class="mobile-nav">
+
+      <a 
+        href="<%= statsEnabled ? '/admin/stats' : '#' %>"
+        <% if (!statsEnabled) { %>
+          data-locked="stats"
+        <% } %>
+      >
+        Statistiques
+      </a>
+    
+      <a href="/admin/dishes">Plats</a>
+    
+      <a 
+        href="<%= publicationEnabled ? '/admin/publication' : '#' %>"
+        <% if (!publicationEnabled) { %>
+          data-locked="publication"
+        <% } %>
+      >
+        Publications
+      </a>
+    
+      <a 
+        href="<%= reviewsEnabled ? '/admin/reviews' : '#' %>"
+        <% if (!reviewsEnabled) { %>
+          data-locked="reviews"
+        <% } %>
+      >
+        Avis
+      </a>
+
+    
+    </div>
+
+    <div class="mobile-footer">
+      <div class="icon-btn">?</div>
+      <div class="icon-btn">👤</div>
+      <div class="plan-badge">
+        <%= restaurant.planLabel %>
+      </div>
+    </div>
+  </div>
+</header>
+
+<%- include("upgrade-modal") %>
+<script src="/js/admin-global.js"></script>
+
+

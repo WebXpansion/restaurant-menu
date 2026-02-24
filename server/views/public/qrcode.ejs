@@ -83,18 +83,22 @@
 <div class="qr-page">
   <div class="qr-container">
 
-    <h1>Scannez pour <br>découvrir la carte</h1>
+    <h1><%- scanTitle %></h1>
 
     <img src="/qrcode/image" class="qr-image" alt="QR Code">
 
     <button id="shareBtn" class="share-btn">
       <img src="/icons/share.svg" alt="">
-      Partager
+      <%= shareText %>
     </button>
 
   </div>
 </div>
 <%- include("partials/mobile-nav") %>
+
+<script>
+  window.UI = <%- JSON.stringify(ui) %>;
+</script>
 
 <script>
   const shareBtn = document.getElementById("shareBtn");

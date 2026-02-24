@@ -1,7 +1,7 @@
-import db from "../db/index.js";
+import { getPool } from "../db/postgres.js";
 import { resolveRestaurantPlan } from "../services/restaurantPlan.js";
 
-export function attachRestaurant(req, res, next) {
+export async function attachRestaurant(req, res, next) {
 
   const hostname = req.hostname;
   let slug;
@@ -10,12 +10,12 @@ export function attachRestaurant(req, res, next) {
      LOCAL DEV
   ========================= */
   if (hostname.includes("localhost")) {
-    slug = "demo";
+    slug = "test"; // ⚠️ doit correspondre au slug créé en base Postgres
   }
 
   /* =========================
      PRODUCTION
-     menu.lerefuge.com
+     slug.plateview.fr
   ========================= */
   else {
     const parts = hostname.split(".");
@@ -24,27 +24,36 @@ export function attachRestaurant(req, res, next) {
       return res.status(400).send("Invalid domain structure");
     }
 
-    slug = parts[1];
+    slug = parts[0]; // ex: refuge.plateview.fr → refuge
   }
 
-  const restaurant = db
-    .prepare("SELECT * FROM restaurants WHERE slug = ?")
-    .get(slug);
+  try {
+    const pool = getPool();
 
-  if (!restaurant) {
-    return res.status(404).send("Restaurant not found");
+    console.log("HOSTNAME:", req.hostname);
+console.log("SLUG USED:", slug);
+
+    const { rows } = await pool.query(
+      `SELECT * FROM restaurants WHERE slug = $1`,
+      [slug]
+    );
+
+    const restaurant = rows[0];
+
+    if (!restaurant) {
+      return res.status(404).send("Restaurant not found");
+    }
+
+    // PLAN RESOLUTION
+    resolveRestaurantPlan(restaurant);
+
+    req.restaurant = restaurant;
+    res.locals.restaurant = restaurant;
+
+    next();
+
+  } catch (error) {
+    console.error("AttachRestaurant error:", error);
+    res.status(500).send("Server error");
   }
-
-  // ✅ PLAN RESOLUTION CENTRALISÉE
-  resolveRestaurantPlan(restaurant);
-
-  // Si encore JSON menus
-  restaurant.menus = restaurant.menus
-    ? JSON.parse(restaurant.menus)
-    : [];
-
-  req.restaurant = restaurant;
-  res.locals.restaurant = restaurant;
-
-  next();
 }

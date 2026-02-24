@@ -1,5 +1,5 @@
 import express from "express";
-import db from "../db/index.js";
+import { getPool } from "../db/postgres.js";
 import { PLANS } from "../config/plans.js";
 
 const router = express.Router();
@@ -35,32 +35,37 @@ router.use((req, res, next) => {
 /* =========================================================
    🔄 CHANGE PLAN ENDPOINT
 ========================================================= */
-router.post("/change-plan", (req, res) => {
+router.post("/change-plan", async (req, res) => {
 
-  const { restaurantId, newPlan } = req.body;
-
-  if (!restaurantId || !newPlan) {
-    return res.status(400).json({ error: "Missing parameters" });
-  }
-
-  if (!PLANS[newPlan]) {
-    return res.status(400).json({ error: "Invalid plan" });
-  }
-
-  const result = db.prepare(`
-    UPDATE restaurants
-    SET plan = ?
-    WHERE id = ?
-  `).run(newPlan, restaurantId);
-
-  if (!result.changes) {
-    return res.status(404).json({ error: "Restaurant not found" });
-  }
-
-  console.log(`🔁 Plan updated → Restaurant ${restaurantId} → ${newPlan}`);
-
-  res.json({ success: true });
-});
+    const pool = getPool();
+    const { restaurantId, newPlan } = req.body;
+  
+    if (!restaurantId || !newPlan) {
+      return res.status(400).json({ error: "Missing parameters" });
+    }
+  
+    if (!PLANS[newPlan]) {
+      return res.status(400).json({ error: "Invalid plan" });
+    }
+  
+    const { rowCount } = await pool.query(
+      `
+        UPDATE restaurants
+        SET plan = $1,
+            updated_at = NOW()
+        WHERE id = $2
+      `,
+      [newPlan, restaurantId]
+    );
+  
+    if (rowCount === 0) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+  
+    console.log(`🔁 Plan updated → Restaurant ${restaurantId} → ${newPlan}`);
+  
+    res.json({ success: true });
+  });
 
 /* =========================================================
    📊 OPTIONAL: GET RESTAURANT PLAN

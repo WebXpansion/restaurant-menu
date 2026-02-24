@@ -53,29 +53,40 @@ if (!form) {
      SUBMIT
   ====================== */
   form.addEventListener("submit", async (e) => {
-    if (submitBtn.disabled) {
-      e.preventDefault();
-      return;
-    }
-
     e.preventDefault();
+  
+    if (submitBtn.disabled) return;
+  
     const formData = new FormData(form);
-
-    const res = await fetch(form.action, {
-      method: form.method || "POST",
-      body: formData
-    });
-
-    if (res.ok) {
-      window.location.href = res.url;
-      return;
-    }
-
-    if (res.status === 403) {
-      const data = await res.json();
-      if (data.error === "AR_LIMIT_REACHED") {
-        openUpgradeOverlay(data.maxAR);
+  
+    try {
+      const res = await fetch(form.getAttribute("action"), {
+        method: form.method || "POST",
+        body: formData
+      });
+  
+      const contentType = res.headers.get("content-type");
+  
+      if (!res.ok) {
+        console.error("Server error:", res.status);
+        return;
       }
+  
+      // Si le backend renvoie JSON
+      if (contentType && contentType.includes("application/json")) {
+        const data = await res.json();
+  
+        if (data.success) {
+          window.location.href = "/admin/dishes";
+          return;
+        }
+      }
+  
+      // fallback sécurité
+      window.location.href = "/admin/dishes";
+  
+    } catch (err) {
+      console.error("Fetch error:", err);
     }
   });
 

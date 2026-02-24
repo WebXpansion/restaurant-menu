@@ -1,9 +1,13 @@
 import express from "express";
-import db from "../db/index.js";
 import bcrypt from "bcrypt";
 import { requireAdmin } from "../middleware/requireAdmin.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getPool } from "../db/postgres.js";
+
+
+console.log("POSTGRES FILE LOADED");
+console.log("DATABASE_URL inside postgres.js:", process.env.DATABASE_URL);
 
 const router = express.Router();
 
@@ -26,28 +30,22 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res) => {
 
-
-
+  
+  const pool = getPool();
   const { email, password } = req.body;
   const restaurant = req.restaurant;
-  console.log("LOGIN RESTAURANT:", req.restaurant.slug);
-  console.log("EMAIL:", req.body.email);
-  console.log("restaurant.id typeof:", typeof restaurant.id);
 
-console.log("email typeof:", typeof email);
-console.log("email value:", email);
-  console.log("restaurant.id value:", restaurant.id);
-  const user = db
-  .prepare(`
-    SELECT * FROM users 
-    WHERE email = ? 
-      AND restaurant_id = ?
-  `)
-  .get(email.trim(), parseInt(restaurant.id, 10));
+  const { rows } = await pool.query(
+    `
+      SELECT *
+      FROM users
+      WHERE email = $1
+        AND restaurant_id = $2
+    `,
+    [email.trim(), restaurant.id]
+  );
 
-  console.log("USER FROM DB:", user); // 👈 ICI (après la déclaration)
-  const allUsers = db.prepare("SELECT id, restaurant_id, email FROM users").all();
-console.log("ALL USERS FROM SERVER DB:", allUsers);
+  const user = rows[0];
 
   if (!user) {
     return res.render("admin/login", {
@@ -57,8 +55,6 @@ console.log("ALL USERS FROM SERVER DB:", allUsers);
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);
-
-  console.log("PASSWORD VALID:", valid); // 👈 ajoute ça aussi
 
   if (!valid) {
     return res.render("admin/login", {
@@ -91,7 +87,7 @@ router.get("/dashboard", (req, res) => {
 
 
 
-export default router;
+
 
 router.get(
   "/settings",
@@ -106,18 +102,21 @@ router.get(
 router.post(
   "/settings",
   requireAdmin,
-  (req, res) => {
-    db.prepare(`
-      UPDATE restaurants
-      SET google_review_url = ?
-      WHERE id = ?
-    `).run(
-      req.body.google_review_url || null,
-      req.restaurant.id
+  async (req, res) => {
+
+    const pool = getPool();
+
+    await pool.query(
+      `
+        UPDATE restaurants
+        SET google_review_url = $1,
+            updated_at = NOW()
+        WHERE id = $2
+      `,
+      [req.body.google_review_url || null, req.restaurant.id]
     );
 
     res.redirect("/admin/dashboard");
-
   }
 );
 
@@ -125,57 +124,62 @@ router.post(
 router.get(
   "/stats",
   requireAdmin,
-  (req, res) => {
+  async (req, res) => {
+
+    const pool = getPool();
 
     if (!req.restaurant.features?.stats) {
       return res.status(404).send("Stats désactivées");
     }
 
-    /* =========================
-       PAGE VIEWS (TOTAL)
-    ========================= */
+    // PAGE VIEWS
+    const { rows: pageRows } = await pool.query(
+      `
+        SELECT COUNT(*)::int AS total
+        FROM stats_events
+        WHERE restaurant_id = $1
+          AND type = 'page_view'
+      `,
+      [req.restaurant.id]
+    );
 
-    const pageViews = db.prepare(`
-      SELECT COUNT(*) as total
-      FROM stats_page_views
-      WHERE restaurant_id = ?
-    `).get(req.restaurant.id)?.total || 0;
+    const pageViews = pageRows[0]?.total || 0;
 
+    // DISH VIEWS PAR PLAT
+    const { rows: dishViews } = await pool.query(
+      `
+        SELECT
+          d.id,
+          COALESCE(dt.title, 'Plat sans nom') AS title,
+          COUNT(s.id)::int AS count
+        FROM stats_events s
+        JOIN dishes d ON d.id = s.dish_id
+        LEFT JOIN dish_translations dt
+          ON dt.dish_id = d.id
+          AND dt.language = $2
+        WHERE s.restaurant_id = $1
+          AND s.type = 'dish_view'
+          AND d.status = 'published'
+        GROUP BY d.id, dt.title
+        ORDER BY count DESC
+      `,
+      [req.restaurant.id, "fr"]
+    );
 
-    /* =========================
-       DISH VIEWS (PAR PLAT)
-    ========================= */
+    // TOTAL VUES PLATS
+    const { rows: totalRows } = await pool.query(
+      `
+        SELECT COUNT(*)::int AS total
+        FROM stats_events s
+        JOIN dishes d ON d.id = s.dish_id
+        WHERE s.restaurant_id = $1
+          AND s.type = 'dish_view'
+          AND d.status = 'published'
+      `,
+      [req.restaurant.id]
+    );
 
-    const dishViews = db.prepare(`
-      SELECT
-        d.id,
-        COALESCE(
-          NULLIF(d.title_fr, ''),
-          NULLIF(d.title_en, ''),
-          'Plat sans nom'
-        ) AS title,
-        COUNT(s.id) as count
-      FROM stats_dish_views s
-      JOIN dishes d ON d.id = s.dish_id
-      WHERE s.restaurant_id = ?
-        AND d.status = 'published'
-      GROUP BY d.id
-      ORDER BY count DESC
-    `).all(req.restaurant.id);
-
-
-    /* =========================
-       TOTAL VUES PLATS
-    ========================= */
-
-    const totalDishViews = db.prepare(`
-      SELECT COUNT(*) as total
-      FROM stats_dish_views s
-      JOIN dishes d ON d.id = s.dish_id
-      WHERE s.restaurant_id = ?
-        AND d.status = 'published'
-    `).get(req.restaurant.id)?.total || 0;
-
+    const totalDishViews = totalRows[0]?.total || 0;
 
     res.render("admin/stats", {
       restaurant: req.restaurant,
@@ -183,6 +187,7 @@ router.get(
       dishViews,
       totalDishViews
     });
-
   }
 );
+
+export default router;

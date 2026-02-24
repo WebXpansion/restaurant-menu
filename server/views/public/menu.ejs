@@ -166,11 +166,18 @@ body {
     <div class="hero-overlay">
       <div class="hero-center">
         <div class="switch-pill">
-          <span class="switch-icon">☀️</span>
+          <span id="menuIcon" class="switch-icon">☀️</span>
 
           <select id="menuToggle" class="switch-select">
-            <option value="lunch">Midi</option>
-            <option value="dinner">Soir</option>
+
+            <option value="lunch"><%= ui.menu_toggle.lunch %></option>
+            <option value="dinner"><%= ui.menu_toggle.dinner %></option>
+          
+            <% if (restaurant.features?.advancedMenus) { %>
+              <option value="events"><%= ui.menu_toggle.events %></option>
+              <option value="seasonal"><%= ui.menu_toggle.seasonal %></option>
+            <% } %>
+          
           </select>
         </div>
       </div>
@@ -180,8 +187,14 @@ body {
       <div class="hero-right">
         <div class="lang-pill">
           <select id="langToggle" class="switch-select">
-            <option value="fr">🇫🇷</option>
-            <option value="en">🇬🇧</option>
+            <% restaurant.languages.forEach(lang => { %>
+              <option 
+                value="<%= lang %>"
+                <%= currentLang === lang ? "selected" : "" %>
+              >
+                <%= lang.toUpperCase() %>
+              </option>
+            <% }) %>
           </select>
         </div>
       </div>
@@ -197,27 +210,27 @@ body {
 
         <button class="filter" data-filter="formule">
             <img src="/icons/menu.webp" class="filter-icon" alt="">
-            <span>Formules</span>
+            <span><%= categories.formule %></span>
         </button>
         
         <button class="filter active" data-filter="boisson">
             <img src="/icons/drink.webp" class="filter-icon" alt="">
-            <span>Boisson</span>
+            <span><%= categories.boisson %></span>
         </button>
         
         <button class="filter" data-filter="entrée">
             <img src="/icons/starter.webp" class="filter-icon" alt="">
-            <span>Entrée</span>
+            <span><%= categories.entrée %></span>
         </button>
         
         <button class="filter" data-filter="plat">
             <img src="/icons/dinner.webp" class="filter-icon" alt="">
-            <span>Plats</span>
+            <span><%= categories.plat %></span>
         </button>
         
         <button class="filter" data-filter="dessert">
             <img src="/icons/dessert.webp" class="filter-icon" alt="">
-            <span>Desserts</span>
+            <span><%= categories.dessert %></span>
         </button>
         
     
@@ -254,37 +267,36 @@ body {
       %>
       
         <div class="card"
-             data-id="<%= d.id %>"
-             data-slug="<%= restaurant.slug %>"
-             data-category="<%= d.category %>"
-             data-title="<%= d.title_fr %>"
-             data-price="<%= (d.price_cents/100).toFixed(2) %> €"
-             data-price-cents="<%= d.price_cents %>"
-             data-desc="<%= d.desc_long_fr %>"
-             data-glb="<%= d.has_ar ? d.glb_path : '' %>"
-             data-usdz="<%= d.has_ar ? d.usdz_path : '' %>"
-             data-scale="<%= d.scale %>"
-             data-title-fr="<%= d.title_fr %>"
-             data-title-en="<%= d.title_en %>"
-             data-short-fr="<%= d.desc_short_fr %>"
-             data-short-en="<%= d.desc_short_en %>"
-             data-long-fr="<%= d.desc_long_fr %>"
-             data-long-en="<%= d.desc_long_en %>"
-             data-availability="<%= d.availability %>"
-             data-image="<%= d.image_path || '' %>"
-             data-tags="<%= d.tags ? d.tags.split('||').join('|') : '' %>">
+        data-id="<%= d.id %>"
+        data-slug="<%= restaurant.slug %>"
+        data-category="<%= d.category %>"
+        data-price="<%= (d.price_cents/100).toFixed(2) %> €"
+        data-price-cents="<%= d.price_cents %>"
+        
+        data-glb="<%= d.has_ar ? d.glb_url : '' %>"
+        data-usdz="<%= d.has_ar ? d.usdz_url : '' %>"
+        data-scale="<%= d.scale %>"
+
+        data-title="<%= d.title || '' %>"
+        data-desc="<%= d.desc_short || '' %>"
+        
+        data-availability="<%= d.availability %>"
+        data-image="<%= d.image_url || '' %>"
+        data-tags="<%= d.tags ? d.tags.split('||').join('|') : '' %>"
+             
+             >
       
             <div class="card-image">
-              <% if (d.image_path) { %>
-                <img src="<%= d.image_path %>" />
+              <% if (d.image_url) { %>
+                <img src="<%= d.image_url %>" />
               <% } %>
             </div>
       
             <div class="card-content">
-              <strong class="card-title"><%= d.title_fr %></strong>
-      
-              <% if (d.desc_short_fr) { %>
-                <div class="card-desc"><%= d.desc_short_fr %></div>
+              <strong class="card-title"><%= d.title || '' %></strong>
+
+              <% if (d.desc_short) { %>
+                <div class="card-desc"><%= d.desc_short %></div>
               <% } %>
       
               <div class="card-price">
@@ -349,11 +361,11 @@ body {
 
                 <div class="btn-overlay">
                   <button class="list-btn">
-                    Ajouter dans ma liste
+                    <%= ui.buttons.add_to_list %>
                   </button>
             
                     <a id="ar-btn" class="ar-btn" rel="ar">
-                    Voir en réalité augmentée
+                      <%= ui.buttons.ar_view %>
                     </a>
                 </div>
         
@@ -368,36 +380,24 @@ body {
 
 
 
-    <script>
-        window.RESTAURANT_SLUG = "<%= restaurant.slug %>";
-    </script>
-    
+<div id="app-config"
+     data-slug="<%= restaurant.slug %>">
+</div>
+
+<script id="ui-data" type="application/json">
+  <%- JSON.stringify(ui) %>
+</script>
+
+
 
     <script type="module" src="/js/app.js"></script>
     <script type="module" src="/js/viewer3D/viewer.js"></script>
 
-    
-    <script>
-      const loader = document.getElementById("siteLoader");
+    <script src="/js/loader.js"></script>
+
+    <script src="/js/menu-select.js"></script>
+
       
-      if (!sessionStorage.getItem("loaderShown")) {
-      
-        window.addEventListener("load", () => {
-          setTimeout(() => {
-            loader.classList.add("hide");
-      
-            setTimeout(() => {
-              loader.style.display = "none";
-            }, 800);
-      
-            sessionStorage.setItem("loaderShown", "true");
-          }, 2000);
-        });
-      
-      } else {
-        loader.style.display = "none";
-      }
-      </script>
       
       
 

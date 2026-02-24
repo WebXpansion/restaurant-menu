@@ -13,7 +13,7 @@ const loaderEl = document.getElementById("loader");
 const fallbackImg = document.getElementById("fallback-image");
 const viewerBg = document.querySelector(".viewer-bg");
 
-let currentLang = "fr";
+let currentLang = document.getElementById("langToggle")?.value || "fr";
 let currentMenu = "lunch";
 let currentFilter = "all";
 
@@ -37,7 +37,6 @@ function closeSheet() {
     viewerBg.style.backgroundImage = "";
   }
 
-  arBtn.style.display = "none";
   arBtn.onclick = null;
   history.pushState(null, "", window.location.pathname);
 }
@@ -125,22 +124,27 @@ document.addEventListener("click", function(e) {
   if (loaderEl) loaderEl.style.display = "none";
   if (fallbackImg) fallbackImg.style.display = "none";
 
-  sheetTitle.textContent =
-    card.dataset[`title${langKey}`] || card.dataset.titleFr || "";
-
-  sheetDesc.textContent =
-    card.dataset[`long${langKey}`] || card.dataset.longFr || "";
+  sheetTitle.textContent = card.dataset.title || "";
+  sheetDesc.textContent = card.dataset.desc || "";
 
   sheetPrice.textContent = card.dataset.price;
 
   sheet.classList.add("open");
+  if (arBtn) {
+    if (card.dataset.glb && card.dataset.glb.trim() !== "") {
+      arBtn.style.display = "inline-flex";
+    } else {
+      arBtn.style.display = "none";
+    }
+  }
+
   history.pushState(
     { dish: card.dataset.id },
     "",
     `?dish=${card.dataset.id}`
   );
 
-  fetch(`/api/dish-view/${card.dataset.id}`, {
+  fetch(`/stats/dish/${card.dataset.id}/view`, {
     method: "POST"
   });
 
@@ -176,11 +180,12 @@ document.addEventListener("click", function(e) {
     }
   }
 
-  const listBtn = document.querySelector(".list-btn");
+  const listBtn = document.querySelector("#sheet .list-btn");
   if (listBtn) {
     listBtn.dataset.id = card.dataset.id;
     arBtn.dataset.id = card.dataset.id;
     listBtn.dataset.title = sheetTitle.textContent;
+    listBtn.dataset.desc = sheetDesc.textContent;
     listBtn.dataset.price = card.dataset.priceCents || "0";
     listBtn.dataset.image = card.dataset.image || "";
     listBtn.dataset.glb = card.dataset.glb || "";
@@ -190,10 +195,8 @@ listBtn.dataset.tags = card.dataset.tags || "";
 if (shareBtn) {
   shareBtn.dataset.id = card.dataset.id;
 }
- listBtn.dataset.shortFr = card.dataset.shortFr || "";
- listBtn.dataset.shortEn = card.dataset.shortEn || "";
- listBtn.dataset.longFr = card.dataset.longFr || "";
- listBtn.dataset.longEn = card.dataset.longEn || "";
+
+
 
     updateButtons();
   }
@@ -237,9 +240,39 @@ if (activeBtn) {
 }
 
 const menuToggle = document.getElementById("menuToggle");
+const menuIcon = document.getElementById("menuIcon");
+
+function updateMenuIcon(value) {
+  if (!menuIcon) return;
+
+  switch (value) {
+    case "lunch":
+      menuIcon.textContent = "☀️";
+      break;
+
+    case "dinner":
+      menuIcon.textContent = "🌙";
+      break;
+
+    case "events":
+      menuIcon.textContent = "🎉";
+      break;
+
+    case "seasonal":
+      menuIcon.textContent = "🍂";
+      break;
+
+    default:
+      menuIcon.textContent = "☀️";
+  }
+}
 const langToggle = document.getElementById("langToggle");
 
+const configEl = document.getElementById("app-config");
 
+if (configEl) {
+  window.RESTAURANT_SLUG = configEl.dataset.slug;
+}
 
 function updateCards() {
 
@@ -272,20 +305,14 @@ function updateCards() {
 
   
       const title = card.querySelector("strong");
-      const short = card.querySelector(".desc-short");
+      const short = card.querySelector(".card-desc");
   
       if (title) {
-        title.textContent =
-          card.dataset[`title${langKey}`] ||
-          card.dataset.titleFr ||
-          "";
+        title.textContent = card.dataset.title || "";
       }
-  
+      
       if (short) {
-        short.textContent =
-          card.dataset[`short${langKey}`] ||
-          card.dataset.shortFr ||
-          "";
+        short.textContent = card.dataset.desc || "";
       }
     });
   
@@ -319,7 +346,7 @@ function updateCards() {
     }
   });
 
-  
+
   document.addEventListener("DOMContentLoaded", () => {
 
     const params = new URLSearchParams(window.location.search);
@@ -336,16 +363,27 @@ function updateCards() {
   
 
   if (menuToggle) {
+
+    // 🔥 au chargement
+    updateMenuIcon(menuToggle.value);
+  
     menuToggle.addEventListener("change", e => {
       currentMenu = e.target.value;
+      updateMenuIcon(currentMenu);
       updateCards();
     });
   }
   
   if (langToggle) {
     langToggle.addEventListener("change", e => {
-      currentLang = e.target.value;
-      updateCards();
+  
+      const newLang = e.target.value;
+  
+      // 🔥 recharge la page avec param lang
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", newLang);
+      window.location.href = url.toString();
+  
     });
   }
 

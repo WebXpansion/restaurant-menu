@@ -1,49 +1,53 @@
-import "./index.js"; // force création tables
-import db from "./index.js";
-
+import { getPool } from "./postgres.js";
 import bcrypt from "bcrypt";
 
-const createSeed = async () => {
-  const exists = db
-    .prepare("SELECT id FROM restaurants WHERE slug = ?")
-    .get("demo");
 
-  if (exists) return;
+const createSeed = async () => {
+  const pool = getPool();
+
+  // Vérifier si déjà existant
+  const { rows: existing } = await pool.query(
+    `SELECT id FROM restaurants WHERE slug = $1`,
+    ["demo"]
+  );
+
+  if (existing[0]) {
+    console.log("🌱 Demo already exists");
+    return;
+  }
 
   console.log("🌱 Seeding demo data...");
 
-  const restaurant = db
-    .prepare("INSERT INTO restaurants (name, slug) VALUES (?, ?)")
-    .run("Restaurant Demo", "demo");
+  // Créer restaurant
+  const { rows: restaurantRows } = await pool.query(
+    `
+      INSERT INTO restaurants (name, slug, features, limits, languages, menus)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id
+    `,
+    [
+      "Restaurant Demo",
+      "demo",
+      { stats: true, googleReview: true },
+      { ar_limit: 10 },
+      ["fr", "en"],
+      ["lunch", "dinner"]
+    ]
+  );
 
+  const restaurantId = restaurantRows[0].id;
+
+  // Hash password
   const hash = await bcrypt.hash("admin123", 10);
 
-  db.prepare(`
-    UPDATE restaurants
-    SET
-      features = ?,
-      limits = ?,
-      languages = ?,
-      menus = ?
-    WHERE slug = ?
-  `).run(
-    JSON.stringify({
-      stats: true,
-      googleReview: true
-    }),
-    JSON.stringify({
-      ar_limit: 10
-    }),
-    JSON.stringify(["fr", "en"]),
-    JSON.stringify(["lunch", "dinner"]),
-    "demo"
+  // Créer user
+  await pool.query(
+    `
+      INSERT INTO users (restaurant_id, email, password_hash)
+      VALUES ($1, $2, $3)
+    `,
+    [restaurantId, "admin@demo.com", hash]
   );
-  
-  
-
-  db.prepare(
-    "INSERT INTO users (restaurant_id, email, password_hash) VALUES (?, ?, ?)"
-  ).run(restaurant.lastInsertRowid, "admin@demo.com", hash);
 
   console.log("✅ Demo created:");
   console.log("login: admin@demo.com");

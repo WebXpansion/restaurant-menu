@@ -1,5 +1,5 @@
 import express from "express";
-import db from "../db/index.js";
+import { getPool } from "../db/postgres.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
 
 
@@ -20,368 +20,383 @@ router.post("/test", (req, res) => {
 });
 
 
-router.post("/dish/:id/view", (req, res) => {
+router.post("/dish/:id/view", async (req, res) => {
+  const pool = getPool();
 
   if (!req.restaurant.features?.stats) {
     return res.sendStatus(204);
   }
 
-  const dishId = parseInt(req.params.id, 10);
+  const dishId = req.params.id;
 
-  // 🔒 Vérifier que le plat appartient au restaurant
-  const dish = db.prepare(`
+  const { rows } = await pool.query(`
     SELECT id FROM dishes
-    WHERE id = ?
-    AND restaurant_id = ?
-  `).get(dishId, req.restaurant.id);
+    WHERE id = $1
+    AND restaurant_id = $2
+  `, [dishId, req.restaurant.id]);
 
-  if (!dish) {
+  if (!rows[0]) {
     return res.sendStatus(204);
   }
 
-  db.prepare(`
-    INSERT INTO stats_dish_views (restaurant_id, dish_id, count)
-    VALUES (?, ?, 1)
-    ON CONFLICT(restaurant_id, dish_id)
-    DO UPDATE SET count = count + 1
-  `).run(req.restaurant.id, dishId);
-
-  db.prepare(`
+  await pool.query(`
     INSERT INTO stats_events (restaurant_id, type, dish_id)
-    VALUES (?, 'dish_view', ?)
-  `).run(req.restaurant.id, dishId);
+    VALUES ($1, $2, $3)
+  `, [req.restaurant.id, 'dish_view', dishId]);
+
+
 
   res.sendStatus(204);
 });
 
 
-router.get("/api/stats", requireAdmin, (req, res) => {
+router.get("/api/stats", requireAdmin, async (req, res) => {
+  const pool = getPool();
 
   const { period = "day" } = req.query;
   const restaurantId = req.restaurant.id;
 
-  let groupFormat;
-  let dateFilter = "";
+  let interval;
+  let dateTrunc;
 
   switch (period) {
     case "hour":
-      groupFormat = "%H:00";
-      dateFilter = "AND DATE(sp.created_at) = DATE('now')";
+      interval = "1 day";
+      dateTrunc = "hour";
       break;
 
     case "month":
-      groupFormat = "%Y-%m-%d";
-      dateFilter = "AND strftime('%Y-%m', sp.created_at) = strftime('%Y-%m', 'now')";
+      interval = "1 month";
+      dateTrunc = "day";
       break;
 
     case "year":
-      groupFormat = "%Y-%m";
-      dateFilter = "AND strftime('%Y', sp.created_at) = strftime('%Y', 'now')";
+      interval = "1 year";
+      dateTrunc = "month";
       break;
 
     default:
-      groupFormat = "%Y-%m-%d";
-      dateFilter = "AND sp.created_at >= datetime('now', '-7 days')";
+      interval = "7 days";
+      dateTrunc = "day";
   }
 
   /* =========================
      PAGE VIEWS
   ========================= */
 
-  const pageViews = db.prepare(`
+  const pageResult = await pool.query(`
     SELECT
-      strftime('${groupFormat}', sp.created_at) as label,
-      COUNT(*) as count
-    FROM stats_page_views sp
-    WHERE sp.restaurant_id = ?
-      ${dateFilter}
+      DATE_TRUNC('${dateTrunc}', created_at) AS label,
+      COUNT(*)::int AS count
+    FROM stats_events
+    WHERE restaurant_id = $1
+      AND type = 'page_view'
+      AND created_at >= NOW() - INTERVAL '${interval}'
     GROUP BY label
     ORDER BY label ASC
-  `).all(restaurantId);
+  `, [restaurantId]);
 
+  const pageViews = pageResult.rows;
 
   /* =========================
      DISH VIEWS
   ========================= */
 
-  const dishViews = db.prepare(`
+  const lang = req.restaurant.languages[0];
+
+  const dishResult = await pool.query(`
     SELECT
       d.id,
-      d.title_fr as title,
-      COUNT(s.id) as count
-    FROM stats_dish_views s
+      COALESCE(dt.title, 'Sans titre') AS title,
+      COUNT(*)::int AS count
+    FROM stats_events s
     JOIN dishes d ON d.id = s.dish_id
-    WHERE s.restaurant_id = ?
-      ${dateFilter.replace(/sp\./g, "s.")}
-    GROUP BY d.id
+    LEFT JOIN dish_translations dt
+      ON dt.dish_id = d.id
+      AND dt.language = $2
+    WHERE s.restaurant_id = $1
+      AND s.type = 'dish_view'
+    GROUP BY d.id, dt.title
     ORDER BY count DESC
-  `).all(restaurantId);
+  `, [restaurantId, lang]);
 
+  const dishViews = dishResult.rows;
 
   res.json({
     pageViews,
     dishViews,
     totals: {
-      pageViews: pageViews.reduce((a,b) => a + b.count, 0),
-      dishViews: dishViews.reduce((a,b) => a + b.count, 0)
+      pageViews: pageViews.reduce((a, b) => a + b.count, 0),
+      dishViews: dishViews.reduce((a, b) => a + b.count, 0)
     }
   });
-
 });
 
 
-router.get("/api/stats/dish/:id", requireAdmin, (req, res) => {
+router.get("/api/stats/dish/:id", requireAdmin, async (req, res) => {
+  const pool = getPool();
+
+  if (!req.restaurant.features?.advancedDishStats) {
+    return res.json([]);
+  }
 
   const { period = "day" } = req.query;
   const restaurantId = req.restaurant.id;
-  const dishId = parseInt(req.params.id);
+  const dishId = req.params.id;
 
-  let groupFormat;
-  let dateFilter = "";
+  let interval;
+  let dateTrunc;
 
   switch (period) {
     case "hour":
-      groupFormat = "%H:00";
-      dateFilter = "AND DATE(created_at) = DATE('now')";
+      interval = "1 day";
+      dateTrunc = "hour";
       break;
 
     case "month":
-      groupFormat = "%Y-%m-%d";
-      dateFilter = "AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')";
+      interval = "1 month";
+      dateTrunc = "day";
       break;
 
     case "year":
-      groupFormat = "%Y-%m";
-      dateFilter = "AND strftime('%Y', created_at) = strftime('%Y', 'now')";
+      interval = "1 year";
+      dateTrunc = "month";
       break;
 
     default:
-      groupFormat = "%Y-%m-%d";
-      dateFilter = "AND created_at >= datetime('now', '-7 days')";
+      interval = "7 days";
+      dateTrunc = "day";
   }
 
-  const data = db.prepare(`
+  const result = await pool.query(`
     SELECT
-      strftime('${groupFormat}', created_at) as label,
-      COUNT(*) as count
-    FROM stats_dish_views
-    WHERE restaurant_id = ?
-      AND dish_id = ?
-      ${dateFilter}
+      DATE_TRUNC('${dateTrunc}', created_at) AS label,
+      COUNT(*)::int AS count
+    FROM stats_events
+    WHERE restaurant_id = $1
+      AND dish_id = $2
+      AND type = 'dish_view'
+      AND created_at >= NOW() - INTERVAL '${interval}'
     GROUP BY label
     ORDER BY label ASC
-  `).all(restaurantId, dishId);
+  `, [restaurantId, dishId]);
 
-  res.json(data);
+  res.json(result.rows);
 });
 
 
-router.get("/qr", requireAdmin, (req, res) => {
+router.get("/qr", requireAdmin, async (req, res) => {
+  const pool = getPool();
 
   const { period = "day" } = req.query;
   const restaurantId = req.restaurant.id;
 
-  let groupFormat;
-  let dateFilter = "";
+  let interval;
+  let dateTrunc;
 
   switch (period) {
-
     case "hour":
-      groupFormat = "%H:00";
-      dateFilter = "AND DATE(created_at) = DATE('now')";
+      interval = "1 day";
+      dateTrunc = "hour";
       break;
 
     case "month":
-      groupFormat = "%Y-%m-%d";
-      dateFilter = "AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')";
+      interval = "1 month";
+      dateTrunc = "day";
       break;
 
     case "year":
-      groupFormat = "%Y-%m";
-      dateFilter = "AND strftime('%Y', created_at) = strftime('%Y', 'now')";
+      interval = "1 year";
+      dateTrunc = "month";
       break;
 
-    default: // day
-      groupFormat = "%H:00";
-      dateFilter = "AND DATE(created_at) = DATE('now')";
+    default:
+      interval = "1 day";
+      dateTrunc = "hour";
   }
 
-  const rows = db.prepare(`
+  const result = await pool.query(`
     SELECT
-      strftime('${groupFormat}', created_at) as label,
-      COUNT(*) as count
+      DATE_TRUNC('${dateTrunc}', created_at) AS label,
+      COUNT(*)::int AS count
     FROM stats_events
-    WHERE restaurant_id = ?
+    WHERE restaurant_id = $1
       AND type = 'qr_scan'
-      ${dateFilter}
+      AND created_at >= NOW() - INTERVAL '${interval}'
     GROUP BY label
     ORDER BY label ASC
-  `).all(restaurantId);
+  `, [restaurantId]);
 
-  const labels = rows.map(r => r.label);
-  const values = rows.map(r => r.count);
+  const labels = result.rows.map(r => r.label);
+  const values = result.rows.map(r => r.count);
 
   res.json({ labels, values });
 });
 
-
 router.get(
   "/api/stats/compare",
   requireAdmin,
-  (req, res) => {
+  async (req, res) => {
+
+    const pool = getPool();
 
     const { period = "day" } = req.query;
     const restaurantId = req.restaurant.id;
 
-    let format = "%Y-%m-%d";
-    let shift = "-1 day";
-    let startOf = "day";
+    let interval;
+    let dateTrunc;
 
     switch (period) {
-
       case "hour":
-        format = "%Y-%m-%d %H";
-        shift = "-1 hour";
-        startOf = "hour";
+        interval = "1 hour";
+        dateTrunc = "hour";
         break;
 
       case "month":
-        format = "%Y-%m";
-        shift = "-1 month";
-        startOf = "month";
+        interval = "1 month";
+        dateTrunc = "day";
         break;
 
       case "year":
-        format = "%Y";
-        shift = "-1 year";
-        startOf = "year";
+        interval = "1 year";
+        dateTrunc = "month";
         break;
 
       default:
-        format = "%Y-%m-%d";
-        shift = "-1 day";
-        startOf = "day";
+        interval = "1 day";
+        dateTrunc = "day";
     }
 
     /* =========================
        CURRENT PERIOD
     ========================= */
 
-    const current = db.prepare(`
+    const currentResult = await pool.query(`
       SELECT
-        strftime('${format}', created_at) AS label,
-        COUNT(*) AS count
+        DATE_TRUNC('${dateTrunc}', created_at) AS label,
+        COUNT(*)::int AS count
       FROM stats_events
-      WHERE restaurant_id = ?
+      WHERE restaurant_id = $1
         AND type = 'page_view'
-        AND created_at >= datetime('now', 'start of ${startOf}')
+        AND created_at >= DATE_TRUNC('${dateTrunc}', NOW())
       GROUP BY label
       ORDER BY label ASC
-    `).all(restaurantId);
+    `, [restaurantId]);
 
     /* =========================
        PREVIOUS PERIOD
     ========================= */
 
-    const previous = db.prepare(`
+    const previousResult = await pool.query(`
       SELECT
-        strftime('${format}', created_at) AS label,
-        COUNT(*) AS count
+        DATE_TRUNC('${dateTrunc}', created_at) AS label,
+        COUNT(*)::int AS count
       FROM stats_events
-      WHERE restaurant_id = ?
+      WHERE restaurant_id = $1
         AND type = 'page_view'
-        AND created_at >= datetime('now', 'start of ${startOf}', '${shift}')
-        AND created_at <  datetime('now', 'start of ${startOf}')
+        AND created_at >= DATE_TRUNC('${dateTrunc}', NOW()) - INTERVAL '${interval}'
+        AND created_at <  DATE_TRUNC('${dateTrunc}', NOW())
       GROUP BY label
       ORDER BY label ASC
-    `).all(restaurantId);
+    `, [restaurantId]);
 
-    res.json({ current, previous });
+    res.json({
+      current: currentResult.rows,
+      previous: previousResult.rows
+    });
   }
 );
 
+
+
 router.post(
   "/dish/:id/ar",
-  (req, res) => {
+  async (req, res) => {
+
+    const pool = getPool();
 
     if (!req.restaurant.features?.stats) {
       return res.sendStatus(204);
     }
 
-    const dishId = parseInt(req.params.id, 10);
+    const dishId = req.params.id;
 
     // 🔒 Vérifier que le plat appartient bien au restaurant
-    const dish = db.prepare(`
+    const { rows } = await pool.query(`
       SELECT id FROM dishes
-      WHERE id = ?
-      AND restaurant_id = ?
-    `).get(dishId, req.restaurant.id);
+      WHERE id = $1
+      AND restaurant_id = $2
+    `, [dishId, req.restaurant.id]);
 
-    if (!dish) {
+    if (!rows[0]) {
       return res.sendStatus(204);
     }
 
-    db.prepare(`
+    await pool.query(`
       INSERT INTO stats_events (restaurant_id, type, dish_id)
-      VALUES (?, 'dish_ar_view', ?)
-    `).run(req.restaurant.id, dishId);
+      VALUES ($1, $2, $3)
+    `, [req.restaurant.id, 'dish_ar_view', dishId]);
 
     res.sendStatus(200);
   }
 );
 
+
 router.get(
   "/api/stats/dish/:id/ar",
   requireAdmin,
-  (req, res) => {
+  async (req, res) => {
+
+    const pool = getPool();
+
+    if (!req.restaurant.features?.advancedDishStats) {
+      return res.json([]);
+    }
 
     const { period = "day" } = req.query;
     const restaurantId = req.restaurant.id;
-    const dishId = parseInt(req.params.id);
+    const dishId = req.params.id;
 
-    let groupFormat;
-    let dateFilter = "";
+    let interval;
+    let dateTrunc;
 
     switch (period) {
-
       case "hour":
-        groupFormat = "%H:00";
-        dateFilter = "AND DATE(s.created_at) = DATE('now')";
+        interval = "1 day";
+        dateTrunc = "hour";
         break;
 
       case "month":
-        groupFormat = "%Y-%m-%d";
-        dateFilter = "AND strftime('%Y-%m', s.created_at) = strftime('%Y-%m', 'now')";
+        interval = "1 month";
+        dateTrunc = "day";
         break;
 
       case "year":
-        groupFormat = "%Y-%m";
-        dateFilter = "AND strftime('%Y', s.created_at) = strftime('%Y', 'now')";
+        interval = "1 year";
+        dateTrunc = "month";
         break;
 
       default:
-        groupFormat = "%Y-%m-%d";
-        dateFilter = "AND s.created_at >= datetime('now', '-7 days')";
+        interval = "7 days";
+        dateTrunc = "day";
     }
 
-    const data = db.prepare(`
+    const result = await pool.query(`
       SELECT
-        strftime('${groupFormat}', s.created_at) AS label,
-        COUNT(*) AS count
-      FROM stats_dish_ar_views s
-      JOIN dishes d ON d.id = s.dish_id
-      WHERE s.restaurant_id = ?
-        AND s.dish_id = ?
-        AND d.status = 'published'
-        ${dateFilter}
+        DATE_TRUNC('${dateTrunc}', created_at) AS label,
+        COUNT(*)::int AS count
+      FROM stats_events
+      WHERE restaurant_id = $1
+        AND dish_id = $2
+        AND type = 'dish_ar_view'
+        AND created_at >= NOW() - INTERVAL '${interval}'
       GROUP BY label
       ORDER BY label ASC
-    `).all(restaurantId, dishId);
+    `, [restaurantId, dishId]);
 
-    res.json(data);
+    res.json(result.rows);
   }
 );
-
 
 
 export default router;

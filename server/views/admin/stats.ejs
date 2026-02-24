@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="/css/admin.css">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="/css/admin.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="/vendor/chart/chart.umd.min.js"></script>
 
 <style>
 
@@ -11,11 +12,23 @@
     margin-bottom: 6px;
   }
 
+  img.icon-view-stats{
+    width: 14px;
+    height: auto;
+}
+
   .subtitle {
     color: #666;
     font-size: 15px;
     margin-bottom: 32px;
   }
+
+  .dish-row span {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
 
   .stats-grid {
     display: grid;
@@ -33,8 +46,8 @@
   }
 
   .card.full {
-    grid-column: 1 / -1;
-  }
+  grid-column: 1 / -1;
+}
 
   .card-header {
     display: flex;
@@ -118,7 +131,48 @@
     .split {
       grid-template-columns: 1fr;
     }
+
+    .stats-grid{
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
   }
+
+  .dish-stats-wrapper {
+  position: relative;
+  grid-column: 1 / -1;
+}
+
+
+
+.stats-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  z-index: 10;
+  border-radius: 12px;
+}
+
+.stats-overlay-content {
+  max-width: 420px;
+}
+
+.stats-overlay h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.stats-overlay p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
 </style>
 
 <%- include("partials/header", { restaurant, active: "stats" }) %>
@@ -133,7 +187,7 @@
 <div class="stats-grid">
 
   <!-- ===== PAGE VIEWS ===== -->
-  <div class="card">
+  <div class="card full">
     <div class="card-header">
       <div>
         <h3>
@@ -196,6 +250,22 @@
   
 
   <!-- ===== DISH TIMELINE ===== -->
+<div class="dish-stats-wrapper">
+
+  <% if (!restaurant.features?.advancedDishStats) { %>
+    <div class="stats-overlay">
+      <div class="stats-overlay-content">
+        <h3>Débloquez les statistiques avancées</h3>
+        <p>
+          Analysez la performance de chaque plat :
+          consultations par heure, évolution journalière
+          et engagement en réalité augmentée.
+          Passez à <strong>l’offre Excellence </strong>pour accéder à l’analyse complète.
+        </p>
+      </div>
+    </div>
+  <% } %>
+
   <div class="card full">
     <div class="card-header">
       <h3>Consultations par plat</h3>
@@ -228,6 +298,8 @@
       Sélectionnez un plat pour afficher ses statistiques
     </p>
   </div>
+
+</div>
 
 </div>
 </div>

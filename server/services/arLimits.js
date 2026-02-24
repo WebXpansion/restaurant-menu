@@ -1,20 +1,26 @@
-import db from "../db/index.js";
+import { getPool } from "../db/postgres.js";
 
-export function canEnableAR(restaurantId, maxAllowed) {
+export async function canEnableAR(restaurantId, maxAllowed) {
 
   // illimité si null ou undefined
   if (maxAllowed == null) {
     return true;
   }
 
-  const row = db.prepare(`
-    SELECT COUNT(*) as total
-    FROM dishes
-    WHERE restaurant_id = ?
-      AND has_ar = 1
-  `).get(restaurantId);
+  const pool = getPool();
 
-  const currentCount = row?.total ?? 0;
+  const { rows } = await pool.query(
+    `
+      SELECT COUNT(*)::int AS total
+      FROM dishes
+      WHERE restaurant_id = $1
+        AND has_ar = true
+        AND status = 'published'
+    `,
+    [restaurantId]
+  );
+
+  const currentCount = rows[0]?.total ?? 0;
 
   return currentCount < maxAllowed;
 }

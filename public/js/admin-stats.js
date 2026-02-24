@@ -115,7 +115,7 @@ function renderTopDishes(dishes) {
 
     row.innerHTML = `
       <strong>${d.title}</strong>
-      <span>${d.count} 👁️</span>
+      <span>${d.count} <img src="/icons/view.svg" class="icon-view-stats"></span>
     `;
 
     container.appendChild(row);

@@ -251,6 +251,12 @@
     font-size: 16px;
     line-height: 20px;
   }
+
+  a#ar-btn {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
   
   /* RESPONSIVE */
   @media (min-width: 768px) {
@@ -496,6 +502,8 @@
     justify-content:center;
     flex:1;
   }
+
+  
   
   .switch-pill {
     display:flex;
@@ -507,6 +515,8 @@
     backdrop-filter: blur(10px);
     color:white;
     font-weight:600;
+
+    width: auto;
   }
   
   .lang-pill {
@@ -524,6 +534,9 @@
     font-weight:600;
     outline:none;
     cursor:pointer;
+    width: auto;              
+    min-width: unset;     
+    display: inline-block;    
   }
   
   .switch-select option {

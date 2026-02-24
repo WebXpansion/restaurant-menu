@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.6.2",
+    "chart.js": "^4.5.1",
     "cloudinary": "^2.9.0",
     "compression": "^1.8.1",
     "csurf": "^1.11.0",
@@ -24,6 +24,7 @@
     "express-session": "^1.19.0",
     "helmet": "^8.1.0",
     "multer": "^2.0.2",
+    "pg": "^8.18.0",
     "qrcode": "^1.5.4",
     "streamifier": "^0.1.1",
     "three": "^0.182.0"

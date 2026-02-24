@@ -26,6 +26,10 @@
       margin-bottom: 6px;
     }
 
+    p{
+      margin: 0;
+    }
+
     .subtitle {
       font-size: 15px;
       color: #666;
@@ -34,12 +38,23 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 12px;
     }
 
+    .inner-cart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
     .card {
-      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid white;
+      gap: 24px;
+      background: #FAFAFA;
       border-radius: 20px;
       padding: 28px;
       box-shadow:
@@ -48,6 +63,7 @@
       text-decoration: none;
       color: inherit;
       transition: transform .15s ease, box-shadow .15s ease;
+      min-height: 90px;
     }
 
     .card:hover {
@@ -57,9 +73,9 @@
         0 4px 10px rgba(0,0,0,.08);
     }
 
-    .icon {
-      font-size: 28px;
-      margin-bottom: 16px;
+    .icon img {
+      width: 64px;
+      height: auto;
     }
 
     .card h3 {
@@ -68,7 +84,7 @@
 
     .card p {
       font-size: 14px;
-      color: #666;
+      color: #bdbdbd;
       line-height: 1.4;
     }
 
@@ -78,6 +94,58 @@
       color: #888;
       text-align: center;
     }
+
+    .card-locked {
+  opacity: 1;
+  cursor: pointer;
+  position: relative;
+}
+
+.badge-locked {
+  font-size: 11px;
+    background: #AD1A1A;
+    padding: 4px 8px;
+    color: white;
+    border-radius: 28px;
+    margin-left: 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 12px;
+}
+
+.upgrade-text {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #777;
+}
+
+
+@media screen and (max-width:760px){
+  .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .card p{
+      font-size: 12px;
+    }
+
+    .card h3{
+      font-size: 16px;
+    }
+
+    .card{
+      padding: 14px;
+    }
+
+    .icon img {
+    width: 44px;
+}
+}
+
   </style>
 </head>
 
@@ -95,42 +163,126 @@
   <div class="grid">
 
     <!-- STATS -->
-    <a href="/admin/stats" class="card">
-      <div class="icon">📊</div>
+    <% const features = restaurant.features || {}; %>
+    
+    
+
+    <a 
+    href="<%= features.stats ? '/admin/stats' : '#' %>"
+    class="card <%= features.stats ? '' : 'card-locked' %>"
+    <% if (!features.stats) { %>
+      data-locked="stats"
+    <% } %>
+  >
+    <div class="icon">
+      <img src="/icons/starter.webp">
+    </div>
+  
+    <div class="inner-cart">
       <h3>Statistiques</h3>
       <p>
         Suivez les consultations du menu, des plats
         et la réalité augmentée.
       </p>
-    </a>
+    </div>
+  
+    <% if (!features.stats) { %>
+      <span class="badge-locked">Offre 2 minimum</span>
+    <% } %>
+  </a>
+
+
 
     <!-- DISHES -->
     <a href="/admin/dishes" class="card">
-      <div class="icon">🍽️</div>
-      <h3>Plats</h3>
-      <p>
-        Créez, modifiez et gérez les plats
-        visibles sur votre menu.
-      </p>
+      <div class="icon">
+        <img src="/icons/dessert.webp">
+      </div>
+      <div class="inner-cart">
+        <h3>Plats</h3>
+        <p>
+          Créez, modifiez et gérez les plats
+          visibles sur votre menu.
+        </p>
+      </div>
     </a>
 
-    <!-- SETTINGS -->
-    <a href="/admin/settings" class="card">
-      <div class="icon">⚙️</div>
-      <h3>Paramètres</h3>
-      <p>
-        Configurez les options du restaurant,
-        avis Google et fonctionnalités.
-      </p>
-    </a>
+          <!-- Publicatoins -->
+          <a href="/admin/publication" class="card">
+            <div class="icon">
+              <img src="/icons/dinner.webp">
+            </div>
+            <div class="inner-cart">
+              <h3>Publications</h3>
+              <p>
+                Configurez les options du restaurant,
+                avis Google et fonctionnalités.
+              </p>
+          </div>
+          </a>
+
+<!-- SETTINGS -->
+<a 
+  href="<%= features.googleReview ? '/admin/settings' : '#' %>"
+  class="card <%= features.googleReview ? '' : 'card-locked' %>"
+  <% if (!features.googleReview) { %>
+    data-locked="reviews"
+  <% } %>
+>
+  <div class="icon">
+    <img src="/icons/drink.webp">
+  </div>
+
+  <div class="inner-cart">
+    <h3>Avis</h3>
+    <p>
+      Consultez et modérez les avis clients
+      pour améliorer votre réputation.
+    </p>
+  </div>
+
+  <% if (!features.googleReview) { %>
+    <span class="badge-locked">Offre 2 minimum</span>
+  <% } %>
+</a>
+
+
 
   </div>
 
-  <div class="footer">
-    Menu digital — Interface administrateur
+
+  <div id="upgrade-modal" class="upgrade-modal">
+    <div class="upgrade-content">
+  
+      <button id="upgrade-close" class="upgrade-close">✕</button>
+  
+      <h2>Débloquez les Statistiques</h2>
+  
+      <p>
+        Analysez les vues de vos plats,
+        les scans QR et les interactions AR.
+      </p>
+  
+      <div class="upgrade-video">
+        <video 
+          src="/videos/stats-preview.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+      </div>
+  
+      <a href="/admin/billing" class="upgrade-btn">
+        Passer à l’offre 2
+      </a>
+  
+    </div>
   </div>
 
 </div>
+
+<script src="/js/admin-dashboard.js"></script>
 
 </body>
 </html>

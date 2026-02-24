@@ -27,59 +27,6 @@ body {
     padding: 0 20px;
   }
   
-  /* ===== ADMIN HEADER ===== */
-  
-  .admin-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: white;
-    border-bottom: 1px solid #eee;
-    padding: 18px 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-  }
-  
-  .logo {
-    font-weight: 700;
-    font-size: 16px;
-  }
-  
-  .nav {
-    display: flex;
-    gap: 24px;
-  }
-  
-  .nav a {
-    text-decoration: none;
-    color: #555;
-    font-size: 16px;
-    padding-bottom: 4px;
-  }
-  
-  .nav a.active {
-    color: #000;
-    font-weight: 600;
-    border-bottom: 2px solid #000;
-  }
-  
-  .header-right {
-    font-size: 14px;
-    color: #555;
-  }
-  
-  .plan {
-    background: #f3f3f3;
-    padding: 6px 12px;
-    border-radius: 999px;
-  }
   
   /* ===== UI ELEMENTS ===== */
   
@@ -168,4 +115,257 @@ body {
 
   div#topDishes {
     color: #000;
+    height: 296px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    
+}
+
+/* =========================================
+   HEADER BASE
+========================================= */
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: transparent;
+  padding: 12px 16px;
+}
+
+.header-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 12px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* =========================================
+   LOGO
+========================================= */
+
+.logo img {
+  height: 32px;
+  display: block;
+}
+
+/* =========================================
+   NAV DESKTOP
+========================================= */
+
+.nav-desktop {
+  display: none;
+  gap: 32px;
+}
+
+.nav-desktop a {
+  text-decoration: none;
+  color: #9a9a9a;
+  font-weight: 500;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.nav-desktop a.active {
+  color: #000;
+  font-weight: 600;
+}
+
+.nav-desktop a:hover {
+  color: #000;
+}
+
+/* =========================================
+   RIGHT SIDE
+========================================= */
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Icon buttons */
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  transition: 0.2s ease;
+  color: black;
+}
+
+.icon-btn:hover {
+  background: #f1f1f1;
+}
+
+/* Plan badge */
+
+.plan-badge {
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+/* =========================================
+   HAMBURGER
+========================================= */
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: #000;
+}
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+.mobile-close {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 24px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  text-align: center;
+  font-size: 30px;
+}
+
+.mobile-nav a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+
+}
+
+.mobile-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =========================================
+   DESKTOP BREAKPOINT
+========================================= */
+
+@media (min-width: 768px) {
+
+  .hamburger {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  .nav-desktop {
+    display: flex;
+  }
+}
+
+
+/* =========================================
+overlay
+========================================= */
+.upgrade-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.upgrade-modal.open {
+  display: flex;
+}
+
+.upgrade-content h2{
+  padding-top: 32px;
+}
+
+.upgrade-content p{
+  padding-top: 12px;
+  font-size: 14px;
+}
+
+.upgrade-content {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+}
+
+.upgrade-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+}
+
+.upgrade-video video {
+  width: 100%;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.upgrade-btn {
+  display: block;
+  background: black;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  text-decoration: none;
 }
