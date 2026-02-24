@@ -35,6 +35,9 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const restaurant = req.restaurant;
 
+  console.log("Email entered:", email);  
+  console.log("Password entered:", password); 
+
   const { rows } = await pool.query(
     `
       SELECT *
