@@ -90,12 +90,12 @@ app.use(
      resave: false,
      saveUninitialized: false,
      cookie: {
-       httpOnly: true,
-       sameSite: "None",  // Permet de partager le cookie entre sous-domaines
-       secure: process.env.NODE_ENV === "production",  // True en production seulement
-       domain: ".onrender.com",  // Important pour partager le cookie entre sous-domaines
-       maxAge: 1000 * 60 * 60 * 4,  // 4 heures
-     }
+      httpOnly: true,
+      sameSite: "None",  // Important pour permettre le partage de cookies entre sous-domaines
+      secure: process.env.NODE_ENV === "production", // `true` uniquement en production
+      domain: process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost", // Adapté pour production ou dev
+      maxAge: 1000 * 60 * 60 * 4,
+  }
    })
  );
 
