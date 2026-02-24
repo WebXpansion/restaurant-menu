@@ -97,6 +97,11 @@ app.use(
    })
  );
 
+ app.use((req, res, next) => {
+   console.log("Session Cookie:", req.cookies);
+   next();
+ });
+
 
 /* ========================
    STATIC FILES (TOUJOURS EN PREMIER)
