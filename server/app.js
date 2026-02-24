@@ -91,14 +91,13 @@ app.use(
      saveUninitialized: false,
      cookie: {
        httpOnly: true,
-       sameSite: "strict",
-       secure: false,
-       domain: ".onrender.com",  // Important pour partager entre les sous-domaines
-       maxAge: 1000 * 60 * 60 * 4
+       sameSite: "None",  // Permet de partager le cookie entre sous-domaines
+       secure: process.env.NODE_ENV === "production",  // True en production seulement
+       domain: ".onrender.com",  // Important pour partager le cookie entre sous-domaines
+       maxAge: 1000 * 60 * 60 * 4,  // 4 heures
      }
    })
  );
-
 
 
  app.use((req, res, next) => {

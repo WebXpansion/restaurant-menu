@@ -1,8 +1,7 @@
 export function requireAdmin(req, res, next) {
-  console.log("SESSION USER (requireAdmin):", req.session.user);
+  console.log("SESSION USER (requireAdmin):", req.session.user); 
 
   console.log("REQ RESTAURANT:", req.restaurant.id);
-  console.log("SESSION USER (requireAdmin):", req.session.user);
   console.log("TYPES:",
     typeof req.session.user?.restaurant_id,
     typeof req.restaurant.id
