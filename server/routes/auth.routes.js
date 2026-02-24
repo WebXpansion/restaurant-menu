@@ -72,8 +72,9 @@ router.post("/login", async (req, res) => {
     id: user.id,
     restaurant_id: restaurant.id,
   };
-  console.log("Utilisateur connecté :", req.session.user);
-  console.log("Redirection vers /admin/dashboard");
+
+  console.log("SESSION AFTER LOGIN:", req.session); 
+  
   res.redirect("/admin/dashboard");
 });
 
