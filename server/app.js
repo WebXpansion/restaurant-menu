@@ -85,17 +85,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+app.set("trust proxy", 1); // IMPORTANT sur Render
+
 app.use(
-   session({
-     secret: process.env.SESSION_SECRET,
-     resave: false,
-     saveUninitialized: false,
-     cookie: {
-       httpOnly: true,
-       maxAge: 1000 * 60 * 60 * 4
-     }
-   })
- );
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: true,              // HTTPS only
+      sameSite: "lax",           // protection CSRF basique
+      maxAge: 1000 * 60 * 60 * 4
+    }
+  })
+);
 
 
  app.use((req, res, next) => {
