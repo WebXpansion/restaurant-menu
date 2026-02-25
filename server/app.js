@@ -45,7 +45,8 @@ app.use(
  
          scriptSrc: [
            "'self'",
-           "'unsafe-inline'"
+           "'unsafe-inline'",
+           "https://player.vimeo.com"
          ],
  
          styleSrc: [
@@ -56,8 +57,9 @@ app.use(
          imgSrc: [
            "'self'",
            "data:",
-           "blob:",   
-           "https://res.cloudinary.com"
+           "blob:",
+           "https://res.cloudinary.com",
+           "https://i.vimeocdn.com"
          ],
  
          mediaSrc: [
@@ -67,14 +69,15 @@ app.use(
  
          connectSrc: [
            "'self'",
-           "https://res.cloudinary.com" ,
-           "blob:" 
+           "https://res.cloudinary.com",
+           "https://player.vimeo.com",
+           "blob:"
          ],
-
+ 
          frameSrc: [
-            "'self'",
-            "https://player.vimeo.com"
-          ],
+           "'self'",
+           "https://player.vimeo.com"
+         ],
  
          objectSrc: ["'none'"],
          frameAncestors: ["'none'"]
