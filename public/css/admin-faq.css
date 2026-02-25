@@ -1,0 +1,94 @@
+/* Layout */
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  .faq-actions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .btn-black {
+    background: #000;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
+  
+  .btn-black:hover {
+    background: #111;
+    transform: translateY(-2px);
+  }
+  
+  /* Accordion */
+  
+  .faq-item {
+    background: #f4f4f4;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    padding: 0 22px;
+  }
+  
+  .faq-item.active .faq-answer {
+    max-height: 800px;
+    padding-bottom: 22px;
+  }
+  
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+  
+  .faq-item.active .arrow {
+    transform: rotate(180deg);
+  }
+  
+  /* Vimeo */
+  
+  .video-wrapper {
+    position: relative;
+    padding-top: 56.25%;
+    margin-bottom: 20px;
+  }
+  
+  .video-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Mobile */
+  
+  @media (max-width: 768px) {
+    .faq-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+  }

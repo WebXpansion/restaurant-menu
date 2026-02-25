@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="/css/admin-faq.css">
+
+<section class="faq-header">
+  <div>
+    <h1>Aide</h1>
+    <p>Vous avez des questions ? Consultez notre FAQ ou contactez-nous</p>
+  </div>
+
+  <div class="faq-actions">
+    <a href="mailto:support@plateview.fr" class="btn-black">
+      Mail
+    </a>
+
+    <a href="tel:+33600000000" class="btn-black">
+      Nous contacter
+    </a>
+  </div>
+</section>
+
+<section class="faq-list">
+
+  <% const questions = [
+    { title: "Comment ajouter/modifier et supprimer un plat" },
+    { title: "Consulter les statistiques" },
+    { title: "Créer une publication" },
+    { title: "Ajouter/Modifier un lien pour récolter des avis google" },
+    { title: "Je peux changer d’offre à tout moment ?" },
+    { title: "Je rencontre un problème sur le site ?" },
+    { title: "Je peux commander plus de stickers ?" }
+  ]; %>
+
+  <% questions.forEach((q, index) => { %>
+    <div class="faq-item" data-index="<%= index %>">
+
+      <button class="faq-question">
+        <span><%= q.title %></span>
+        <span class="arrow">⌄</span>
+      </button>
+
+      <div class="faq-answer">
+
+        <!-- VIDEO -->
+        <div class="video-wrapper">
+          <iframe 
+            src="https://player.vimeo.com/video/1141370744"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <p>
+          Ici vous pouvez expliquer en détail la procédure avec texte.
+        </p>
+
+      </div>
+
+    </div>
+  <% }) %>
+
+</section>
+
+<script src="/js/admin-faq.js"></script>

@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cookieParser from "cookie-parser";
-
+import faqRoutes from "./routes/faq.routes.js";
 
 import internalRoutes from "./routes/internal.routes.js";
 
@@ -194,6 +194,7 @@ app.use("/", publicRoutes);
 app.use("/admin", passwordRoutes);
 app.use("/admin", authRoutes);
 app.use("/admin", requireAdminRestaurant, dishRoutes);
+app.use("/admin/faq", faqRoutes);
 
 
 /* ========================
