@@ -62,9 +62,6 @@
     cursor: pointer;
   }
 
-  p{
-    color: #adadad;
-  }
 
   .subtitle p {
         font-size: 15px;
@@ -134,9 +131,7 @@
     margin-bottom: 6px;
   }
   
-  .account-header p {
-    opacity: 0.6;
-  }
+
   
   .account-item {
     background: #FFF;
