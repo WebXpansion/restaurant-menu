@@ -6,8 +6,6 @@ import { fileURLToPath } from "url";
 import { getPool } from "../db/postgres.js";
 
 
-console.log("POSTGRES FILE LOADED");
-console.log("DATABASE_URL inside postgres.js:", process.env.DATABASE_URL);
 
 const router = express.Router();
 
@@ -29,8 +27,7 @@ router.get("/login", (req, res) => {
 ========================= */
 
 router.post("/login", async (req, res) => {
-  console.log("Email entered:", req.body.email);
-  console.log("Password entered:", req.body.password);
+
   
   const pool = getPool();
   const { email, password } = req.body;
@@ -49,7 +46,7 @@ router.post("/login", async (req, res) => {
   );
 
   const user = rows[0];
-  console.log("User found:", user);
+
 
   if (!user) {
     return res.render("admin/login", {
@@ -59,7 +56,7 @@ router.post("/login", async (req, res) => {
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);
-  console.log("Password valid:", valid);
+
 
   if (!valid) {
     return res.render("admin/login", {
@@ -73,8 +70,6 @@ router.post("/login", async (req, res) => {
     restaurant_id: restaurant.id,
   };
 
-  console.log("SESSION AFTER LOGIN:", req.session); 
-  console.log("Redirection vers /admin/dashboard");
 
   res.redirect("/admin/dashboard");
 });

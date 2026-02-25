@@ -28,22 +28,24 @@ export const uploadToCloudinary = (
 
   return new Promise((resolve, reject) => {
 
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-        resource_type: resourceType,
-        overwrite: false,
-        transformation:
-          resourceType === "image"
-            ? [
-                { width: 1600, crop: "limit" }, // max largeur
-                { quality: "auto:good" },       // compression intelligente
-                { fetch_format: "auto" },
-                { dpr: "auto" }
-              ]
-            : undefined
-      },
+    const options = {
+      folder,
+      resource_type: resourceType,
+      overwrite: false
+    };
     
+    // 🔥 Appliquer transformation uniquement aux images classiques
+    if (resourceType === "image" && !folder.includes("dishes")) {
+      options.transformation = [
+        { width: 1600, crop: "limit" },
+        { quality: "auto:good" },
+        { fetch_format: "auto" },
+        { dpr: "auto" }
+      ];
+    }
+    
+    const stream = cloudinary.uploader.upload_stream(
+      options,
       (error, result) => {
         if (error) reject(error);
         else resolve(result);
