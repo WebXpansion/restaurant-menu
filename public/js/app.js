@@ -76,15 +76,12 @@ if (closeBtn) {
 
 if (arBtn) {
   arBtn.addEventListener("click", () => {
-
     const dishId = arBtn.dataset.id;
-
     if (!dishId) return;
 
     fetch(`/stats/ar/${dishId}`, {
       method: "POST"
     });
-
   });
 }
 
@@ -131,11 +128,17 @@ document.addEventListener("click", function(e) {
 
   sheet.classList.add("open");
   if (arBtn) {
-    if (card.dataset.glb && card.dataset.glb.trim() !== "") {
+
+    const usdz = card.dataset.usdz;
+  
+    if (usdz && usdz.trim() !== "") {
       arBtn.style.display = "inline-flex";
+      arBtn.setAttribute("href", usdz);   // 🔥 CRUCIAL
     } else {
       arBtn.style.display = "none";
+      arBtn.removeAttribute("href");
     }
+  
   }
 
   history.pushState(
