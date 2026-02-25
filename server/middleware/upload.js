@@ -30,12 +30,12 @@ export const uploadToCloudinary = (
 
     const options = {
       folder,
-      resource_type: resourceType,
+      resource_type: resourceType === "raw" ? "raw" : "image",
       overwrite: false
     };
     
-    // 🔥 Appliquer transformation uniquement aux images classiques
-    if (resourceType === "image" && !folder.includes("dishes")) {
+    // 🔥 Appliquer transformation UNIQUEMENT aux vraies images (pas aux raw)
+    if (resourceType === "image") {
       options.transformation = [
         { width: 1600, crop: "limit" },
         { quality: "auto:good" },

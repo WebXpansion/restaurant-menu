@@ -221,7 +221,7 @@ router.post(
         const result = await uploadToCloudinary(
           req.files.usdz[0].buffer,
           folder,
-          "image"   
+          "raw"   
         );
         usdzPath = result.secure_url;
       }
@@ -625,7 +625,7 @@ router.post(
       const result = await uploadToCloudinary(
         req.files.usdz[0].buffer,
         folder,
-        "image"  
+        "raw"  
       );
       usdzPath = result.secure_url;
     }
