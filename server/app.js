@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import faqRoutes from "./routes/faq.routes.js";
 
 import internalRoutes from "./routes/internal.routes.js";
-
+import accountRoutes from "./routes/account.routes.js";
 import session from "express-session";
 import helmet from "helmet";
 import compression from "compression";
@@ -119,7 +119,7 @@ app.use(
 /* ========================
    STATIC FILES (TOUJOURS EN PREMIER)
 ======================== */
-
+app.use("/admin/account", accountRoutes);
 app.use(
    "/admin/publication",
    requireAdminRestaurant,

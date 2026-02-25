@@ -1,0 +1,48 @@
+<link rel="stylesheet" href="/css/admin-faq.css">
+<link rel="stylesheet" href="/css/admin.css">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<%- include("partials/header") %>
+
+<div class="container">
+
+  <section class="account-header">
+    <h1>Mon compte</h1>
+    <p>Informations de votre compte</p>
+  </section>
+
+  <section class="account-list">
+
+    <!-- EMAIL -->
+    <div class="account-item">
+      <div class="account-label">Email</div>
+      <div class="account-value"><%= email %></div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="account-item">
+      <div class="account-label">Mot de passe</div>
+
+      <div class="account-action">
+        <a href="/admin/forgot-password" class="btn-black">
+          Modifier le mot de passe
+        </a>
+        <span class="masked">********</span>
+      </div>
+    </div>
+
+    <!-- PLAN -->
+    <div class="account-item">
+      <div class="account-label">Votre plan</div>
+
+      <div class="account-action">
+        <a href="https://plateview.fr/pricing" target="_blank" class="btn-black">
+          Changer de plan
+        </a>
+        <span><%= planLabel %></span>
+      </div>
+    </div>
+
+  </section>
+
+</div>

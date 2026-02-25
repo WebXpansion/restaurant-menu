@@ -118,7 +118,7 @@ body {
     height: 296px;
     overflow-x: hidden;
     overflow-y: scroll;
-    
+
 }
 
 /* =========================================
@@ -204,6 +204,7 @@ body {
   font-weight: 600;
   border: 1px solid #ddd;
   transition: 0.2s ease;
+  text-decoration: none;
   color: black;
 }
 
