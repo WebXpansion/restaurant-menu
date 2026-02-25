@@ -31,9 +31,9 @@ router.post("/forgot-password", async (req, res) => {
 
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hash = crypto.createHash("sha256").update(rawToken).digest("hex");
-
-  const expiry = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
-
+  
+  const expiry = new Date(Date.now() + 1000 * 60 * 15);
+  
   await pool.query(
     `
       UPDATE users
@@ -43,8 +43,8 @@ router.post("/forgot-password", async (req, res) => {
     `,
     [hash, expiry, user.id]
   );
-
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
   const resetLink = `${baseUrl}/admin/reset-password?token=${rawToken}`;
   
   console.log("Reset link:");
