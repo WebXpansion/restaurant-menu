@@ -354,13 +354,49 @@ router.post("/api/list-data", async (req, res) => {
 /* =========================
    RESTAURANT
 ========================= */
-router.get("/restaurant", (req, res) => {
+
+
+router.get("/restaurant", async (req, res) => {
+
+  const pool = getPool();
+  const restaurant = req.restaurant; // déjà attaché par middleware
+
+  if (!restaurant) return res.redirect("/");
+
+  const { rows: aboutRows } = await pool.query(
+    `
+    SELECT title, description
+    FROM restaurant_about
+    WHERE restaurant_id = $1
+    LIMIT 1
+    `,
+    [restaurant.id]
+  );
+
+  const { rows: imageRows } = await pool.query(
+    `
+    SELECT image_url
+    FROM restaurant_about_images
+    WHERE restaurant_id = $1
+    ORDER BY display_order ASC
+    `,
+    [restaurant.id]
+  );
+
+  const about = aboutRows[0] || {};
+  const images = imageRows.map(r => r.image_url);
+
+  const showGoogleButton =
+    restaurant.plan === "offer_2" ||
+    restaurant.plan === "offer_3";
 
   res.render("public/restaurant", {
-    restaurant: req.restaurant,
-    activeTab: "restaurant"
+    about,
+    images,
+    showGoogleButton,
+    googleReviewUrl: restaurant.google_review_url,
+    restaurant
   });
-
 });
 
 export default router;

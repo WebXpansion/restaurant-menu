@@ -1,3 +1,29 @@
+
+<section class="about-hero">
+  <div class="about-slider">
+    <% if (images && images.length) { %>
+      <% images.forEach(img => { %>
+        <div class="slide">
+          <img src="<%= img %>" />
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<section class="about-content">
+  <h1><%= about.title || "" %></h1>
+  <p><%= about.description || "" %></p>
+
+  <% if (showGoogleButton && googleReviewUrl) { %>
+    <a href="<%= googleReviewUrl %>"
+       target="_blank"
+       class="google-review-btn">
+       Laisser un avis Google
+    </a>
+  <% } %>
+</section>
+
 <script>
-    window.UI = <%- JSON.stringify(ui) %>;
-  </script>
+  window.UI = <%- JSON.stringify(ui) %>;
+</script>

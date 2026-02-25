@@ -55,7 +55,7 @@ router.post("/forgot-password", async (req, res) => {
     subject: "Réinitialisation de votre mot de passe",
     html: `
       <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;">
-        <h2>Réinitialisation du mot de passe</h2>
+        <h2>Réinitialisation du mot de passe pour Plateview</h2>
         <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
         <p>Cliquez sur le bouton ci-dessous :</p>
         <a href="${resetLink}" 
