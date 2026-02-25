@@ -60,6 +60,13 @@ body {
    LOADER
 ====================== */
 
+body.loading .container-menu {
+  visibility: hidden;
+}
+
+body.loading {
+  overflow: hidden;
+}
 #siteLoader {
   position: fixed;
   inset: 0;
@@ -137,7 +144,7 @@ body {
     
 </head>
 
-<body>
+<body class="loading">
 
   <div id="siteLoader">
     <div class="loader-content">
