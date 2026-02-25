@@ -1,35 +1,54 @@
 <link rel="stylesheet" href="/css/restaurant.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<section class="about-hero">
-  <div class="about-slider">
-    <% if (images && images.length) { %>
-      <% images.forEach(img => { %>
-        <div class="slide">
-          <img 
-            src="<%= img %>?f_auto,q_auto"
-            loading="lazy"
-            alt="Image restaurant"
-          />
-        </div>
-      <% }) %>
+
+<div class="body-restaurant">
+  <section class="about-hero">
+    <div class="about-slider">
+      <% if (images && images.length) { %>
+        <% images.forEach(img => { %>
+          <div class="slide">
+            <img 
+              src="<%= img %>?f_auto,q_auto"
+              loading="lazy"
+              alt="Image restaurant"
+            />
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="about-content">
+    <h1><%= about.title || "" %></h1>
+    <p><%= about.description || "" %></p>
+
+    <% if (showGoogleButton && googleReviewUrl) { %>
+      <a href="<%= googleReviewUrl %>"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="google-review-btn">
+    
+        <!-- Google Icon SVG -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4"
+            d="M23.49 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h6.45a5.52 5.52 0 01-2.4 3.63v3.02h3.88c2.27-2.09 3.56-5.18 3.56-8.68z"/>
+          <path fill="#34A853"
+            d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3.02c-1.08.73-2.46 1.17-4.07 1.17-3.13 0-5.78-2.11-6.73-4.95H1.28v3.11A11.99 11.99 0 0012 24z"/>
+          <path fill="#FBBC05"
+            d="M5.27 14.29a7.2 7.2 0 010-4.58V6.6H1.28a12 12 0 000 10.8l3.99-3.11z"/>
+          <path fill="#EA4335"
+            d="M12 4.75c1.76 0 3.34.61 4.59 1.81l3.44-3.44C17.96 1.07 15.24 0 12 0A12 12 0 001.28 6.6l3.99 3.11C6.22 6.86 8.87 4.75 12 4.75z"/>
+        </svg>
+    
+        Laisser un avis Google
+      </a>
     <% } %>
-  </div>
-</section>
+  </section>
+</div>
 
-<section class="about-content">
-  <h1><%= about.title || "" %></h1>
-  <p><%= about.description || "" %></p>
 
-  <% if (showGoogleButton && googleReviewUrl) { %>
-    <a href="<%= googleReviewUrl %>"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="google-review-btn">
-       Laisser un avis Google
-    </a>
-  <% } %>
-</section>
+<%- include("partials/mobile-nav") %>
 
 <script>
   window.UI = <%- JSON.stringify(ui) %>;
