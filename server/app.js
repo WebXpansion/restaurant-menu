@@ -5,6 +5,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import faqRoutes from "./routes/faq.routes.js";
 
+import pgSession from "connect-pg-simple";
+import { getPool } from "./db/postgres.js";
+
 import internalRoutes from "./routes/internal.routes.js";
 import accountRoutes from "./routes/account.routes.js";
 import session from "express-session";
@@ -95,31 +98,34 @@ app.use(cookieParser());
 
 app.set("trust proxy", 1); // IMPORTANT sur Render
 
+const PgStore = pgSession(session);
+
 app.use(
   session({
+    store: new PgStore({
+      pool: getPool(),
+      tableName: "user_sessions"
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,              // HTTPS only
-      sameSite: "lax",           // protection CSRF basique
+      secure: true, // Render = HTTPS
+      sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 4
     }
   })
 );
 
 
- app.use((req, res, next) => {
-   console.log("Session Cookie:", req.cookies);
-   next();
- });
+
 
 
 /* ========================
    STATIC FILES (TOUJOURS EN PREMIER)
 ======================== */
-app.use("/admin/account", accountRoutes);
+
 app.use(
    "/admin/publication",
    requireAdminRestaurant,
@@ -202,6 +208,7 @@ app.use("/", publicRoutes);
 app.use("/admin", passwordRoutes);
 app.use("/admin", authRoutes);
 app.use("/admin", requireAdminRestaurant, dishRoutes);
+app.use("/admin/account", accountRoutes);
 app.use("/admin/faq", faqRoutes);
 
 
