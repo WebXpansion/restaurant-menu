@@ -390,13 +390,14 @@ router.get("/restaurant", async (req, res) => {
     restaurant.plan === "offer_2" ||
     restaurant.plan === "offer_3";
 
-  res.render("public/restaurant", {
-    about,
-    images,
-    showGoogleButton,
-    googleReviewUrl: restaurant.google_review_url,
-    restaurant
-  });
+    res.render("public/restaurant", {
+      about,
+      images,
+      showGoogleButton,
+      googleReviewUrl: restaurant.google_review_url,
+      restaurant,
+      activeTab: "restaurant" 
+    });
 });
 
 export default router;
