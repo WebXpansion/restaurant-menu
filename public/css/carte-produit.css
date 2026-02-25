@@ -503,7 +503,16 @@
     flex:1;
   }
 
+  .ar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
   
+  .ar-btn img.phone-icon {
+    width: 18px;
+    height: 18px;
+  }
   
   .switch-pill {
     display:flex;

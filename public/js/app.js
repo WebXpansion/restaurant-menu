@@ -131,25 +131,43 @@ document.addEventListener("click", function(e) {
 
     const usdz = card.dataset.usdz;
     const arImg = document.getElementById("ar-img");
+    const arText = document.getElementById("ar-text");
+    const arIcon = document.getElementById("ar-icon");
+  
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   
     if (usdz && usdz.trim() !== "") {
+  
       arBtn.style.display = "inline-flex";
   
-
-      arBtn.setAttribute("href", usdz);
+      if (isMobile) {
   
-
-      if (arImg) {
-        arImg.src = usdz;
+        // 📱 Mobile → vrai AR
+        arText.textContent = "Voir en réalité augmentée";
+        arBtn.setAttribute("href", usdz);
+  
+        if (arImg) arImg.src = usdz;
+        if (arIcon) arIcon.innerHTML = "";
+  
+        arBtn.style.cursor = "pointer";
+  
+      } else {
+  
+        // 💻 Desktop → informatif
+        arText.textContent = "Voir en réalité augmentée sur votre téléphone";
+        arBtn.removeAttribute("href");
+  
+        if (arImg) arImg.removeAttribute("src");
+  
+        if (arIcon) {
+          arIcon.innerHTML = `<img src="/icons/Phone.svg" class="phone-icon" />`;
+        }
+  
+        arBtn.style.cursor = "default";
       }
   
     } else {
       arBtn.style.display = "none";
-      arBtn.removeAttribute("href");
-  
-      if (arImg) {
-        arImg.removeAttribute("src");
-      }
     }
   
   }
