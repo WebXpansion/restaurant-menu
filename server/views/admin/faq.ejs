@@ -8,7 +8,7 @@
     <section class="faq-header">
     <div>
         <h1>Aide</h1>
-        <p>Vous avez des questions ? Consultez notre FAQ ou contactez-nous</p>
+        <p class="subtitle">Vous avez des questions ? Consultez notre FAQ ou contactez-nous</p>
     </div>
 
     <div class="faq-actions">
@@ -71,6 +71,8 @@
           </button>
       
           <div class="faq-answer">
+
+            <p class="txt-faq"><%= q.text %></p>
       
             <% if (q.video) { %>
               <div class="video-wrapper">
@@ -83,7 +85,7 @@
               </div>
             <% } %>
       
-            <p><%= q.text %></p>
+
       
           </div>
       

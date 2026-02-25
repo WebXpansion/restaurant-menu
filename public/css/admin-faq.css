@@ -58,13 +58,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
   }
 
   p{
-    color: #000;
+    color: #adadad;
   }
+
+  .subtitle p {
+        font-size: 15px;
+        color: #666;
+        margin-top: 15px;
+    }
   
   .faq-answer {
     max-height: 0;
@@ -85,6 +91,11 @@
   .faq-item.active .arrow {
     transform: rotate(180deg);
   }
+
+  .txt-faq{
+    color: #909090;
+    font-size: 14px;
+  }
   
   /* Vimeo */
   
@@ -94,6 +105,7 @@
     margin-bottom: 20px;
     border-radius: 12px;
     overflow: hidden;
+    margin-top: 14px;
   }
   
   .video-wrapper iframe {
