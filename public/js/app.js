@@ -130,13 +130,26 @@ document.addEventListener("click", function(e) {
   if (arBtn) {
 
     const usdz = card.dataset.usdz;
+    const arImg = document.getElementById("ar-img");
   
     if (usdz && usdz.trim() !== "") {
       arBtn.style.display = "inline-flex";
-      arBtn.setAttribute("href", usdz);   // 🔥 CRUCIAL
+  
+
+      arBtn.setAttribute("href", usdz);
+  
+
+      if (arImg) {
+        arImg.src = usdz;
+      }
+  
     } else {
       arBtn.style.display = "none";
       arBtn.removeAttribute("href");
+  
+      if (arImg) {
+        arImg.removeAttribute("src");
+      }
     }
   
   }
