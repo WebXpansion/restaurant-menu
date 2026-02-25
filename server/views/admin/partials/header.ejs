@@ -1,3 +1,9 @@
+
+<%
+  const currentActive = active || "";
+%>
+
+
 <header class="admin-header">
   <div class="header-container">
 
@@ -15,7 +21,7 @@
     
       <a 
         href="<%= statsEnabled ? '/admin/stats' : '#' %>"
-        class="<%= active === 'stats' ? 'active' : '' %>"
+        class="<%= currentActive === 'stats' ? 'active' : '' %>"
         <% if (!statsEnabled) { %>
           data-locked="stats"
         <% } %>
@@ -24,13 +30,13 @@
       </a>
     
       <a href="/admin/dishes"
-         class="<%= active === 'dishes' ? 'active' : '' %>">
+         class="<%= currentActive === 'dishes' ? 'active' : '' %>">
          Plats
       </a>
     
       <a 
         href="<%= publicationEnabled ? '/admin/publication' : '#' %>"
-        class="<%= active === 'publication' ? 'active' : '' %>"
+        class="<%= currentActive === 'publication' ? 'active' : '' %>"
         <% if (!publicationEnabled) { %>
           data-locked="publication"
         <% } %>
@@ -42,7 +48,7 @@
     
       <a 
       href="<%= reviewsEnabled ? '/admin/settings' : '#' %>"
-      class="<%= active === 'settings' ? 'active' : '' %>"
+      class="<%= currentActive === 'settings' ? 'active' : '' %>"
       <% if (!reviewsEnabled) { %>
         data-locked="reviews"
       <% } %>
