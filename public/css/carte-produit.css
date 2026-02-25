@@ -541,6 +541,14 @@
     color: white;
   }
 
+
+  select {
+    background-image: url("/icons/arrow-bottom.svg")!important;
+    background-repeat: no-repeat!important;
+    background-position: right!important;
+    background-size: 10px!important;
+  }
+
   .lang-pill {
     padding:10px 14px;
     border-radius:999px;
