@@ -70,6 +70,11 @@ app.use(
            "https://res.cloudinary.com" ,
            "blob:" 
          ],
+
+         frameSrc: [
+            "'self'",
+            "https://player.vimeo.com"
+          ],
  
          objectSrc: ["'none'"],
          frameAncestors: ["'none'"]
