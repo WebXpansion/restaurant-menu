@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
       temp.textContent = select.options[select.selectedIndex].text;
       document.body.appendChild(temp);
   
-      select.style.width = temp.offsetWidth + 25 + "px";
+      select.style.width = temp.offsetWidth + 30 + "px";
       document.body.removeChild(temp);
     }
   

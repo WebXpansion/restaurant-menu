@@ -528,6 +528,19 @@
     width: auto;
   }
   
+
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    color: white;
+    padding-right: 30px;
+  }
+  
+  select::after {
+    color: white;
+  }
+
   .lang-pill {
     padding:10px 14px;
     border-radius:999px;
