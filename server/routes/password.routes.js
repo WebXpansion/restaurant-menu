@@ -44,8 +44,11 @@ router.post("/forgot-password", async (req, res) => {
     [hash, expiry, user.id]
   );
 
+  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const resetLink = `${baseUrl}/admin/reset-password?token=${rawToken}`;
+  
   console.log("Reset link:");
-  console.log(`http://localhost:3000/admin/reset-password?token=${rawToken}`);
+  console.log(resetLink);
 
   res.render("forgot-password", { success: true });
 });
@@ -85,6 +88,7 @@ router.post("/reset-password", async (req, res) => {
       SELECT *
       FROM users
       WHERE reset_token_hash = $1
+        AND reset_token_expiry > NOW()
     `,
     [hash]
   );
@@ -95,9 +99,7 @@ router.post("/reset-password", async (req, res) => {
     return res.status(400).send("Invalid token");
   }
 
-  if (new Date() > user.reset_token_expiry) {
-    return res.status(400).send("Token expired");
-  }
+
 
   const passwordHash = await bcrypt.hash(newPassword, 12);
 
