@@ -2,9 +2,10 @@ import express from "express";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { getPool } from "../db/postgres.js";
+import { Resend } from "resend";
 
 const router = express.Router();
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 /* ==============================
    FORGOT PASSWORD
 ============================== */
@@ -48,7 +49,25 @@ router.post("/forgot-password", async (req, res) => {
   const resetLink = `${baseUrl}/admin/reset-password?token=${rawToken}`;
   
   console.log("Reset link:");
-  console.log(resetLink);
+  await resend.emails.send({
+    from: "Plateview <no-reply@plateview.fr>",
+    to: email,
+    subject: "Réinitialisation de votre mot de passe",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;">
+        <h2>Réinitialisation du mot de passe</h2>
+        <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
+        <p>Cliquez sur le bouton ci-dessous :</p>
+        <a href="${resetLink}" 
+           style="display:inline-block;padding:12px 20px;background:black;color:white;text-decoration:none;border-radius:8px;">
+           Réinitialiser mon mot de passe
+        </a>
+        <p style="margin-top:20px;font-size:12px;color:#666;">
+          Ce lien expire dans 15 minutes.
+        </p>
+      </div>
+    `
+  });
 
   res.render("forgot-password", { success: true });
 });
