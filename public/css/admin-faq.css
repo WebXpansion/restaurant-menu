@@ -44,9 +44,9 @@
   /* Accordion */
   
   .faq-item {
-    background: #f4f4f4;
-    border-radius: 12px;
-    margin-bottom: 14px;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 8px;
     overflow: hidden;
   }
   
@@ -54,12 +54,16 @@
     width: 100%;
     background: none;
     border: none;
-    padding: 18px 22px;
+    padding: 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 15px;
     cursor: pointer;
+  }
+
+  p{
+    color: #000;
   }
   
   .faq-answer {
@@ -88,6 +92,8 @@
     position: relative;
     padding-top: 56.25%;
     margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
   }
   
   .video-wrapper iframe {
