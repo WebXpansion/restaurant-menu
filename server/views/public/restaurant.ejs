@@ -21,54 +21,57 @@
 
   <section class="about-content">
     <h1><%= about.title || "" %></h1>
-    <p><%= about.description || "" %></p>
 
 
 
-    <section class="hours-section">
 
-      <div class="hours-header" id="hoursToggle">
-        <div class="hours-title">
-          <img src="/icons/clock.svg" class="icon" />
+        <!-- HORAIRES -->
+    <section class="info-section">
+
+      <div class="info-header toggle-hours">
+        <div class="info-left">
+          <span class="icon-clock"></span>
           <span>Horaires</span>
         </div>
-        <div class="arrow" id="hoursArrow">⌄</div>
+        <div class="arrow">⌄</div>
       </div>
-    
-      <div class="hours-content" id="hoursContent">
-    
-        <% 
-          const days = [
-            "Lundi","Mardi","Mercredi",
-            "Jeudi","Vendredi","Samedi","Dimanche"
-          ];
-        %>
-    
+
+      <div class="info-content hours-content">
         <% hours.forEach(h => { %>
-          <div class="day-row">
-            <div class="day-name"><%= days[h.day_of_week - 1] %></div>
-            <div class="day-hours">
+          <div class="hour-row">
+            <div class="day">
+              <%= daysMap[h.day_of_week] %>
+            </div>
+            <div class="times">
               <% if (h.open_time) { %>
-                De <%= h.open_time %> à <%= h.close_time %>
-              <% } %>
-    
-              <% if (h.second_open_time) { %>
-                <br>
-                De <%= h.second_open_time %> à <%= h.second_close_time %>
+                <div>De <%= h.open_time %> à <%= h.close_time %></div>
+                <% if (h.second_open_time) { %>
+                  <div>De <%= h.second_open_time %> à <%= h.second_close_time %></div>
+                <% } %>
+              <% } else { %>
+                <div>Fermé</div>
               <% } %>
             </div>
           </div>
         <% }) %>
-    
-        <!-- Adresse -->
-        <div class="location-row">
-          <img src="/icons/location.svg" class="icon" />
-          <div><%= restaurant.address %></div>
-        </div>
-    
       </div>
-    
+
     </section>
+
+    <p><%= about.description || "" %></p>
+
+
+<!-- ADRESSE (section séparée) -->
+<section class="info-section address-section">
+
+  <div class="info-header no-toggle">
+    <div class="info-left">
+      <span class="icon-location"></span>
+      <span><%= restaurant.address %></span>
+    </div>
+  </div>
+
+</section>
 
 
 
