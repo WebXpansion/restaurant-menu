@@ -97,9 +97,9 @@ router.get("/dishes/new", requireAdmin, async (req, res) => {
   res.render("admin/dish-form", {
     restaurant: req.restaurant,
     subcategories,
-    dish,
-    translations: translationsMap,
-    arConfigured: !!(dish.glb_url && dish.usdz_url),
+    dish: null,        
+    translations: {},    
+    arConfigured: false, 
     arUsage: {
       used: usedAR,
       max: maxAR
