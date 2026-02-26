@@ -265,5 +265,78 @@ export const CATEGORY_TRANSLATIONS = {
         cn: "季节限定",
         ar: "موسمي"
       }
-  }
+    },
+    review_button: {
+      fr: "Laisser un avis Google",
+      en: "Leave a Google review",
+      es: "Dejar una reseña en Google",
+      it: "Lascia una recensione su Google",
+      de: "Eine Google-Bewertung hinterlassen",
+      pt: "Deixar uma avaliação no Google",
+      nl: "Een Google-recensie achterlaten",
+      jp: "Googleでレビューを書く",
+      cn: "在 Google 上留下评价",
+      ar: "اترك تقييمًا على Google"
+    },
+    hours_title: {
+      fr: "Horaires",
+      en: "Opening hours",
+      es: "Horario",
+      it: "Orari",
+      de: "Öffnungszeiten",
+      pt: "Horário",
+      nl: "Openingstijden",
+      jp: "営業時間",
+      cn: "营业时间",
+      ar: "ساعات العمل"
+    },
+    closed_label: {
+      fr: "Fermé",
+      en: "Closed",
+      es: "Cerrado",
+      it: "Chiuso",
+      de: "Geschlossen",
+      pt: "Fechado",
+      nl: "Gesloten",
+      jp: "休業",
+      cn: "休息",
+      ar: "مغلق"
+    },
+    hours_unavailable: {
+      fr: "Horaires non disponibles",
+      en: "Opening hours not available",
+      es: "Horario no disponible",
+      it: "Orari non disponibili",
+      de: "Öffnungszeiten nicht verfügbar",
+      pt: "Horário não disponível",
+      nl: "Openingstijden niet beschikbaar",
+      jp: "営業時間は利用できません",
+      cn: "营业时间不可用",
+      ar: "ساعات العمل غير متوفرة"
+    },
+    time_from: {
+      fr: "De",
+      en: "From",
+      es: "De",
+      it: "Dalle",
+      de: "Von",
+      pt: "De",
+      nl: "Van",
+      jp: "",
+      cn: "",
+      ar: "من"
+    },
+    
+    time_to: {
+      fr: "à",
+      en: "to",
+      es: "a",
+      it: "alle",
+      de: "bis",
+      pt: "a",
+      nl: "tot",
+      jp: "",
+      cn: "",
+      ar: "إلى"
+    }
   };
