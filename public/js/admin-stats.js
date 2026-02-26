@@ -382,16 +382,15 @@ document
       const total = data.values.reduce((a, b) => a + b, 0);
       totalQrScans.textContent = `· ${total} scans`;
     
-      // 🔥 Formatage propre des labels
       const labels = data.labels.map(label => formatLabel(label, period));
     
       if (qrChart) {
         qrChart.destroy();
       }
     
-      // 🔥 largeur dynamique pour scroll horizontal
-      qrCtx.canvas.style.width = labels.length * 80 + "px";
-
+      // ✅ Largeur dynamique propre
+      const wrapper = qrCtx.parentElement;
+      wrapper.style.minWidth = labels.length * 80 + "px";
     
       qrChart = new Chart(qrCtx, {
         type: "line",
@@ -409,9 +408,7 @@ document
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
             x: {
               ticks: {
@@ -419,9 +416,7 @@ document
                 minRotation: 0
               }
             },
-            y: {
-              beginAtZero: true
-            }
+            y: { beginAtZero: true }
           }
         }
       });
