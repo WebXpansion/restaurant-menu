@@ -80,6 +80,7 @@ function renderPageChart(items) {
     options: {
       responsive: true,
       maintainAspectRatio: false, 
+      devicePixelRatio: 1,
       plugins: { legend: { display: false } },
       scales: {
         x: {
@@ -125,6 +126,7 @@ function renderComparisonChart(current, previous) {
       options: {
         responsive: true,
         maintainAspectRatio: false, 
+        devicePixelRatio: 1,
         plugins: { legend: { display: true } },
         scales: {
           x: {
@@ -240,7 +242,8 @@ async function loadComparison(period) {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,   // ✅ ICI
+        maintainAspectRatio: false, 
+        devicePixelRatio: 1, 
         plugins: { 
           legend: { display: false } 
         },
@@ -303,7 +306,8 @@ async function loadComparison(period) {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,   // ✅ ICI
+        maintainAspectRatio: false, 
+        devicePixelRatio: 1, 
         plugins: { 
           legend: { display: false } 
         },
@@ -388,9 +392,7 @@ document
         qrChart.destroy();
       }
     
-      // ✅ Largeur dynamique propre
-      const wrapper = qrCtx.parentElement;
-      wrapper.style.minWidth = labels.length * 80 + "px";
+
     
       qrChart = new Chart(qrCtx, {
         type: "line",
@@ -408,6 +410,7 @@ document
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          devicePixelRatio: 1,
           plugins: { legend: { display: false } },
           scales: {
             x: {
