@@ -424,5 +424,17 @@ export const CATEGORY_TRANSLATIONS = {
         cn: "星期日",
         ar: "الأحد"
       }
+    },
+    time_format: {
+      fr: "words",
+      en: "words",
+      es: "words",
+      it: "words",
+      de: "words",
+      pt: "words",
+      nl: "words",
+      jp: "range_symbol",
+      cn: "dash",
+      ar: "words"
     }
   };

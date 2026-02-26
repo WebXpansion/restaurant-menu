@@ -50,19 +50,19 @@
               </div>
               <div class="times">
                 <% if (h.open_time) { %>
-              
-                  <% if (currentLang === "jp") { %>
+
+                  <% if (ui.time_format === "range_symbol") { %>
                     <div><%= h.open_time %>〜<%= h.close_time %></div>
                     <% if (h.second_open_time) { %>
                       <div><%= h.second_open_time %>〜<%= h.second_close_time %></div>
                     <% } %>
-              
-                  <% } else if (currentLang === "cn") { %>
+                
+                  <% } else if (ui.time_format === "dash") { %>
                     <div><%= h.open_time %> - <%= h.close_time %></div>
                     <% if (h.second_open_time) { %>
                       <div><%= h.second_open_time %> - <%= h.second_close_time %></div>
                     <% } %>
-              
+                
                   <% } else { %>
                     <div>
                       <%= ui.time_from %> <%= h.open_time %> <%= ui.time_to %> <%= h.close_time %>
@@ -73,7 +73,7 @@
                       </div>
                     <% } %>
                   <% } %>
-              
+                
                 <% } else { %>
                   <div><%= ui.closed_label %></div>
                 <% } %>
