@@ -436,5 +436,17 @@ export const CATEGORY_TRANSLATIONS = {
       jp: "range_symbol",
       cn: "dash",
       ar: "words"
+    },
+    address_unavailable: {
+      fr: "Adresse non disponible",
+      en: "Address not available",
+      es: "Dirección no disponible",
+      it: "Indirizzo non disponibile",
+      de: "Adresse nicht verfügbar",
+      pt: "Endereço não disponível",
+      nl: "Adres niet beschikbaar",
+      jp: "住所は利用できません",
+      cn: "地址不可用",
+      ar: "العنوان غير متوفر"
     }
   };
