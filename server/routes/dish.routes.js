@@ -5,13 +5,7 @@ import cloudinary, { deleteFromCloudinary } from "../config/cloudinary.js";
 
 import { requireAdminRestaurant } from "../middleware/adminRestaurant.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
-import {
-  getTagsByRestaurant,
-  createTag,
-  deleteTag,
-  getDishTags,
-  setDishTags
-} from "../services/tag.service.js";
+
 
 
 
@@ -98,20 +92,18 @@ router.get("/dishes/new", requireAdmin, async (req, res) => {
 
   const usedAR = rows[0]?.count || 0;
 
-  const tags = await getTagsByRestaurant(req.restaurant.id);
+
 
   res.render("admin/dish-form", {
     restaurant: req.restaurant,
     subcategories,
-    dish: null,
-    translations: {},
-    arConfigured: false,
+    dish,
+    translations: translationsMap,
+    arConfigured: !!(dish.glb_url && dish.usdz_url),
     arUsage: {
       used: usedAR,
       max: maxAR
-    },
-    tags,
-    dishTags: []
+    }
   });
 
 });
@@ -297,14 +289,7 @@ router.post(
        TAGS
     ====================== */
 
-    const tagIds = req.body.tags
-      ? (Array.isArray(req.body.tags)
-          ? req.body.tags
-          : [req.body.tags]
-        ).map(id => parseInt(id, 10)).filter(Boolean)
-      : [];
-
-    await setDishTags(dishId, tagIds, req.restaurant.id);
+    
 
     res.json({ success: true });
 
@@ -465,9 +450,9 @@ router.get("/dishes/:id/edit", requireAdmin, async (req, res) => {
 
   const usedAR = countRows[0]?.count || 0;
 
-  const tags = await getTagsByRestaurant(req.restaurant.id);
 
-  const dishTags = await getDishTags(dish.id);
+
+
 
   res.render("admin/dish-form", {
     restaurant: req.restaurant,
@@ -478,9 +463,7 @@ router.get("/dishes/:id/edit", requireAdmin, async (req, res) => {
     arUsage: {
       used: usedAR,
       max: maxAR
-    },
-    tags,
-    dishTags
+    }
   });
 
 });
@@ -692,41 +675,12 @@ router.post(
       );
     }
 
-    /* ======================
-       7️⃣ TAGS
-    ====================== */
-
-    const tagIds = req.body.tags
-      ? (Array.isArray(req.body.tags)
-          ? req.body.tags
-          : [req.body.tags]
-        ).map(id => parseInt(id, 10)).filter(Boolean)
-      : [];
-
-    await setDishTags(req.params.id, tagIds, req.restaurant.id);
-
     res.json({ success: true });
 
   }
 );
 
-/* ======================
-   TAGS (GLOBAL BADGES)
-====================== */
 
-router.post("/tags", requireAdmin,   async (req, res) => {
-  try {
-    await createTag(req.restaurant.id, req.body.name);
-    res.sendStatus(200);
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-});
-
-router.post("/tags/:id/delete", requireAdmin,   async (req, res) => {
-  await deleteTag(req.restaurant.id, req.params.id);
-  res.sendStatus(200);
-});
 
 
 export default router;

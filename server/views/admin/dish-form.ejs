@@ -188,13 +188,6 @@
   font-size:13px;
 }
 
-.delete-tag-global {
-  background:none;
-  border:none;
-  color:#e74c3c;
-  cursor:pointer;
-  font-size:12px;
-}
 
 
   </style>
@@ -345,56 +338,6 @@
       </div>
     </div>
 
-    <!-- BADGES -->
-<div class="card">
-  <h2>Badges</h2>
-
-  <!-- Tags sélectionnés -->
-  <div id="selectedTags" class="tag-container">
-    <% dishTags.forEach(tag => { %>
-      <div class="tag-pill">
-        <span><%= tag.name %></span>
-        <input type="hidden" name="tags" value="<%= tag.id %>">
-        <button type="button" class="remove-tag">✕</button>
-      </div>
-    <% }) %>
-  </div>
-
-  <!-- Sélecteur -->
-  <div class="tag-controls">
-    <select id="tagSelector">
-      <option value="">Ajouter un badge…</option>
-      <% tags.forEach(tag => { %>
-        <option value="<%= tag.id %>">
-          <%= tag.name %>
-        </option>
-      <% }) %>
-    </select>
-
-    <button type="button" id="createTagBtn" class="btn secondary">
-      + Créer
-    </button>
-  </div>
-
-  <!-- Liste gestion globale -->
-  <div class="tag-admin-list">
-    <% tags.forEach(tag => { %>
-      <div class="tag-admin-item">
-        <span><%= tag.name %></span>
-        <button 
-          type="button"
-          class="delete-tag-global"
-          data-id="<%= tag.id %>">
-          Supprimer
-        </button>
-      </div>
-    <% }) %>
-  </div>
-
-  <p class="hint">
-    Maximum 5 badges par plat · 5 mots max par badge
-  </p>
-</div>
 
 
 
