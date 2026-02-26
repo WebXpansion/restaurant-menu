@@ -68,6 +68,16 @@ if (!form) {
       const contentType = res.headers.get("content-type");
   
       if (!res.ok) {
+
+        if (res.status === 403) {
+          const data = await res.json();
+      
+          if (data.error === "AR_LIMIT_REACHED") {
+            openUpgradeOverlay(data.maxAR);
+            return;
+          }
+        }
+      
         console.error("Server error:", res.status);
         return;
       }
