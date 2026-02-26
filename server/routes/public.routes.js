@@ -387,12 +387,20 @@ router.get("/restaurant", async (req, res) => {
 
   const { rows: aboutRows } = await pool.query(
     `
-    SELECT title, description
-    FROM restaurant_about
-    WHERE restaurant_id = $1
+    SELECT 
+      COALESCE(rt.title, rtf.title) AS title,
+      COALESCE(rt.description, rtf.description) AS description
+    FROM restaurant_about ra
+    LEFT JOIN restaurant_about_translations rt
+      ON rt.about_id = ra.id
+      AND rt.language = $2
+    LEFT JOIN restaurant_about_translations rtf
+      ON rtf.about_id = ra.id
+      AND rtf.language = 'fr'
+    WHERE ra.restaurant_id = $1
     LIMIT 1
     `,
-    [restaurant.id]
+    [restaurant.id, safeLang]
   );
 
   const { rows: hours } = await pool.query(`
