@@ -6,7 +6,7 @@ import { requireAdmin } from "../middleware/requireAdmin.js";
 const router = express.Router();
 
 router.use((req, res, next) => {
-  console.log("STATS CHECK →", req.restaurant.plan, req.restaurant.features);
+
 
   if (!req.restaurant.features?.stats) {
     return res.status(403).json({ error: "Stats disabled" });

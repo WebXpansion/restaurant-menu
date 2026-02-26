@@ -372,6 +372,7 @@
       cursor: pointer;
       background: none;
       transition: all .2s ease;
+      white-space: nowrap;
   }
   
   .filter img{

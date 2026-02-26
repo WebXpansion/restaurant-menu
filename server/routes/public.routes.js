@@ -373,6 +373,17 @@ router.get("/restaurant", async (req, res) => {
     [restaurant.id]
   );
 
+  const { rows: hours } = await pool.query(`
+    SELECT day_of_week,
+           open_time,
+           close_time,
+           second_open_time,
+           second_close_time
+    FROM restaurant_hours
+    WHERE restaurant_id = $1
+    ORDER BY day_of_week ASC
+  `, [restaurant.id]);
+
   const { rows: imageRows } = await pool.query(
     `
     SELECT image_url
@@ -396,7 +407,8 @@ router.get("/restaurant", async (req, res) => {
       showGoogleButton,
       googleReviewUrl: restaurant.google_review_url,
       restaurant,
-      activeTab: "restaurant" 
+      activeTab: "restaurant",
+      hours
     });
 });
 

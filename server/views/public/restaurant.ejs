@@ -23,6 +23,55 @@
     <h1><%= about.title || "" %></h1>
     <p><%= about.description || "" %></p>
 
+
+
+    <section class="hours-section">
+
+      <div class="hours-header" id="hoursToggle">
+        <div class="hours-title">
+          <img src="/icons/clock.svg" class="icon" />
+          <span>Horaires</span>
+        </div>
+        <div class="arrow" id="hoursArrow">⌄</div>
+      </div>
+    
+      <div class="hours-content" id="hoursContent">
+    
+        <% 
+          const days = [
+            "Lundi","Mardi","Mercredi",
+            "Jeudi","Vendredi","Samedi","Dimanche"
+          ];
+        %>
+    
+        <% hours.forEach(h => { %>
+          <div class="day-row">
+            <div class="day-name"><%= days[h.day_of_week - 1] %></div>
+            <div class="day-hours">
+              <% if (h.open_time) { %>
+                De <%= h.open_time %> à <%= h.close_time %>
+              <% } %>
+    
+              <% if (h.second_open_time) { %>
+                <br>
+                De <%= h.second_open_time %> à <%= h.second_close_time %>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+    
+        <!-- Adresse -->
+        <div class="location-row">
+          <img src="/icons/location.svg" class="icon" />
+          <div><%= restaurant.address %></div>
+        </div>
+    
+      </div>
+    
+    </section>
+
+
+
     <% if (showGoogleButton && googleReviewUrl) { %>
       <a href="<%= googleReviewUrl %>"
          target="_blank"
@@ -57,3 +106,12 @@
 </script>
 
 <script src="/js/menu-select.js"></script>
+
+<script>
+  const toggle = document.getElementById("hoursToggle");
+  const section = document.querySelector(".hours-section");
+
+  toggle.addEventListener("click", () => {
+    section.classList.toggle("active");
+  });
+</script>
