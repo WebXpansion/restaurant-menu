@@ -2,6 +2,25 @@ let pageChart;
 let dishChart;
 let dishArChart;
 
+function formatLabel(dateString, period) {
+  const date = new Date(dateString);
+
+  if (period === "hour") {
+    return date.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  if (period === "year") {
+    return date.toLocaleDateString("fr-FR", {
+      month: "short"
+    });
+  }
+
+  return date.toLocaleDateString("fr-FR");
+}
+
 
 async function loadStats(period = "day") {
     const compare = document.getElementById("compareToggle").checked;
@@ -39,11 +58,12 @@ async function loadStats(period = "day") {
 function renderPageChart(items) {
   const ctx = document.getElementById("pageViewsChart");
 
-  const labels = items.map(i => i.label);
+  const period = document.getElementById("periodSelect").value;
+  const labels = items.map(i => formatLabel(i.label, period));
   const values = items.map(i => i.count);
 
   if (pageChart) pageChart.destroy();
-
+  ctx.style.width = labels.length * 80 + "px";
   pageChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -58,8 +78,18 @@ function renderPageChart(items) {
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false, 
       plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 0,
+            minRotation: 0
+          }
+        },
+        y: { beginAtZero: true }
+      }
     }
   });
 }
@@ -67,10 +97,11 @@ function renderPageChart(items) {
 function renderComparisonChart(current, previous) {
     const ctx = document.getElementById("pageViewsChart");
   
-    const labels = current.map(d => d.label);
+    const period = document.getElementById("periodSelect").value;
+    const labels = current.map(d => formatLabel(d.label, period));
   
     if (pageChart) pageChart.destroy();
-  
+    ctx.style.width = labels.length * 80 + "px";
     pageChart = new Chart(ctx, {
       type: "line",
       data: {
@@ -92,7 +123,18 @@ function renderComparisonChart(current, previous) {
         ]
       },
       options: {
-        scales: { y: { beginAtZero: true } }
+        responsive: true,
+        maintainAspectRatio: false, 
+        plugins: { legend: { display: true } },
+        scales: {
+          x: {
+            ticks: {
+              maxRotation: 0,
+              minRotation: 0
+            }
+          },
+          y: { beginAtZero: true }
+        }
       }
     });
   }
@@ -172,15 +214,17 @@ async function loadComparison(period) {
 
   function renderDishChart(data) {
 
-    // 🔥 ici exactement
     document.getElementById("dishHint")?.remove();
   
     const ctx = document.getElementById("dishChart");
   
-    const labels = data.map(d => d.label);
+    const period = document.getElementById("dishPeriodSelect").value;
+    const labels = data.map(d => formatLabel(d.label, period));
     const values = data.map(d => d.count);
   
     if (dishChart) dishChart.destroy();
+  
+    ctx.style.width = labels.length * 80 + "px";
   
     dishChart = new Chart(ctx, {
       type: "line",
@@ -195,8 +239,22 @@ async function loadComparison(period) {
         }]
       },
       options: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } }
+        responsive: true,
+        maintainAspectRatio: false,   // ✅ ICI
+        plugins: { 
+          legend: { display: false } 
+        },
+        scales: {
+          x: {
+            ticks: {
+              maxRotation: 0,
+              minRotation: 0
+            }
+          },
+          y: { 
+            beginAtZero: true 
+          }
+        }
       }
     });
   }
@@ -223,10 +281,13 @@ async function loadComparison(period) {
   
     const ctx = document.getElementById("dishArChart");
   
-    const labels = data.map(d => d.label);
+    const period = document.getElementById("dishPeriodSelect").value;
+    const labels = data.map(d => formatLabel(d.label, period));
     const values = data.map(d => d.count);
   
     if (dishArChart) dishArChart.destroy();
+  
+    ctx.style.width = labels.length * 80 + "px";
   
     dishArChart = new Chart(ctx, {
       type: "line",
@@ -241,8 +302,22 @@ async function loadComparison(period) {
         }]
       },
       options: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } }
+        responsive: true,
+        maintainAspectRatio: false,   // ✅ ICI
+        plugins: { 
+          legend: { display: false } 
+        },
+        scales: {
+          x: {
+            ticks: {
+              maxRotation: 0,
+              minRotation: 0
+            }
+          },
+          y: { 
+            beginAtZero: true 
+          }
+        }
       }
     });
   }
@@ -298,34 +373,56 @@ document
     let qrChart;
   
     async function loadQrStats(period = "day") {
-  
-      const res = await fetch(`/admin/stats/qr?period=${period}`);
 
+      const res = await fetch(`/admin/stats/qr?period=${period}`);
       if (!res.ok) return;
-      
+    
       const data = await res.json();
-  
+    
       const total = data.values.reduce((a, b) => a + b, 0);
       totalQrScans.textContent = `· ${total} scans`;
-  
+    
+      // 🔥 Formatage propre des labels
+      const labels = data.labels.map(label => formatLabel(label, period));
+    
       if (qrChart) {
         qrChart.destroy();
       }
-  
+    
+      // 🔥 largeur dynamique pour scroll horizontal
+      qrCtx.canvas.style.width = labels.length * 80 + "px";
+
+    
       qrChart = new Chart(qrCtx, {
         type: "line",
         data: {
-          labels: data.labels,
+          labels,
           datasets: [{
             label: "Scans QR",
             data: data.values,
-            tension: 0.3,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3,
             fill: false
           }]
         },
         options: {
           responsive: true,
-          plugins: { legend: { display: false } }
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: {
+                maxRotation: 0,
+                minRotation: 0
+              }
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
         }
       });
     }

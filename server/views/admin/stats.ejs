@@ -173,6 +173,14 @@
   color: #555;
   line-height: 1.5;
 }
+
+.chart-scroll {
+  overflow-x: auto;
+}
+
+.card canvas {
+  height: 320px !important;
+}
 </style>
 
 <%- include("partials/header", { restaurant, active: "stats" }) %>
@@ -211,7 +219,9 @@
       </div>
     </div>
 
-    <canvas id="pageViewsChart"></canvas>
+    <div class="chart-scroll">
+      <canvas id="pageViewsChart"></canvas>
+    </div>
   </div>
 
   <!-- ===== TOP DISHES ===== -->
@@ -244,8 +254,10 @@
         </select>
       </div>
     </div>
-  
-    <canvas id="qrChart"></canvas>
+
+    <div class="chart-scroll">
+      <canvas id="qrChart"></canvas>
+    </div>
   </div>
   
 
@@ -285,12 +297,17 @@
     <div class="split">
       <div>
         <h4>Consultations</h4>
+        <div class="chart-scroll">
         <canvas id="dishChart"></canvas>
+        </div>
       </div>
 
       <div>
         <h4>Réalité augmentée</h4>
-        <canvas id="dishArChart"></canvas>
+          <div class="chart-scroll">
+          <canvas id="dishArChart"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
