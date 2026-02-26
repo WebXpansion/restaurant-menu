@@ -144,8 +144,9 @@ document.addEventListener("click", function(e) {
       }
   
       // 🔥 JUSTE ÇA EN PLUS
-      if (!isMobile) {
-        arBtn.childNodes[2].nodeValue = window.UI.ar_view_button;
+      if (!isMobile && arBtn) {
+        const label = window.UI?.ar_view_button || "Voir en réalité augmentée";
+        arBtn.textContent = label;
       }
   
     } else {

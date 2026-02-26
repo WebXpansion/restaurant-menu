@@ -438,6 +438,7 @@ router.get("/restaurant", async (req, res) => {
   res.render("public/restaurant", {
     about,
     images,
+    ui, 
     showGoogleButton,
     googleReviewUrl: restaurant.google_review_url,
     restaurant,
