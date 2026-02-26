@@ -355,13 +355,35 @@ router.post("/api/list-data", async (req, res) => {
    RESTAURANT
 ========================= */
 
-
 router.get("/restaurant", async (req, res) => {
 
   const pool = getPool();
-  const restaurant = req.restaurant; // déjà attaché par middleware
+  const restaurant = req.restaurant;
 
   if (!restaurant) return res.redirect("/");
+
+  /* ========================
+     LANGUAGE HANDLING
+  ======================== */
+  let lang = req.query.lang;
+
+  if (lang && restaurant.languages.includes(lang)) {
+    req.session.lang = lang;
+  }
+
+  if (!lang) {
+    lang = req.session.lang;
+  }
+
+  if (!lang || !restaurant.languages.includes(lang)) {
+    lang = restaurant.languages[0];
+  }
+
+  const safeLang = lang;
+
+  /* ========================
+     DATA FETCH
+  ======================== */
 
   const { rows: aboutRows } = await pool.query(
     `
@@ -401,15 +423,20 @@ router.get("/restaurant", async (req, res) => {
     restaurant.plan === "offer_2" ||
     restaurant.plan === "offer_3";
 
-    res.render("public/restaurant", {
-      about,
-      images,
-      showGoogleButton,
-      googleReviewUrl: restaurant.google_review_url,
-      restaurant,
-      activeTab: "restaurant",
-      hours
-    });
+  /* ========================
+     RENDER
+  ======================== */
+
+  res.render("public/restaurant", {
+    about,
+    images,
+    showGoogleButton,
+    googleReviewUrl: restaurant.google_review_url,
+    restaurant,
+    activeTab: "restaurant",
+    hours,
+    currentLang: safeLang
+  });
 });
 
 export default router;
