@@ -20,17 +20,7 @@
   </section>
 
   <section class="about-content">
-    <%
-  const daysMap = {
-    1: "Lundi",
-    2: "Mardi",
-    3: "Mercredi",
-    4: "Jeudi",
-    5: "Vendredi",
-    6: "Samedi",
-    7: "Dimanche"
-  };
-%>
+
     <h1><%= about.title || "" %></h1>
 
 
@@ -56,7 +46,7 @@
           <% hours.forEach(h => { %>
             <div class="hour-row">
               <div class="day">
-                <%= daysMap[h.day_of_week] %>
+                <%= ui.days[h.day_of_week] %>
               </div>
               <div class="times">
                 <% if (h.open_time) { %>

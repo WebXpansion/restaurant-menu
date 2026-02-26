@@ -338,5 +338,91 @@ export const CATEGORY_TRANSLATIONS = {
       jp: "",
       cn: "",
       ar: "إلى"
+    },
+    days: {
+      1: {
+        fr: "Lundi",
+        en: "Monday",
+        es: "Lunes",
+        it: "Lunedì",
+        de: "Montag",
+        pt: "Segunda-feira",
+        nl: "Maandag",
+        jp: "月曜日",
+        cn: "星期一",
+        ar: "الاثنين"
+      },
+      2: {
+        fr: "Mardi",
+        en: "Tuesday",
+        es: "Martes",
+        it: "Martedì",
+        de: "Dienstag",
+        pt: "Terça-feira",
+        nl: "Dinsdag",
+        jp: "火曜日",
+        cn: "星期二",
+        ar: "الثلاثاء"
+      },
+      3: {
+        fr: "Mercredi",
+        en: "Wednesday",
+        es: "Miércoles",
+        it: "Mercoledì",
+        de: "Mittwoch",
+        pt: "Quarta-feira",
+        nl: "Woensdag",
+        jp: "水曜日",
+        cn: "星期三",
+        ar: "الأربعاء"
+      },
+      4: {
+        fr: "Jeudi",
+        en: "Thursday",
+        es: "Jueves",
+        it: "Giovedì",
+        de: "Donnerstag",
+        pt: "Quinta-feira",
+        nl: "Donderdag",
+        jp: "木曜日",
+        cn: "星期四",
+        ar: "الخميس"
+      },
+      5: {
+        fr: "Vendredi",
+        en: "Friday",
+        es: "Viernes",
+        it: "Venerdì",
+        de: "Freitag",
+        pt: "Sexta-feira",
+        nl: "Vrijdag",
+        jp: "金曜日",
+        cn: "星期五",
+        ar: "الجمعة"
+      },
+      6: {
+        fr: "Samedi",
+        en: "Saturday",
+        es: "Sábado",
+        it: "Sabato",
+        de: "Samstag",
+        pt: "Sábado",
+        nl: "Zaterdag",
+        jp: "土曜日",
+        cn: "星期六",
+        ar: "السبت"
+      },
+      7: {
+        fr: "Dimanche",
+        en: "Sunday",
+        es: "Domingo",
+        it: "Domenica",
+        de: "Sonntag",
+        pt: "Domingo",
+        nl: "Zondag",
+        jp: "日曜日",
+        cn: "星期日",
+        ar: "الأحد"
+      }
     }
   };
