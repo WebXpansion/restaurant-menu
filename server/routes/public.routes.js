@@ -436,6 +436,34 @@ router.get("/restaurant", async (req, res) => {
      RENDER
   ======================== */
 
+  const ui = {};
+
+for (const key in UI_TRANSLATIONS) {
+
+  if (typeof UI_TRANSLATIONS[key] === "object") {
+
+    if (UI_TRANSLATIONS[key][safeLang]) {
+
+      ui[key] =
+        UI_TRANSLATIONS[key][safeLang] ||
+        UI_TRANSLATIONS[key]["fr"];
+
+    } else {
+
+      ui[key] = {};
+
+      for (const subKey in UI_TRANSLATIONS[key]) {
+        ui[key][subKey] =
+          UI_TRANSLATIONS[key][subKey][safeLang] ||
+          UI_TRANSLATIONS[key][subKey]["fr"];
+      }
+
+    }
+
+  }
+
+}
+
   res.render("public/restaurant", {
     about,
     images,
