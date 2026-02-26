@@ -31,10 +31,7 @@ import statsRoutes from "./routes/stats.routes.js";
 import { UI_TRANSLATIONS } from "./config/categories.js";
 
 
-const uiScript = document.getElementById("ui-data");
-if (uiScript) {
-   window.UI = JSON.parse(uiScript.textContent);
- }
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

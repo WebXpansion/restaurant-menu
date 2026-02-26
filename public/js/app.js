@@ -18,6 +18,19 @@ let currentMenu = "lunch";
 let currentFilter = "all";
 
 
+let UI = {};
+
+const uiScript = document.getElementById("ui-data");
+
+if (uiScript) {
+  try {
+    UI = JSON.parse(uiScript.textContent);
+    window.UI = UI;
+  } catch (e) {
+    console.error("UI JSON parse error", e);
+  }
+}
+
 // ==============================
 // 🔥 FONCTION DE FERMETURE UNIQUE
 // ==============================
