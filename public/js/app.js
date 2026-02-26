@@ -179,10 +179,15 @@ document.addEventListener("click", function(e) {
         const isMobile = window.innerWidth < 768;
       
         const label = isMobile
-          ? window.UI?.ar_view
+          ? window.UI?.buttons?.ar_view
           : window.UI?.ar_view_button;
       
-        arBtn.textContent = label || "Voir en réalité augmentée";
+        if (label) {
+          const textSpan = arBtn.querySelector(".ar-text");
+          if (textSpan) {
+            textSpan.textContent = label;
+          }
+        }
       }
   
     } else {
