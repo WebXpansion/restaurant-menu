@@ -21,12 +21,7 @@
     z-index: 900;
   }
   
-  /* Desktop → hidden */
-  @media (min-width: 768px) {
-    .mobile-nav {
-      display: none;
-    }
-  }
+
   
 
   .nav-list {

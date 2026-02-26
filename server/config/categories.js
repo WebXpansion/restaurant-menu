@@ -448,5 +448,17 @@ export const CATEGORY_TRANSLATIONS = {
       jp: "住所は利用できません",
       cn: "地址不可用",
       ar: "العنوان غير متوفر"
+    },
+    ar_view_button: {
+      fr: "Voir en réalité augmentée sur votre téléphone",
+      en: "View in augmented reality on your phone",
+      es: "Ver en realidad aumentada en su teléfono",
+      it: "Visualizza in realtà aumentata sul tuo telefono",
+      de: "In Augmented Reality auf Ihrem Telefon anzeigen",
+      pt: "Ver em realidade aumentada no seu telefone",
+      nl: "Bekijk in augmented reality op uw telefoon",
+      jp: "スマートフォンでAR表示",
+      cn: "在手机上以增强现实查看",
+      ar: "عرض بالواقع المعزز على هاتفك"
     }
   };

@@ -145,7 +145,7 @@ document.addEventListener("click", function(e) {
   
       // 🔥 JUSTE ÇA EN PLUS
       if (!isMobile) {
-        arBtn.childNodes[2].nodeValue = "Voir en réalité augmentée sur votre téléphone";
+        arBtn.childNodes[2].nodeValue = window.UI.ar_view_button;
       }
   
     } else {
