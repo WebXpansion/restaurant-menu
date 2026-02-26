@@ -114,7 +114,7 @@ body {
   }
 
 
-  
+
 /* SECTION GENERALE */
 .info-section {
     color: black;
@@ -189,3 +189,16 @@ body {
     height: 18px;
     display: inline-block;
   }
+
+  .icon-clock,
+.icon-location {
+  display: flex;
+  align-items: center;
+}
+
+.icon-clock img,
+.icon-location img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
