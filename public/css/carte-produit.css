@@ -40,8 +40,14 @@
     border-radius: 16px;
     cursor: pointer;
   }
+
+  .card-image {
+
+  }
+
   
   .card-image {
+    position: relative;
       width: 130px;
       height: 110px;
     flex-shrink: 0;

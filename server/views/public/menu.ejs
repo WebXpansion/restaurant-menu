@@ -293,10 +293,16 @@ body.loading {
              
              >
       
-            <div class="card-image">
+             <div class="card-image">
+
+              <% if (d.has_ar) { %>
+                <div class="badge-3d">3D</div>
+              <% } %>
+            
               <% if (d.image_url) { %>
                 <img src="<%= d.image_url %>" />
               <% } %>
+            
             </div>
       
             <div class="card-content">

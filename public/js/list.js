@@ -167,6 +167,7 @@ freshData.forEach(item => {
 
   div.innerHTML = `
     <div class="card-image">
+    ${hasAR ? `<div class="badge-3d">3D</div>` : ""}
       <img src="${item.image_url || ""}" />
     </div>
 
