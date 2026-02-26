@@ -97,10 +97,6 @@
 
     </section>
 
-    <p><%= about.description || "" %></p>
-
-
-
     <% if (showGoogleButton && googleReviewUrl) { %>
       <a href="<%= googleReviewUrl %>"
          target="_blank"
@@ -122,6 +118,12 @@
         Laisser un avis Google
       </a>
     <% } %>
+
+    <p><%= about.description || "" %></p>
+
+
+
+
   </section>
 
   
