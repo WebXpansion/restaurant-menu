@@ -136,12 +136,16 @@
 <script src="/js/menu-select.js"></script>
 
 <script>
-  const toggle = document.querySelector(".toggle-hours");
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.querySelector(".toggle-hours");
 
-  if (toggle) {
+    if (!toggle) return;
+
     toggle.addEventListener("click", function () {
       const section = this.closest(".info-section");
-      section.classList.toggle("open");
+      if (section) {
+        section.classList.toggle("open");
+      }
     });
-  }
+  });
 </script>

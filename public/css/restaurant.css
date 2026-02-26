@@ -113,7 +113,10 @@ body {
     }
   }
 
-  .hours-section {
+
+  
+/* SECTION GENERALE */
+.info-section {
     color: black;
     background: #ffffff;
     border-radius: 16px;
@@ -122,64 +125,67 @@ body {
     border: 1px solid #e4e4e4;
   }
   
-  .hours-header {
+  /* HEADER */
+  .info-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
   }
   
-  .hours-title {
+  .info-header.no-toggle {
+    cursor: default;
+  }
+  
+  .info-left {
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 600;
   }
   
-  .icon {
-    width: 18px;
-    height: 18px;
+  /* ARROW */
+  .arrow {
+    transition: transform 0.3s ease;
   }
   
-  .hours-content {
+  /* ACCORDEON */
+  .info-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease;
   }
   
-  .hours-section.active .hours-content {
+  .info-section.open .info-content {
     max-height: 1000px;
     margin-top: 16px;
   }
   
-  .arrow {
-    transition: transform 0.3s ease;
-  }
-  
-  .hours-section.active .arrow {
-    transform: rotate(180deg);
-  }
-  
-  .day-row {
+  /* LIGNES HORAIRES */
+  .hour-row {
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
   }
   
-  .day-name {
+  .hour-row:last-child {
+    border-bottom: none;
+  }
+  
+  .day {
     font-weight: 500;
   }
   
-  .day-hours {
+  .times {
     text-align: right;
     opacity: 0.8;
   }
   
-  .location-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding-top: 16px;
-    font-weight: 500;
+  /* ICONES */
+  .icon-clock,
+  .icon-location {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
   }
