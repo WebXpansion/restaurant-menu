@@ -144,8 +144,14 @@ document.addEventListener("click", function(e) {
       }
   
       if (arBtn) {
-        const label = window.UI?.ar_view_button || "Voir en réalité augmentée";
-        arBtn.textContent = label;
+
+        const isMobile = window.innerWidth < 768;
+      
+        const label = isMobile
+          ? window.UI?.ar_view
+          : window.UI?.ar_view_button;
+      
+        arBtn.textContent = label || "Voir en réalité augmentée";
       }
   
     } else {
