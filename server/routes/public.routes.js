@@ -79,24 +79,25 @@ router.get("/", async (req, res) => {
 
   for (const key in UI_TRANSLATIONS) {
   
-    if (typeof UI_TRANSLATIONS[key] === "object") {
+    const value = UI_TRANSLATIONS[key];
   
-      ui[key] = {};
+    if (typeof value !== "object") continue;
   
-      for (const subKey in UI_TRANSLATIONS[key]) {
-  
-        if (typeof UI_TRANSLATIONS[key][subKey] === "object") {
-  
-          ui[key][subKey] =
-            UI_TRANSLATIONS[key][subKey][safeLang] ||
-            UI_TRANSLATIONS[key][subKey]["fr"];
-  
-        }
-  
-      }
-  
+
+    if ("fr" in value) {
+      ui[key] = value[safeLang] ?? value["fr"];
     }
   
+
+    else {
+      ui[key] = {};
+  
+      for (const subKey in value) {
+        ui[key][subKey] =
+          value[subKey][safeLang] ??
+          value[subKey]["fr"];
+      }
+    }
   }
 
   res.render("public/menu", {
