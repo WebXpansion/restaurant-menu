@@ -63,7 +63,7 @@ function renderPageChart(items) {
   const values = items.map(i => i.count);
 
   if (pageChart) pageChart.destroy();
-  ctx.style.width = labels.length * 80 + "px";
+
   pageChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -101,7 +101,7 @@ function renderComparisonChart(current, previous) {
     const labels = current.map(d => formatLabel(d.label, period));
   
     if (pageChart) pageChart.destroy();
-    ctx.style.width = labels.length * 80 + "px";
+
     pageChart = new Chart(ctx, {
       type: "line",
       data: {
@@ -224,7 +224,7 @@ async function loadComparison(period) {
   
     if (dishChart) dishChart.destroy();
   
-    ctx.style.width = labels.length * 80 + "px";
+
   
     dishChart = new Chart(ctx, {
       type: "line",
@@ -287,7 +287,7 @@ async function loadComparison(period) {
   
     if (dishArChart) dishArChart.destroy();
   
-    ctx.style.width = labels.length * 80 + "px";
+
   
     dishArChart = new Chart(ctx, {
       type: "line",
