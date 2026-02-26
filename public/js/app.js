@@ -31,6 +31,24 @@ if (uiScript) {
   }
 }
 
+function updateArButton() {
+
+  const btn = document.querySelector(".ar-btn");
+  if (!btn) return;
+
+  const textEl = btn.querySelector(".ar-text");
+  if (!textEl) return;
+
+  const isMobile = window.innerWidth < 768;
+
+  const label = isMobile
+    ? window.UI.buttons?.ar_view
+    : window.UI.ar_view_button;
+
+  textEl.textContent = label;
+}
+
+updateArButton();
 // ==============================
 // 🔥 FONCTION DE FERMETURE UNIQUE
 // ==============================
