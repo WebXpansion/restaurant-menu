@@ -20,6 +20,17 @@
   </section>
 
   <section class="about-content">
+    <%
+  const daysMap = {
+    1: "Lundi",
+    2: "Mardi",
+    3: "Mercredi",
+    4: "Jeudi",
+    5: "Vendredi",
+    6: "Samedi",
+    7: "Dimanche"
+  };
+%>
     <h1><%= about.title || "" %></h1>
 
 
@@ -37,23 +48,35 @@
       </div>
 
       <div class="info-content hours-content">
-        <% hours.forEach(h => { %>
-          <div class="hour-row">
-            <div class="day">
-              <%= daysMap[h.day_of_week] %>
-            </div>
-            <div class="times">
-              <% if (h.open_time) { %>
-                <div>De <%= h.open_time %> à <%= h.close_time %></div>
-                <% if (h.second_open_time) { %>
-                  <div>De <%= h.second_open_time %> à <%= h.second_close_time %></div>
+
+        <% if (hours && hours.length) { %>
+          
+          <% hours.forEach(h => { %>
+            <div class="hour-row">
+              <div class="day">
+                <%= daysMap[h.day_of_week] %>
+              </div>
+              <div class="times">
+                <% if (h.open_time) { %>
+                  <div>De <%= h.open_time %> à <%= h.close_time %></div>
+                  <% if (h.second_open_time) { %>
+                    <div>De <%= h.second_open_time %> à <%= h.second_close_time %></div>
+                  <% } %>
+                <% } else { %>
+                  <div>Fermé</div>
                 <% } %>
-              <% } else { %>
-                <div>Fermé</div>
-              <% } %>
+              </div>
             </div>
+          <% }) %>
+      
+        <% } else { %>
+      
+          <div class="hour-row">
+            <div class="day">Horaires non disponibles</div>
           </div>
-        <% }) %>
+      
+        <% } %>
+      
       </div>
 
     </section>
@@ -61,17 +84,17 @@
     <p><%= about.description || "" %></p>
 
 
-<!-- ADRESSE (section séparée) -->
-<section class="info-section address-section">
+    <!-- ADRESSE (section séparée) -->
+    <section class="info-section address-section">
 
-  <div class="info-header no-toggle">
-    <div class="info-left">
-      <span class="icon-location"></span>
-      <span><%= restaurant.address %></span>
-    </div>
-  </div>
+      <div class="info-header no-toggle">
+        <div class="info-left">
+          <span class="icon-location"></span>
+          <span><%= restaurant.address || "Adresse non disponible" %></span>
+        </div>
+      </div>
 
-</section>
+    </section>
 
 
 
@@ -97,6 +120,8 @@
       </a>
     <% } %>
   </section>
+
+  
 </div>
 
 
@@ -111,10 +136,12 @@
 <script src="/js/menu-select.js"></script>
 
 <script>
-  const toggle = document.getElementById("hoursToggle");
-  const section = document.querySelector(".hours-section");
+  const toggle = document.querySelector(".toggle-hours");
 
-  toggle.addEventListener("click", () => {
-    section.classList.toggle("active");
-  });
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      const section = this.closest(".info-section");
+      section.classList.toggle("open");
+    });
+  }
 </script>
