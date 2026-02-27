@@ -155,6 +155,8 @@ freshData.forEach(item => {
   const div = document.createElement("div");
   div.className = "card";
 
+  const hasAR = item.has_ar === true;
+
   div.dataset.id = item.id;
   div.dataset.title = item.title || "";
   div.dataset.desc = item.desc_short || "";
