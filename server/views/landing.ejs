@@ -1,2 +1,390 @@
-<h1>PlateView</h1>
-<p>Le menu digital en réalité augmentée pour restaurants.</p>
+<style>
+    /* Base */
+body {
+  margin: 0;
+  background: #F6EFE5;
+  color: #000;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* HERO */
+.hero {
+  padding: 40px 20px;
+}
+
+h2, p{
+  margin:0;
+}
+
+.experience-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* TEXT */
+.hero-content h1 {
+  font-size: 34px;
+
+  font-weight: 500;
+    margin: 0;
+}
+
+.hero-content .accent {
+  color: #AD1A1A;
+}
+
+.hero-sub {
+  margin-top: 20px;
+  font-size: 16px;
+    width: 600px;
+  opacity: 0.8;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.btn-primary {
+  background: #AD1A1A;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-outline {
+  border: 1px solid #AD1A1A;
+  color: #AD1A1A;
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: #AD1A1A;
+  color: #fff;
+}
+
+/* BENEFITS */
+.hero-benefits {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* VIDEO */
+.hero-media {
+  width: 100%;
+}
+
+.video-wrapper {
+  border: 4px solid #AD1A1A;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* DESKTOP */
+@media (min-width: 1024px) {
+  
+  .site-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+  
+  .experience-side {
+
+    align-items: end;
+}
+
+  .hero {
+    padding: 80px 60px;
+  }
+
+  .hero-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .hero-content {
+    flex: 1;
+    max-width: 50%;
+  }
+
+  .hero-content h1 {
+    font-size: 64px;
+  }
+
+  .hero-media {
+    flex: 1;
+    max-width: 45%;
+  }
+
+  .hero-benefits {
+    flex-direction: row;
+    gap: 24px;
+  }
+}
+
+.experience {
+  padding: 60px 20px;
+  background: #F6EFE5;
+}
+
+.experience-top {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.experience-heading h2 {
+  font-size: 32px;
+
+  font-weight: 500;
+}
+
+.experience-side p {
+  font-size: 15px;
+text-align: left;
+  opacity: 0.8;
+}
+
+.experience-side .btn {
+  margin-top: 16px;
+  display: inline-block;
+}
+
+/* CARDS */
+
+.experience-cards {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white;
+}
+
+.card-overlay small {
+  font-size: 10px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.card-overlay p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+/* DESKTOP */
+
+@media (min-width: 1024px) {
+  
+  .experience-side p {
+  font-size: 15px;
+text-align: right;
+  opacity: 0.8;
+}
+
+
+  .experience {
+    padding: 100px 80px;
+  }
+
+  .experience-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .experience-heading {
+    max-width: 100%;
+  }
+
+  .experience-heading h2 {
+    font-size: 56px;
+  }
+
+  .experience-side {
+    max-width: 40%;
+  }
+
+  .experience-cards {
+    flex-direction: row;
+    gap: 30px;
+  }
+
+  .card {
+    flex: 1;
+  }
+
+}
+</style>
+
+
+<div class="site-wrapper">
+    <section class="hero">
+      <div class="hero-container">
+    
+        <!-- TEXTE -->
+        <div class="hero-content">
+          <h1>
+            <span class="accent">Donnez une bonne raison</span><br>
+            de choisir<br>
+            votre restaurant
+          </h1>
+    
+          <p class="hero-sub">
+            Attirez l’attention, facilitez le choix et déclenchez l’envie.
+            Un menu pensé pour valoriser vos plats et inciter vos clients à passer à la commande.
+          </p>
+    
+          <div class="hero-buttons">
+            <a href="#demo" class="btn btn-primary">Découvrir</a>
+            <a href="/pricing" class="btn btn-outline">Réserver une démo</a>
+          </div>
+    
+          <div class="hero-benefits">
+            <span>✓ Moins d’hésitation à table</span>
+            <span>✓ Plus d’envie, plus de commandes</span>
+          </div>
+        </div>
+    
+        <!-- VIDEO -->
+        <div class="hero-media">
+          <div class="video-wrapper">
+            <video 
+              autoplay 
+              muted 
+              loop 
+              playsinline 
+              preload="metadata"
+              poster="/images/hero-poster.jpg"
+            >
+              <source src="/videos/hero.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+    
+      </div>
+    </section>
+    
+    <section class="experience">
+    
+      <div class="experience-top">
+    
+        <div class="experience-heading">
+          <h2>Une meilleure expérience,<br>pour toute la table</h2>
+        </div>
+    
+        <div class="experience-side">
+          <p>
+            Des modèles 3D photo-réalistes qui mettent en valeur chaque détail
+            de vos plats et donnent immédiatement envie de commander.
+          </p>
+    
+          <a href="/contact" class="btn btn-primary">
+            Nous contacter
+          </a>
+        </div>
+    
+      </div>
+    
+      <div class="experience-cards">
+    
+        <div class="card">
+          <picture>
+            <img src="/images/exp1.webp"
+                 alt="Client découvrant un plat en réalité augmentée"
+                 loading="lazy"
+                 width="600"
+                 height="400">
+          </picture>
+          <div class="card-overlay">
+            <small>METTEZ VOS PLATS EN AVANT</small>
+            <p>Vos plats attirent l’œil et donnent envie dès le premier regard.</p>
+          </div>
+        </div>
+    
+        <div class="card">
+          <picture>
+            <img src="/images/exp2.webp"
+                 alt="Menu digital sur smartphone"
+                 loading="lazy"
+                 width="600"
+                 height="400">
+          </picture>
+          <div class="card-overlay">
+            <small>METTEZ VOS PLATS EN AVANT</small>
+            <p>Vos plats attirent l’œil et donnent envie dès le premier regard.</p>
+          </div>
+        </div>
+    
+        <div class="card">
+          <picture>
+            <img src="/images/exp3.webp"
+                 alt="Client utilisant le QR code du restaurant"
+                 loading="lazy"
+                 width="600"
+                 height="400">
+          </picture>
+          <div class="card-overlay">
+            <small>METTEZ VOS PLATS EN AVANT</small>
+            <p>Vos plats attirent l’œil et donnent envie dès le premier regard.</p>
+          </div>
+        </div>
+    
+      </div>
+    
+    </section>
+    </div>
+
