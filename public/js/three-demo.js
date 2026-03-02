@@ -31,7 +31,7 @@ canvases.forEach((canvas) => {
 
   const loader = new GLTFLoader();
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath("https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/");
+  dracoLoader.setDecoderPath("/vendor/three/examples/jsm/libs/draco/");
   loader.setDRACOLoader(dracoLoader);
 
   loader.load(canvas.dataset.model, (gltf) => {
