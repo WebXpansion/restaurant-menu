@@ -121,7 +121,6 @@ app.use(
 
 
 
-
 /* ========================
    STATIC FILES (TOUJOURS EN PREMIER)
 ======================== */
@@ -147,6 +146,14 @@ app.set("views", path.join(__dirname, "views"));
 ======================== */
 app.use("/admin/internal", internalRoutes);
 app.use(attachRestaurant);
+
+app.use((req, res, next) => {
+   if (req.isMainDomain) {
+     return res.render("landing");
+   }
+   next();
+ });
+
 
 app.use((req, res, next) => {
 
@@ -218,10 +225,7 @@ app.use("/admin/faq", faqRoutes);
 app.use("/admin/stats", requireAdminRestaurant, statsRoutes);
 app.use("/stats", statsRoutes);
 
-// Route pour la page d'accueil
-app.get("/", (req, res) => {
-   res.send("Welcome to Restaurant Menu Service!");
- });
+
 
 
 /* ========================

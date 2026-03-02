@@ -4,34 +4,35 @@ import { resolveRestaurantPlan } from "../services/restaurantPlan.js";
 export async function attachRestaurant(req, res, next) {
 
   const hostname = req.hostname;
-  let slug;
 
-  /* =========================
-     LOCAL DEV
-  ========================= */
-  if (hostname.includes("localhost")) {
-    slug = "test"; // ⚠️ doit correspondre au slug créé en base Postgres
+  // =========================
+  // 🔥 LANDING DOMAIN
+  // =========================
+  if (
+    hostname === "plateview.fr" ||
+    hostname === "www.plateview.fr"
+  ) {
+    req.isMainDomain = true;
+    return next();
   }
 
-  /* =========================
-     PRODUCTION
-     slug.plateview.fr
-  ========================= */
-  else {
+  // =========================
+  // LOCAL DEV
+  // =========================
+  if (hostname.includes("localhost")) {
+    slug = "test";
+  } else {
     const parts = hostname.split(".");
 
     if (parts.length < 3) {
       return res.status(400).send("Invalid domain structure");
     }
 
-    slug = parts[0]; // ex: refuge.plateview.fr → refuge
+    slug = parts[0];
   }
 
   try {
     const pool = getPool();
-
-    console.log("HOSTNAME:", req.hostname);
-console.log("SLUG USED:", slug);
 
     const { rows } = await pool.query(
       `SELECT * FROM restaurants WHERE slug = $1`,
@@ -44,7 +45,6 @@ console.log("SLUG USED:", slug);
       return res.status(404).send("Restaurant not found");
     }
 
-    // PLAN RESOLUTION
     resolveRestaurantPlan(restaurant);
 
     req.restaurant = restaurant;
