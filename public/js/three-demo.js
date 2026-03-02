@@ -64,3 +64,62 @@ canvases.forEach((canvas) => {
 
   animate();
 });
+const arButtons = document.querySelectorAll(".ar-btn");
+
+function isIOS() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function isAndroid() {
+  return /Android/i.test(navigator.userAgent);
+}
+
+function updateButtonText() {
+  arButtons.forEach(button => {
+    if (window.innerWidth > 1024) {
+      button.textContent = "Voir en réalité augmentée sur téléphone";
+    } else {
+      button.textContent = "Voir sur ma table";
+    }
+  });
+}
+
+updateButtonText();
+window.addEventListener("resize", updateButtonText);
+
+arButtons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const usdz = button.dataset.usdz;
+    const glb = button.dataset.glb;
+
+    if (isIOS()) {
+
+      const anchor = document.createElement("a");
+      anchor.rel = "ar";
+      anchor.href = usdz;
+
+      const img = document.createElement("img");
+      anchor.appendChild(img);
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+
+    } else if (isAndroid()) {
+
+      const sceneViewerUrl =
+        `https://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glb)}&mode=ar_only&resizable=true`;
+
+      window.location.href = sceneViewerUrl;
+
+    } else {
+
+      alert("Veuillez ouvrir cette page sur votre téléphone pour utiliser la réalité augmentée.");
+
+    }
+
+  });
+
+});
