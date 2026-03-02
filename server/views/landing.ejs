@@ -70,10 +70,8 @@ h2, p{
 }
 
 .btn-primary {
-  background: #AD1A1A;
-  color: #fff;
-  border: none;
-  width: 200px;
+
+  width: 100%;
 }
 
 .btn-primary:hover {
@@ -120,6 +118,13 @@ h2, p{
 
 /* DESKTOP */
 @media (min-width: 1024px) {
+
+    .btn-primary {
+  background: #AD1A1A;
+  color: #fff;
+  border: none;
+  width: 200px;
+}
   
   .site-wrapper {
   max-width: 1600px;
@@ -326,18 +331,17 @@ text-align: right;
   background: #F6EFE5;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 10px;
-  padding: 12px;
+  padding: 16px;
 }
 
 .card-top {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 30px;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .card-top h3 {
-  font-size: 24px;
+  font-size: 18px;
   margin: 0;
 }
 
@@ -370,9 +374,23 @@ text-align: right;
 
 @media (min-width: 1024px) {
 
+
+.card-top h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+
   .demo-3d {
     padding: 100px 80px;
   }
+
+  .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+}
 
   .demo-header h2 {
     font-size: 56px;
@@ -554,12 +572,6 @@ text-align: right;
                 <h3>Tarte aux framboises</h3>
                 <p>Sablé croustillant, crémeux framboise et framboises fraîches, touche de menthe</p>
               </div>
-              <button 
-              class="btn btn-primary ar-btn"
-              data-usdz="https://res.cloudinary.com/dnvma6syg/image/upload/v1772466828/Slice_of_raspberry_pie_ex4rer.usdz"
-              data-glb="https://res.cloudinary.com/dnvma6syg/image/upload/v1772460643/framboise_zi6ede.glb">
-              Voir sur ma table
-            </button>
             </div>
       
             <div class="card-3d">
@@ -576,12 +588,6 @@ text-align: right;
                 <h3>Cheesecake au chocolat blanc</h3>
                 <p>Base biscuitée croustillante, crème fondante et nappage au chocolat blanc</p>
               </div>
-              <button 
-              class="btn btn-primary ar-btn"
-              data-usdz="https://res.cloudinary.com/dnvma6syg/image/upload/v1772466828/Slice_of_raspberry_pie_ex4rer.usdz"
-              data-glb="https://res.cloudinary.com/dnvma6syg/image/upload/v1772460643/framboise_zi6ede.glb">
-              Voir sur ma table
-            </button>
             </div>
       
             <div class="card-3d">
@@ -598,12 +604,6 @@ text-align: right;
                 <h3>Côte de bœuf ± 1 kg</h3>
                 <p>À partager, viande persillée, cuisson au grill</p>
               </div>
-              <button 
-              class="btn btn-primary ar-btn"
-              data-usdz="https://res.cloudinary.com/dnvma6syg/image/upload/v1772466828/Slice_of_raspberry_pie_ex4rer.usdz"
-              data-glb="https://res.cloudinary.com/dnvma6syg/image/upload/v1772460643/framboise_zi6ede.glb">
-              Voir sur ma table
-            </button>
             </div>
       
             <div class="card-3d">
@@ -622,12 +622,6 @@ text-align: right;
                 <p>Fruité et léger, facile à déguster
                 </p>
               </div>
-              <button 
-              class="btn btn-primary ar-btn"
-              data-usdz="https://res.cloudinary.com/dnvma6syg/image/upload/v1772466828/Slice_of_raspberry_pie_ex4rer.usdz"
-              data-glb="https://res.cloudinary.com/dnvma6syg/image/upload/v1772460643/framboise_zi6ede.glb">
-              Voir sur ma table
-            </button>
             </div>
       
             <div class="card-3d">
