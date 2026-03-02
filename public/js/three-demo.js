@@ -25,9 +25,33 @@ canvases.forEach((canvas) => {
   scene.add(light);
 
   const controls = new OrbitControls(camera, canvas);
+
   controls.enableDamping = true;
+  controls.enablePan = false;
+  
   controls.minDistance = 2;
   controls.maxDistance = 4;
+  
+  // 🔒 Rotation uniquement horizontale (effet showroom)
+  controls.minPolarAngle = Math.PI / 2;
+  controls.maxPolarAngle = Math.PI / 2;
+  
+  // 🔁 Auto rotate doux
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.8;
+  
+  let autoRotateTimeout;
+  
+  controls.addEventListener("start", () => {
+    controls.autoRotate = false;
+    clearTimeout(autoRotateTimeout);
+  });
+  
+  controls.addEventListener("end", () => {
+    autoRotateTimeout = setTimeout(() => {
+      controls.autoRotate = true;
+    }, 2500);
+  });
 
   const loader = new GLTFLoader();
   const dracoLoader = new DRACOLoader();
@@ -56,12 +80,25 @@ canvases.forEach((canvas) => {
 
   resize();
 
+  let isVisible = false;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isVisible = entry.isIntersecting;
+    });
+  }, { threshold: 0.1 });
+  
+  observer.observe(canvas);
+  
   function animate() {
     requestAnimationFrame(animate);
+  
+    if (!isVisible) return;
+  
     controls.update();
     renderer.render(scene, camera);
   }
-
+  
   animate();
 });
 
