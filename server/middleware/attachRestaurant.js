@@ -4,10 +4,11 @@ import { resolveRestaurantPlan } from "../services/restaurantPlan.js";
 export async function attachRestaurant(req, res, next) {
 
   const hostname = req.hostname;
+  let slug;
 
-  // =========================
-  // 🔥 LANDING DOMAIN
-  // =========================
+  /* =========================
+     MAIN DOMAIN (landing)
+  ========================= */
   if (
     hostname === "plateview.fr" ||
     hostname === "www.plateview.fr"
@@ -16,12 +17,18 @@ export async function attachRestaurant(req, res, next) {
     return next();
   }
 
-  // =========================
-  // LOCAL DEV
-  // =========================
+  /* =========================
+     LOCAL DEV
+  ========================= */
   if (hostname.includes("localhost")) {
     slug = "test";
-  } else {
+  }
+
+  /* =========================
+     PRODUCTION
+     slug.plateview.fr
+  ========================= */
+  else {
     const parts = hostname.split(".");
 
     if (parts.length < 3) {
