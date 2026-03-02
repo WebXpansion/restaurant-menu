@@ -154,6 +154,16 @@ app.use((req, res, next) => {
    next();
  });
 
+ app.get("/pricing", (req, res, next) => {
+
+   if (!req.isMainDomain) {
+     return res.redirect("/");
+   }
+ 
+   res.render("pricing");
+ 
+ });
+
 
 app.use((req, res, next) => {
 
