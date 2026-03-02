@@ -35,7 +35,15 @@ canvases.forEach((canvas) => {
   loader.setDRACOLoader(dracoLoader);
 
   loader.load(canvas.dataset.model, (gltf) => {
-    scene.add(gltf.scene);
+
+    const model = gltf.scene;
+  
+    const scale = parseFloat(canvas.dataset.scale || "1");
+  
+    model.scale.setScalar(scale);
+  
+    scene.add(model);
+  
   });
 
   function resize() {
