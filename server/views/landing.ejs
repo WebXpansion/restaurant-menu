@@ -47,10 +47,8 @@ h2, p{
 }
 
 .hero-sub {
-  margin-top: 20px;
-  font-size: 16px;
-    width: 600px;
-  opacity: 0.8;
+
+    width: auto;
 }
 
 /* BUTTONS */
@@ -106,18 +104,27 @@ h2, p{
 
 
 .video-wrapper video {
-    width: 360px;
+    width: 100%;
     height: auto;
     display: block;
+    border: 4px solid #AD1A1A;
+    border-radius: 10px;
 }
 
 /* DESKTOP */
 @media (min-width: 1024px) {
 
+    .hero-sub {
+  margin-top: 20px;
+  font-size: 16px;
+    width: 600px;
+  opacity: 0.8;
+}
+
 
 
 .video-wrapper video {
-  width: 100%;
+  width: 300px;
   height: auto;
   display: block;
   border: 4px solid #AD1A1A;
@@ -128,7 +135,7 @@ h2, p{
   background: #AD1A1A;
   color: #fff;
   border: none;
-  width: 200px;
+  width: auto;
 }
   
   .site-wrapper {
@@ -164,6 +171,8 @@ h2, p{
   .hero-media {
     flex: 1;
     width: 50%;
+    display: flex;
+    justify-content: center;
   }
 
   .hero-benefits {
@@ -206,13 +215,14 @@ text-align: left;
   margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .card {
   position: relative;
   border-radius: 18px;
   overflow: hidden;
+  height: 400px;
 }
 
 .card img {
@@ -246,6 +256,10 @@ text-align: left;
 /* DESKTOP */
 
 @media (min-width: 1024px) {
+
+    .card-overlay p {
+  font-size: 16px;
+}
   
   .experience-side p {
   font-size: 15px;
@@ -278,7 +292,7 @@ text-align: right;
 
   .experience-cards {
     flex-direction: row;
-    gap: 30px;
+    gap: 12px;
   }
 
   .card {
@@ -449,8 +463,8 @@ text-align: right;
         <!-- TEXTE -->
         <div class="hero-content">
           <h1>
-            <span class="accent">Donnez une bonne raison</span><br>
-            de choisir<br>
+            <span class="accent">Donnez une bonne raison</span>
+            de choisir
             votre restaurant
           </h1>
     
@@ -514,7 +528,7 @@ text-align: right;
     
         <div class="card">
           <picture>
-            <img src="/images/exp1.webp"
+            <img src="https://res.cloudinary.com/dnvma6syg/image/upload/v1772469394/1_typauf.webp"
                  alt="Client découvrant un plat en réalité augmentée"
                  loading="lazy"
                  width="600"
@@ -528,7 +542,7 @@ text-align: right;
     
         <div class="card">
           <picture>
-            <img src="/images/exp2.webp"
+            <img src="https://res.cloudinary.com/dnvma6syg/image/upload/v1772469373/2_os5461.webp"
                  alt="Menu digital sur smartphone"
                  loading="lazy"
                  width="600"
@@ -542,7 +556,7 @@ text-align: right;
     
         <div class="card">
           <picture>
-            <img src="/images/exp3.webp"
+            <img src="https://res.cloudinary.com/dnvma6syg/image/upload/v1772469373/3_ot9lij.webp"
                  alt="Client utilisant le QR code du restaurant"
                  loading="lazy"
                  width="600"
