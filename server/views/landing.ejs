@@ -104,20 +104,25 @@ h2, p{
   width: 100%;
 }
 
-.video-wrapper {
-  border: 4px solid #AD1A1A;
-  border-radius: 20px;
-  overflow: hidden;
+
+.video-wrapper video {
+    width: 360px;
+    height: auto;
+    display: block;
 }
+
+/* DESKTOP */
+@media (min-width: 1024px) {
+
+
 
 .video-wrapper video {
   width: 100%;
   height: auto;
   display: block;
+  border: 4px solid #AD1A1A;
+  border-radius: 10px;
 }
-
-/* DESKTOP */
-@media (min-width: 1024px) {
 
     .btn-primary {
   background: #AD1A1A;
@@ -158,7 +163,7 @@ h2, p{
 
   .hero-media {
     flex: 1;
-    max-width: 45%;
+    width: 50%;
   }
 
   .hero-benefits {
