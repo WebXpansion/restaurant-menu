@@ -147,23 +147,23 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/admin/internal", internalRoutes);
 app.use(attachRestaurant);
 
-app.use((req, res, next) => {
-   if (req.isMainDomain) {
-     return res.render("landing");
-   }
-   next();
- });
+/* ========================
+   MAIN DOMAIN ROUTES
+======================== */
 
- app.get("/pricing", (req, res, next) => {
+app.get("/", (req, res, next) => {
+  if (req.isMainDomain) {
+    return res.render("landing");
+  }
+  next();
+});
 
-   if (!req.isMainDomain) {
-     return res.redirect("/");
-   }
- 
-   res.render("pricing");
- 
- });
-
+app.get("/pricing", (req, res, next) => {
+  if (req.isMainDomain) {
+    return res.render("pricing");
+  }
+  next();
+});
 
 app.use((req, res, next) => {
 
