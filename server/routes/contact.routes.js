@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 
     await resend.emails.send({
       from: "Plateview <contact@plateview.fr>", // ⚠️ domaine validé chez Resend
-      to: "TON_EMAIL_PERSO@gmail.com",
+      to: "contact@webxpansion.com",
       subject: `Nouvelle demande Plateview – ${restaurant}`,
       html: `
         <h2>Nouvelle demande depuis la landing</h2>
