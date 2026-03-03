@@ -32,9 +32,11 @@ canvases.forEach((canvas) => {
   controls.minDistance = 2;
   controls.maxDistance = 4;
   
-  // 🔒 Rotation uniquement horizontale (effet showroom)
-  controls.minPolarAngle = Math.PI / 2;
-  controls.maxPolarAngle = Math.PI / 2;
+// Légère inclinaison autorisée
+const tilt = 0.15; // plus petit = plus subtil
+
+controls.minPolarAngle = Math.PI / 2 - tilt;
+controls.maxPolarAngle = Math.PI / 2 + tilt;
   
   // 🔁 Auto rotate doux
   controls.autoRotate = true;
