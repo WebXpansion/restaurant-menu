@@ -236,6 +236,7 @@ text-align: left;
   border-radius: 18px;
   overflow: hidden;
   height: 500px;
+  border-radius: 6px;
 }
 
 .card img {
@@ -310,6 +311,7 @@ text-align: right;
 
   .card {
     flex: 1;
+    border-radius: 6px;
   }
 
 }
@@ -526,6 +528,7 @@ text-align: right;
     border: 1px solid rgba(0, 0, 0, 0.15);
     font-family: inherit;
     background: transparent;
+    font-size: 16px;
 }
 
 .contact-card {
@@ -585,6 +588,7 @@ text-align: right;
     border: 1px solid rgba(0, 0, 0, 0.15);
     font-family: inherit;
     background: transparent;
+    font-size: 16px;
 }
 
   .boost-section {
@@ -890,6 +894,31 @@ text-align: right;
 
 
     </div>
+
+    <script>
+      document.getElementById("contact-form")
+      .addEventListener("submit", async function(e) {
+        e.preventDefault();
+      
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+      
+        const response = await fetch("/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+      
+        const result = await response.json();
+      
+        if (result.success) {
+          alert("Votre demande a bien été envoyée.");
+          this.reset();
+        } else {
+          alert("Erreur lors de l'envoi.");
+        }
+      });
+      </script>
 
     <script type="importmap">
         {

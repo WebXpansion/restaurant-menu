@@ -8,6 +8,8 @@ import faqRoutes from "./routes/faq.routes.js";
 import pgSession from "connect-pg-simple";
 import { getPool } from "./db/postgres.js";
 
+import contactRoutes from "./routes/contact.routes.js";
+
 import internalRoutes from "./routes/internal.routes.js";
 import accountRoutes from "./routes/account.routes.js";
 import session from "express-session";
@@ -217,6 +219,8 @@ app.use((req, res, next) => {
 /* ========================
    PUBLIC ROUTES
 ======================== */
+
+app.use("/contact", contactRoutes);
 app.use("/", publicRoutes);
 
 /* ========================
