@@ -1,6 +1,51 @@
 <link rel="stylesheet" href="/css/landing-page.css">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<header class="site-header">
+
+  <div class="header-inner">
+
+    <!-- LEFT NAV (desktop only) -->
+    <nav class="nav-left desktop-only">
+      <a href="/">Accueil</a>
+      <a href="/pricing">Tarifs</a>
+    </nav>
+
+    <!-- LOGO -->
+    <div class="logo">
+      <a href="/">
+        <img src="/images/logo.png" alt="Webxpansion">
+      </a>
+    </div>
+
+    <!-- RIGHT NAV (desktop only) -->
+    <div class="nav-right desktop-only">
+      <a href="#contact-form-card">Nous contacter</a>
+      <div class="bell-icon">
+        <!-- Tu mettras ton SVG ici -->
+      </div>
+    </div>
+
+    <!-- HAMBURGER (mobile only) -->
+    <button class="hamburger mobile-only" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <nav>
+      <a href="/">Accueil</a>
+      <a href="/pricing">Nos offres</a>
+      <a href="#contact-form-card">Nous contacter</a>
+    </nav>
+  </div>
+
+</header>
+
 <div class="site-wrapper">
   <section class="pricing-section">
 
@@ -111,3 +156,22 @@
 
   </section>
 </div>
+
+<script>
+  const hamburger = document.querySelector(".hamburger");
+  const mobileMenu = document.querySelector(".mobile-menu");
+  
+  hamburger.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
+    document.body.style.overflow = 
+      mobileMenu.classList.contains("active") ? "hidden" : "auto";
+  });
+  
+  // Fermer au clic sur un lien
+  document.querySelectorAll(".mobile-menu a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("active");
+      document.body.style.overflow = "auto";
+    });
+  });
+  </script>

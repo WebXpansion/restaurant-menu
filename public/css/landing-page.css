@@ -847,7 +847,7 @@ text-align: right;
       }
   
     .site-wrapper {
-    max-width: 1600px;
+    max-width: 2000px;
     margin: 0 auto;
   }
     
@@ -883,6 +883,137 @@ text-align: right;
   
     .pricing-card.featured {
       transform: translateY(-20px);
+    }
+  
+  }
+
+
+  /* =========================
+   HEADER
+========================= */
+
+.site-header {
+    position: relative;
+    background: #F6EFE5;
+    padding: 20px;
+    z-index: 100;
+  }
+  
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* LOGO */
+  .logo img {
+    height: 40px;
+    display: block;
+  }
+  
+  /* NAV LINKS */
+  .nav-left,
+  .nav-right {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+  
+  .nav-left a,
+  .nav-right a {
+    text-decoration: none;
+    color: #000;
+    font-size: 14px;
+  }
+  
+  .bell-icon {
+    width: 44px;
+    height: 44px;
+    background: #AD1A1A;
+    border-radius: 6px;
+  }
+  
+  /* =========================
+     MOBILE
+  ========================= */
+  
+  .mobile-only {
+    display: block;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  /* Hamburger */
+  .hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .hamburger span {
+    width: 24px;
+    height: 2px;
+    background: #000;
+    display: block;
+  }
+  
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: #F6EFE5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-100%);
+    transition: 0.3s ease;
+  }
+  
+  .mobile-menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .mobile-menu a {
+    font-size: 20px;
+    text-decoration: none;
+    color: #000;
+  }
+  
+  /* Active */
+  .mobile-menu.active {
+    transform: translateY(0);
+  }
+  
+  /* =========================
+     DESKTOP
+  ========================= */
+  
+  @media (min-width: 1024px) {
+  
+    .site-header {
+      padding: 30px 60px;
+    }
+  
+    .mobile-only {
+      display: none;
+    }
+  
+    .desktop-only {
+      display: flex;
+    }
+  
+    .logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
   
   }
