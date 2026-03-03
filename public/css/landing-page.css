@@ -720,6 +720,7 @@ text-align: right;
   .pricing-header h1 {
     font-size: 28px;
     font-weight: 500;
+    margin: 0;
   }
   
   .pricing-header .accent {
@@ -737,7 +738,7 @@ text-align: right;
   ========================= */
   
   .pricing-cards {
-    margin-top: 40px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -863,9 +864,11 @@ text-align: right;
   
     .pricing-header h1 {
       font-size: 48px;
+      margin: 0;
     }
   
     .pricing-cards {
+        margin-top: 80px;
       flex-direction: row;
       align-items: end;
       justify-content: center;
