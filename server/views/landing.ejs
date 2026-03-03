@@ -474,7 +474,7 @@ text-align: right;
 ========================= */
 
 .boost-section {
-  background: #AD1A1A;
+  background: #540D0D;
   color: white;
   padding: 60px 20px 0;
   position: relative;
@@ -490,7 +490,7 @@ text-align: right;
 }
 
 .boost-stats {
-  margin-top: 40px;
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -503,13 +503,13 @@ text-align: right;
 
 .stat p {
   font-size: 14px;
-  opacity: 0.9;
+  margin-top: 8px;
 }
 
 /* IMAGE */
 
 .boost-image-wrapper {
-  margin-top: 60px;
+  margin-top: 70px;
 }
 
 .boost-image-wrapper img {
@@ -517,15 +517,24 @@ text-align: right;
   display: block;
 }
 
+
 /* CONTACT CARD */
+
+.contact-card input, .contact-card textarea {
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-family: inherit;
+    background: transparent;
+}
 
 .contact-card {
   background: #F6EFE5;
   color: #000;
   margin: -80px 20px 60px;
   padding: 30px;
-  border-radius: 12px;
-  border: 1px solid #AD1A1A;
+  position: relative;
+  z-index: 1;
 }
 
 .contact-card h3 {
@@ -562,7 +571,7 @@ text-align: right;
 @media (min-width: 1024px) {
 
   .boost-section {
-    padding: 100px 80px 0;
+    padding: 120px 40px;
   }
 
   .boost-top h2 {
@@ -572,15 +581,15 @@ text-align: right;
   .boost-stats {
     flex-direction: row;
     justify-content: center;
-    gap: 120px;
+    gap: 180px;
   }
 
   .stat-number {
-    font-size: 64px;
+    font-size: 84px;
   }
 
   .boost-image-wrapper img {
-    height: 500px;
+    height: 700px;
     object-fit: cover;
   }
 
@@ -803,7 +812,7 @@ text-align: right;
 
 
       <section class="boost-section">
-        <div class="inner-boost-section">
+
 
         <div class="boost-top">
           <h2>Boostez votre restaurant<br>avec Webxpansion</h2>
@@ -831,6 +840,7 @@ text-align: right;
         </div>
       
         <div class="contact-card">
+          <div class="inner-contact-card">
           <h3>Nous contacter</h3>
       
           <form id="contact-form">
@@ -851,7 +861,8 @@ text-align: right;
             </button>
           </form>
         </div>
-      </div>
+        </div>
+
       
       </section>
 
