@@ -521,8 +521,8 @@ text-align: right;
 /* CONTACT CARD */
 
 .contact-card input, .contact-card textarea {
-    padding: 18px;
-    border-radius: 4px;
+    padding: 18px!important;
+    border-radius: 4px!important;
     border: 1px solid rgba(0, 0, 0, 0.15);
     font-family: inherit;
     background: transparent;
@@ -538,8 +538,11 @@ text-align: right;
 }
 
 .contact-card h3 {
-  text-align: center;
-  margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .form-row {
@@ -549,13 +552,6 @@ text-align: right;
   margin-bottom: 12px;
 }
 
-.contact-card input,
-.contact-card textarea {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.15);
-  font-family: inherit;
-}
 
 .contact-card textarea {
   min-height: 120px;
@@ -565,6 +561,7 @@ text-align: right;
 }
 
 .inner-contact-card {
+  border: 1px solid #AD1A1A;
     padding: 12px;
 }
 
@@ -574,9 +571,17 @@ text-align: right;
 
 @media (min-width: 1024px) {
 
+  .contact-card h3 {
+    text-align: center;
+    margin-bottom: 50px;
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
   .contact-card input, .contact-card textarea {
-    padding: 18px;
-    border-radius: 4px;
+    padding: 18px!important;
+    border-radius: 4px!important;
     border: 1px solid rgba(0, 0, 0, 0.15);
     font-family: inherit;
     background: transparent;

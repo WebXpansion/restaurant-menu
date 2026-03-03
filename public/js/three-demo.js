@@ -33,7 +33,7 @@ canvases.forEach((canvas) => {
   controls.maxDistance = 4;
   
 // Légère inclinaison autorisée
-const tilt = 0.15; // plus petit = plus subtil
+const tilt = 0.3; // plus petit = plus subtil
 
 controls.minPolarAngle = Math.PI / 2 - tilt;
 controls.maxPolarAngle = Math.PI / 2 + tilt;
