@@ -1292,3 +1292,22 @@ text-align: right;
     opacity: 0.4;
     background: url("/icons/close.svg") center/contain no-repeat;
   }
+
+  .mobile-feature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  /* Alternance */
+  .mobile-feature-row:nth-of-type(odd) {
+    background: #F2F2F2;
+  }
+  
+  .mobile-feature-row:nth-of-type(even) {
+    background: #FFFFFF;
+  }

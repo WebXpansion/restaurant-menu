@@ -488,55 +488,70 @@
   const featuresContainer = document.getElementById("mobile-features");
   
   function renderFeatures() {
-    planNameEl.textContent = plans[currentPlanIndex];
-    featuresContainer.innerHTML = "";
-  
-    data.forEach(section => {
-  
-      const sectionTitle = document.createElement("h3");
-      sectionTitle.classList.add("mobile-section-title");
-      sectionTitle.textContent = section.section;
-      featuresContainer.appendChild(sectionTitle);
-  
-      section.items.forEach(item => {
-  
-        const row = document.createElement("div");
-        row.classList.add("mobile-feature-row");
-  
-        const title = document.createElement("div");
-        title.classList.add("mobile-feature-title");
-        title.textContent = item.title;
-  
-        const value = document.createElement("div");
-        const featureValue = item.values[currentPlanIndex];
-  
-        if (featureValue === "check") {
-          value.classList.add("mobile-check");
-        } else if (featureValue === "cross") {
-          value.classList.add("mobile-cross");
-        } else {
-          value.classList.add("mobile-feature-value");
-          value.textContent = featureValue;
-        }
-  
-        row.appendChild(title);
-        row.appendChild(value);
-        featuresContainer.appendChild(row);
-  
-      });
-  
+  planNameEl.textContent = plans[currentPlanIndex];
+  featuresContainer.innerHTML = "";
+
+  data.forEach(section => {
+
+    const sectionTitle = document.createElement("h3");
+    sectionTitle.classList.add("mobile-section-title");
+    sectionTitle.textContent = section.section;
+    featuresContainer.appendChild(sectionTitle);
+
+    section.items.forEach((item, index) => {
+
+      const row = document.createElement("div");
+      row.classList.add("mobile-feature-row");
+
+      // ✅ Alternance background
+      if (index % 2 === 0) {
+        row.style.background = "#F2F2F2";
+      } else {
+        row.style.background = "#FFFFFF";
+      }
+
+      const title = document.createElement("div");
+      title.classList.add("mobile-feature-title");
+      title.textContent = item.title;
+
+      const value = document.createElement("div");
+      const featureValue = item.values[currentPlanIndex];
+
+      if (featureValue === "check") {
+        value.classList.add("mobile-check");
+      } else if (featureValue === "cross") {
+        value.classList.add("mobile-cross");
+      } else {
+        value.classList.add("mobile-feature-value");
+        value.textContent = featureValue;
+      }
+
+      row.appendChild(title);
+      row.appendChild(value);
+      featuresContainer.appendChild(row);
+
     });
-  }
-  
-  document.getElementById("prev-plan").addEventListener("click", () => {
-    currentPlanIndex = (currentPlanIndex - 1 + plans.length) % plans.length;
-    renderFeatures();
+
   });
+}
   
-  document.getElementById("next-plan").addEventListener("click", () => {
-    currentPlanIndex = (currentPlanIndex + 1) % plans.length;
+  function changePlan(direction) {
+  featuresContainer.style.opacity = "0";
+
+  setTimeout(() => {
+    currentPlanIndex = (currentPlanIndex + direction + plans.length) % plans.length;
     renderFeatures();
-  });
+    featuresContainer.style.opacity = "1";
+  }, 200);
+}
+
+document.getElementById("prev-plan").addEventListener("click", () => {
+  changePlan(-1);
+});
+
+document.getElementById("next-plan").addEventListener("click", () => {
+  changePlan(1);
+});
   
   renderFeatures();
   </script>
