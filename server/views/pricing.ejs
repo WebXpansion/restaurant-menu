@@ -383,6 +383,20 @@
   
   </section>
 
+  <section class="pricing-mobile">
+
+    <div class="mobile-plan-switcher">
+      <button class="arrow-btn" id="prev-plan">‹</button>
+      <div class="plan-name" id="plan-name">Découverte</div>
+      <button class="arrow-btn" id="next-plan">›</button>
+    </div>
+  
+    <div class="mobile-features" id="mobile-features">
+      <!-- Les lignes seront générées dynamiquement -->
+    </div>
+  
+  </section>
+
 
 </div>
 
@@ -403,4 +417,78 @@
       document.body.style.overflow = "auto";
     });
   });
+  </script>
+
+<script>
+  const plans = ["Découverte", "Croissance", "Excellence"];
+  let currentPlanIndex = 0;
+  
+  const features = [
+    {
+      title: "Visualisation 3D & réalité augmentée",
+      values: ["check", "check", "check"]
+    },
+    {
+      title: "30 QR code personnalisés",
+      values: ["check", "check", "check"]
+    },
+    {
+      title: "Cartes événementielles & saisonnières",
+      values: ["cross", "check", "check"]
+    },
+    {
+      title: "Historique & comparaisons",
+      values: ["cross", "cross", "check"]
+    },
+    {
+      title: "Menu multilingue",
+      values: ["2 langues", "4 langues", "8 langues"]
+    }
+  ];
+  
+  const planNameEl = document.getElementById("plan-name");
+  const featuresContainer = document.getElementById("mobile-features");
+  
+  function renderFeatures() {
+    planNameEl.textContent = plans[currentPlanIndex];
+    featuresContainer.innerHTML = "";
+  
+    features.forEach(feature => {
+      const row = document.createElement("div");
+      row.classList.add("mobile-feature-row");
+  
+      const title = document.createElement("div");
+      title.classList.add("mobile-feature-title");
+      title.textContent = feature.title;
+  
+      const value = document.createElement("div");
+  
+      const featureValue = feature.values[currentPlanIndex];
+  
+      if (featureValue === "check") {
+        value.classList.add("mobile-check");
+      } else if (featureValue === "cross") {
+        value.classList.add("mobile-cross");
+      } else {
+        value.classList.add("mobile-feature-value");
+        value.textContent = featureValue;
+      }
+  
+      row.appendChild(title);
+      row.appendChild(value);
+      featuresContainer.appendChild(row);
+    });
+  }
+  
+  document.getElementById("prev-plan").addEventListener("click", () => {
+    currentPlanIndex = (currentPlanIndex - 1 + plans.length) % plans.length;
+    renderFeatures();
+  });
+  
+  document.getElementById("next-plan").addEventListener("click", () => {
+    currentPlanIndex = (currentPlanIndex + 1) % plans.length;
+    renderFeatures();
+  });
+  
+  renderFeatures();
   </script>

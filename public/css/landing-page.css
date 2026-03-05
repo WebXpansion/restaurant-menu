@@ -1220,3 +1220,75 @@ text-align: right;
     }
   
   }
+
+  /* =========================
+   MOBILE PRICING
+========================= */
+
+.pricing-mobile {
+    display: block;
+    padding: 40px 20px;
+  }
+  
+  @media (min-width: 1200px) {
+    .pricing-mobile {
+      display: none;
+    }
+  }
+  
+  .mobile-plan-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  
+  .arrow-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  
+  .plan-name {
+    font-size: 20px;
+    font-weight: 500;
+    font-family: "Bodoni Moda", serif;
+  }
+  
+  .mobile-feature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: #f2f2f2;
+    border-radius: 10px;
+  }
+  
+  .mobile-feature-title {
+    font-size: 14px;
+    color: #555;
+    max-width: 70%;
+  }
+  
+  .mobile-feature-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .mobile-check {
+    width: 18px;
+    height: 18px;
+    background: url("/icons/checkbox.svg") center/contain no-repeat;
+  }
+  
+  .mobile-cross {
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+    background: url("/icons/close.svg") center/contain no-repeat;
+  }
