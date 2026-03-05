@@ -263,13 +263,13 @@ text-align: left;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 30px;
+  padding: 20px;
   background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
   color: white;
 }
 
 .card-overlay small {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   opacity: 0.8;
   text-transform: uppercase;
@@ -277,15 +277,28 @@ text-align: left;
 
 .card-overlay p {
   margin-top: 8px;
-  font-size: 20px;
+  font-size: 18px;
+  line-height: 22px;
 }
 
 /* DESKTOP */
 
 @media (min-width: 1024px) {
 
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: white;
+  }
+
     .card-overlay p {
-  font-size: 16px;
+  font-size: 20px;
+  line-height: 24px;
 }
   
   .experience-side p {
