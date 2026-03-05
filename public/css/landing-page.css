@@ -1140,8 +1140,9 @@ text-align: right;
 
     .cross::before {
         content: "";
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
+        opacity: 0.6;
         display: inline-block;
         background: url("/icons/close.svg") center/contain no-repeat;
       }
