@@ -1142,14 +1142,16 @@ text-align: right;
         content: "";
         width: 14px;
         height: 14px;
-        opacity: 0.6;
+        opacity: 0.4;
         display: inline-block;
         background: url("/icons/close.svg") center/contain no-repeat;
       }
   
-    .option {
-      font-size: 14px;
-      color: #00000080;
+
+
+    .col-text{
+        font-size: 14px;
+        color: #00000080;
     }
   
   }
