@@ -1311,3 +1311,7 @@ text-align: right;
   .mobile-feature-row:nth-of-type(even) {
     background: #FFFFFF;
   }
+
+  .mobile-features {
+    transition: opacity 0.4s ease;
+  }

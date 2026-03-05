@@ -535,14 +535,23 @@
   });
 }
   
-  function changePlan(direction) {
-  featuresContainer.style.opacity = "0";
+function changePlan(direction) {
 
-  setTimeout(() => {
-    currentPlanIndex = (currentPlanIndex + direction + plans.length) % plans.length;
-    renderFeatures();
+featuresContainer.style.opacity = "0";
+
+// 🔥 Force le navigateur à appliquer le style
+featuresContainer.offsetHeight;
+
+setTimeout(() => {
+  currentPlanIndex = (currentPlanIndex + direction + plans.length) % plans.length;
+  renderFeatures();
+
+  // petit délai pour que le DOM soit prêt
+  requestAnimationFrame(() => {
     featuresContainer.style.opacity = "1";
-  }, 200);
+  });
+
+}, 250);
 }
 
 document.getElementById("prev-plan").addEventListener("click", () => {
