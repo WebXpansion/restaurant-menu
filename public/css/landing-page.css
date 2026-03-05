@@ -40,9 +40,12 @@ h2, p{
 /* TEXT */
 .hero-content h1 {
   font-size: 34px;
-
   font-weight: 500;
-    margin: 0;
+margin: 0;
+font-family: "Bodoni Moda", serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
 }
 
 .hero-content .accent {
@@ -181,6 +184,10 @@ h2, p{
   .hero-content h1 {
     font-size: 80px;
     line-height: 74px;
+    font-family: "Bodoni Moda", serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
   }
 
   .hero-media {
@@ -209,8 +216,10 @@ h2, p{
 
 .experience-heading h2 {
   font-size: 22px;
-
+  font-family: "Bodoni Moda", serif;
+  font-optical-sizing: auto;
   font-weight: 500;
+  font-style: normal;
 }
 
 .experience-side p {
@@ -300,7 +309,11 @@ text-align: right;
   }
 
   .experience-heading h2 {
-    font-size: 30px;
+    font-size: 38px;
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
   }
 
   .experience-side {
@@ -489,7 +502,10 @@ text-align: right;
 
 .boost-top h2 {
   font-size: 28px;
+  font-family: "Bodoni Moda", serif;
+  font-optical-sizing: auto;
   font-weight: 500;
+  font-style: normal;
 }
 
 .boost-stats {
@@ -501,7 +517,10 @@ text-align: right;
 
 .stat-number {
   font-size: 42px;
-  font-weight: 600;
+  font-family: "Bodoni Moda", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .stat p {
@@ -547,6 +566,10 @@ text-align: right;
     margin-top: 18px;
     font-size: 18px;
     font-weight: 600;
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 .form-row {
@@ -579,8 +602,11 @@ text-align: right;
     text-align: center;
     margin-bottom: 50px;
     margin-top: 0;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 26px;
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
   .contact-card input, .contact-card textarea {
@@ -598,6 +624,10 @@ text-align: right;
 
   .boost-top h2 {
     font-size: 48px;
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
   }
 
   .boost-stats {
@@ -608,6 +638,10 @@ text-align: right;
 
   .stat-number {
     font-size: 84px;
+    font-family: "Bodoni Moda", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
   }
 
   .boost-image-wrapper img {
@@ -1124,6 +1158,18 @@ text-align: right;
       font-weight: 500;
       margin: 40px 0 20px;
     }
+
+    .contact-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+      }
+      
+      .contact-link:hover {
+        opacity: 0.8;
+      }
   
     .compare-row {
       display: grid;
