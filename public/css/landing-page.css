@@ -1079,7 +1079,7 @@ text-align: right;
       grid-template-columns: 2fr 1fr 1fr 1fr;
       position: sticky;
       top: 100px; /* ajuste selon header */
-      background: #F6EFE5;
+      background: #fff;
       padding: 20px 0;
       z-index: 5;
     }
@@ -1137,6 +1137,14 @@ text-align: right;
       display: inline-block;
       background: url("/icons/checkbox.svg") center/contain no-repeat;
     }
+
+    .cross::before {
+        content: "";
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        background: url("/icons/close.svg") center/contain no-repeat;
+      }
   
     .option {
       font-size: 14px;
