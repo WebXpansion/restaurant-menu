@@ -766,8 +766,11 @@ text-align: right;
   
   .pricing-card h3 {
     font-size: 20px;
-    font-weight: 500;
         margin: 0;
+        font-family: "Bodoni Moda", serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
   }
   
   .card-desc {
@@ -865,6 +868,10 @@ text-align: right;
     .pricing-header h1 {
       font-size: 48px;
       margin: 0;
+      font-family: "Bodoni Moda", serif;
+      font-optical-sizing: auto;
+      font-weight: 500;
+      font-style: normal;
     }
   
     .pricing-cards {
@@ -1084,8 +1091,6 @@ text-align: right;
       grid-template-columns: 2fr 1fr 1fr 1fr;
       position: sticky;
       top: 100px; /* ajuste selon header */
-      background: #fff;
-      padding: 20px 0;
       z-index: 5;
     }
   
@@ -1108,8 +1113,8 @@ text-align: right;
     }
   
     .compare-section-title {
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 500;
       margin: 40px 0 20px;
     }
   
@@ -1119,11 +1124,10 @@ text-align: right;
       align-items: center;
       padding: 20px 0;
       background: #FFF;
-      margin-bottom: 8px;
     }
   
     .compare-row:nth-child(even) {
-      background: #F8F8F8;
+      background: #f2f2f2;
     }
   
     .compare-row .col {
@@ -1133,7 +1137,7 @@ text-align: right;
     .compare-row .feature-col {
       text-align: left;
       padding-left: 20px;
-      color: #7f7f7f;
+      color: #686868;
       font-size: 14px;
     }
   
