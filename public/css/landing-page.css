@@ -1057,13 +1057,18 @@ text-align: right;
   
     .desktop-compare {
       display: block;
-      padding: 120px 60px;
+      padding: 120px 40px;
+      background: linear-gradient(180deg, rgb(173 26 26 / 9%) 0%, rgba(173, 26, 26, 0.00) 14.61%);
     }
   
     .compare-title {
       text-align: center;
       font-size: 32px;
       margin-bottom: 80px;
+      font-family: "Bodoni Moda", serif;
+      font-optical-sizing: auto;
+      font-weight: 500;
+      font-style: normal;
     }
   
     .compare-wrapper {
