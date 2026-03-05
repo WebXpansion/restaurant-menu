@@ -281,6 +281,13 @@ text-align: left;
   line-height: 22px;
 }
 
+
+.main-pricing-cards p{
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #00000060;
+}
 /* DESKTOP */
 
 @media (min-width: 1024px) {
