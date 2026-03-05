@@ -282,11 +282,11 @@ text-align: left;
 }
 
 
-.p-frais-mise p {
+p.p-frais-mise {
     margin-top: 12px;
     font-size: 16px;
     line-height: 20px;
-    color: #00000060;
+    color: #00000050;
 }
 /* DESKTOP */
 
