@@ -1128,6 +1128,8 @@ text-align: right;
     .compare-row .feature-col {
       text-align: left;
       padding-left: 20px;
+      color: #7f7f7f;
+      font-size: 14px;
     }
   
     .check::before {
@@ -1151,7 +1153,8 @@ text-align: right;
 
     .col-text{
         font-size: 14px;
-        color: #00000080;
+        color: #000000;
+        text-align: center;
     }
   
   }
