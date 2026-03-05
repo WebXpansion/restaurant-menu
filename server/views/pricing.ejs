@@ -397,6 +397,134 @@
   
   </section>
 
+  <section class="boost-section">
+
+
+    <div class="boost-top">
+      <h2>Boostez votre restaurant<br>avec Webxpansion</h2>
+  
+      <div class="boost-stats">
+        <div class="stat">
+          <div class="stat-number">+30%</div>
+          <p>D’attention sur les plats visualisés en 3D</p>
+        </div>
+  
+        <div class="stat">
+          <div class="stat-number">-40%</div>
+          <p>d’hésitation au moment de choisir</p>
+        </div>
+  
+        <div class="stat">
+          <div class="stat-number">-40%</div>
+          <p>d’hésitation au moment de choisir</p>
+        </div>
+      </div>
+    </div>
+  
+    <div class="boost-image-wrapper">
+      <img src="https://res.cloudinary.com/dnvma6syg/image/upload/v1772530363/fond_yigizb.webp" alt="Intérieur restaurant moderne">
+    </div>
+  
+    <div class="contact-card" id="contact-form-card">
+      <div class="inner-contact-card">
+      <h3>Nous contacter</h3>
+  
+      <form id="contact-form">
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Nom" required>
+          <input type="text" name="restaurant" placeholder="Nom de restaurant" required>
+        </div>
+  
+        <div class="form-row">
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="tel" name="phone" placeholder="Téléphone">
+        </div>
+  
+        <textarea name="message" placeholder="Un message spécifique"></textarea>
+  
+        <button type="submit" class="btn btn-primary">
+          Envoyer ma demande
+        </button>
+      </form>
+    </div>
+    </div>
+
+  
+  </section>
+
+
+</div>
+
+<div id="success-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Votre demande a bien été envoyée</h3>
+    <p>
+      Julien prendra contact avec vous pour discuter de votre projet de réalité augmentée.
+    </p>
+    <button id="modal-close" class="btn btn-primary">
+      Compris
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  
+    const form = document.getElementById("contact-form");
+    const modal = document.getElementById("success-modal");
+    const modalClose = document.getElementById("modal-close");
+  
+    if (!form) return;
+  
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+  
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+  
+      try {
+        const response = await fetch("/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+  
+        if (!response.ok) throw new Error("Network error");
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          modal.classList.add("active");
+          this.reset();
+        } else {
+          alert("Erreur lors de l'envoi.");
+        }
+  
+      } catch (error) {
+        console.error(error);
+        alert("Une erreur est survenue. Veuillez réessayer.");
+      }
+    });
+  
+    // Fermeture via bouton
+    if (modalClose) {
+      modalClose.addEventListener("click", () => {
+        modal.classList.remove("active");
+      });
+    }
+  
+    // Fermeture en cliquant en dehors
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("active");
+        }
+      });
+    }
+  
+  });
+  </script>
+
 
 </div>
 
