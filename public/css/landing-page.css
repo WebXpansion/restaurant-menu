@@ -853,6 +853,10 @@ text-align: right;
     max-width: 2000px;
     margin: 0 auto;
   }
+
+  .nav-right.desktop-only {
+    gap: 12px;
+}
     
   
     .pricing-section {
@@ -934,10 +938,13 @@ text-align: right;
   }
   
   .bell-icon {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: #AD1A1A;
     border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   /* =========================
@@ -973,7 +980,7 @@ text-align: right;
   .mobile-menu {
     position: fixed;
     inset: 0;
-    background: #F6EFE5;
+    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -989,7 +996,7 @@ text-align: right;
   }
   
   .mobile-menu a {
-    font-size: 20px;
+    font-size: 30px;
     text-decoration: none;
     color: #000;
   }
@@ -1006,7 +1013,7 @@ text-align: right;
   @media (min-width: 1024px) {
   
     .site-header {
-      padding: 30px 60px;
+      padding: 16px 60px;
     }
   
     .mobile-only {
