@@ -423,26 +423,64 @@
   const plans = ["Découverte", "Croissance", "Excellence"];
   let currentPlanIndex = 0;
   
-  const features = [
+  const data = [
     {
-      title: "Visualisation 3D & réalité augmentée",
-      values: ["check", "check", "check"]
+      section: "Expérience 3D & réalité augmentée",
+      items: [
+        { title: "Visualisation 3D & réalité augmentée", values: ["check","check","check"] },
+        { title: "Plats, desserts & cocktails modélisés en 3D", values: ["check","check","check"] },
+        { title: "Maintenance technique & sécurité", values: ["check","check","check"] }
+      ]
     },
     {
-      title: "30 QR code personnalisés",
-      values: ["check", "check", "check"]
+      section: "QR code & supports physiques",
+      items: [
+        { title: "30 QR code personnalisés", values: ["check","check","check"] },
+        { title: "Supports premium", values: ["Option","Option","Option"] }
+      ]
     },
     {
-      title: "Cartes événementielles & saisonnières",
-      values: ["cross", "check", "check"]
+      section: "Gestion du menu",
+      items: [
+        { title: "Menu multilingue", values: ["2 langues","4 langues","8 langues"] },
+        { title: "Cartes dynamiques (midi / soir)", values: ["check","check","check"] },
+        { title: "Cartes événementielles & saisonnières", values: ["cross","check","check"] },
+        { title: "Désactivation d’un plat en rupture", values: ["check","check","check"] }
+      ]
     },
     {
-      title: "Historique & comparaisons",
-      values: ["cross", "cross", "check"]
+      section: "Statistiques & performances",
+      items: [
+        { title: "Nombre de consultations du menu", values: ["cross","check","check"] },
+        { title: "Plats les plus consultés", values: ["cross","check","check"] },
+        { title: "Analyse des périodes d’affluence", values: ["cross","check","check"] },
+        { title: "Historique & comparaisons", values: ["cross","cross","check"] }
+      ]
     },
     {
-      title: "Menu multilingue",
-      values: ["2 langues", "4 langues", "8 langues"]
+      section: "Marketing",
+      items: [
+        { title: "Création de publications pour vos réseaux sociaux", values: ["check","check","check"] },
+        { title: "Export en ratio 1/1 et 9/16 (stories)", values: ["check","check","check"] }
+      ]
+    },
+    {
+      section: "Avis & engagement clients",
+      items: [
+        { title: "Redirection vers avis Google Business", values: ["cross","check","check"] },
+        { title: "Partage d’un plat sur les réseaux sociaux", values: ["cross","cross","check"] }
+      ]
+    },
+    {
+      section: "Options & accompagnement",
+      items: [
+        { title: "Accompagnement & support", values: ["check","check","check"] },
+        { title: "Support prioritaire", values: ["cross","check","check"] },
+        { title: "Mise en avant sur l’annuaire Plateview", values: ["Option (5 € / mois)","check","check"] },
+        { title: "Création d’un site web complémentaire", values: ["Option (100 € / mois)","Option (100 € / mois)","Option (100 € / mois)"] },
+        { title: "Site web personnalisé", values: ["Sur devis","Sur devis","Sur devis"] },
+        { title: "Déplacement pour scan & ajout de plats", values: ["Option (199 € / déplacement)","Option (199 € / déplacement)","Option (199 € / déplacement)"] }
+      ]
     }
   ];
   
@@ -453,30 +491,40 @@
     planNameEl.textContent = plans[currentPlanIndex];
     featuresContainer.innerHTML = "";
   
-    features.forEach(feature => {
-      const row = document.createElement("div");
-      row.classList.add("mobile-feature-row");
+    data.forEach(section => {
   
-      const title = document.createElement("div");
-      title.classList.add("mobile-feature-title");
-      title.textContent = feature.title;
+      const sectionTitle = document.createElement("h3");
+      sectionTitle.classList.add("mobile-section-title");
+      sectionTitle.textContent = section.section;
+      featuresContainer.appendChild(sectionTitle);
   
-      const value = document.createElement("div");
+      section.items.forEach(item => {
   
-      const featureValue = feature.values[currentPlanIndex];
+        const row = document.createElement("div");
+        row.classList.add("mobile-feature-row");
   
-      if (featureValue === "check") {
-        value.classList.add("mobile-check");
-      } else if (featureValue === "cross") {
-        value.classList.add("mobile-cross");
-      } else {
-        value.classList.add("mobile-feature-value");
-        value.textContent = featureValue;
-      }
+        const title = document.createElement("div");
+        title.classList.add("mobile-feature-title");
+        title.textContent = item.title;
   
-      row.appendChild(title);
-      row.appendChild(value);
-      featuresContainer.appendChild(row);
+        const value = document.createElement("div");
+        const featureValue = item.values[currentPlanIndex];
+  
+        if (featureValue === "check") {
+          value.classList.add("mobile-check");
+        } else if (featureValue === "cross") {
+          value.classList.add("mobile-cross");
+        } else {
+          value.classList.add("mobile-feature-value");
+          value.textContent = featureValue;
+        }
+  
+        row.appendChild(title);
+        row.appendChild(value);
+        featuresContainer.appendChild(row);
+  
+      });
+  
     });
   }
   
