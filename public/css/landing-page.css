@@ -282,7 +282,7 @@ text-align: left;
 }
 
 
-.main-pricing-cards p{
+p.main-pricing-cards {
     margin-top: 12px;
     font-size: 16px;
     line-height: 20px;
