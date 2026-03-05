@@ -1017,3 +1017,29 @@ text-align: right;
     }
   
   }
+
+  /* =========================
+   HAMBURGER ACTIVE
+========================= */
+
+.hamburger {
+    position: relative;
+    z-index: 200; /* au-dessus du menu */
+  }
+  
+  .hamburger span {
+    transition: 0.3s ease;
+  }
+  
+  /* Transformation en X */
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
