@@ -272,6 +272,7 @@ text-align: left;
   font-size: 10px;
   letter-spacing: 1px;
   opacity: 0.8;
+  text-transform: uppercase;
 }
 
 .card-overlay p {
@@ -825,7 +826,7 @@ text-align: right;
   }
   
   .divider {
-    margin: 30px 0;
+    margin: 50px 0px 30px 0px;
     border-top: 1px dashed rgba(0,0,0,0.15);
   }
   
