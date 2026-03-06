@@ -1347,17 +1347,17 @@ text-align: right;
 ========================= */
 
 .site-footer {
-  background: #F6EFE5;
-  border-top: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
 }
 
 .footer-container {
   max-width: 2000px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  text-align: center;
 }
 
 .footer-left {
@@ -1389,7 +1389,7 @@ text-align: right;
 @media (min-width: 1024px) {
 
   .footer-container {
-    padding: 80px 60px;
+    padding: 30px 60px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;

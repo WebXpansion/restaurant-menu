@@ -167,6 +167,14 @@ app.get("/pricing", (req, res, next) => {
   next();
 });
 
+app.get("/mentions-legales", (req, res) => {
+  res.render("mentions-legales");
+});
+
+app.get("/politique-confidentialite", (req, res) => {
+  res.render("politique-confidentialite");
+});
+
 app.use((req, res, next) => {
 
    if (!req.restaurant) return next();
