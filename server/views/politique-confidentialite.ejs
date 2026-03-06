@@ -234,3 +234,22 @@
 
 </body>
 </html>
+
+<script>
+    const hamburger = document.querySelector(".hamburger");
+    const mobileMenu = document.querySelector(".mobile-menu");
+    
+    hamburger.addEventListener("click", () => {
+      mobileMenu.classList.toggle("active");
+      document.body.style.overflow = 
+        mobileMenu.classList.contains("active") ? "hidden" : "auto";
+    });
+    
+    // Fermer au clic sur un lien
+    document.querySelectorAll(".mobile-menu a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
+        document.body.style.overflow = "auto";
+      });
+    });
+    </script>
