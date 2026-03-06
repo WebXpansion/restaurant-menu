@@ -163,9 +163,10 @@ document.addEventListener("click", function(e) {
     const usdz = card.dataset.usdz;
     const arImg = document.getElementById("ar-img");
   
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   
-    if (usdz && usdz.trim() !== "") {
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (usdz && usdz.trim() !== "" && isIOS) {
       arBtn.style.display = "inline-flex";
   
       arBtn.setAttribute("href", usdz);
